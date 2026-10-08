@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button';
 import { ShopLayout } from '@/components/shop-layout';
 import { ServiceList } from '@/components/service-list';
 import { ProductList } from '@/components/product-list';
-import hero from '@/assets/hero.asset.json';
-import craft from '@/assets/tools.asset.json';
+import { fotos } from '@/assets/fotos';
+const hero={url:fotos.barbaTesoura};
+const craft={url:fotos.acabamentoNavalha};
 export const Route = createFileRoute("/")({
   component: Index,
   head:()=>({meta:[{title:'Slick Barbearia — Seu estilo. Nosso ofício.'},{name:'description',content:'Corte, barba e cuidado de verdade. Conheça os serviços da Slick e reserve seu próximo horário.'},{property:'og:title',content:'Slick Barbearia — Seu estilo. Nosso ofício.'},{property:'og:description',content:'Tradição no ofício. Personalidade no estilo. Agende na Slick Barbearia.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}),

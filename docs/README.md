@@ -48,7 +48,7 @@ Se for ler só uma coisa, leia a seção "O que preciso de você" abaixo e o [ro
 1. **Direção visual**: escolher entre Letreiro, Azulejo e Poste, descritas no [documento de design](03-design-system.md#três-direções-de-identidade). Minha recomendação é Letreiro. Se preferir decidir vendo, a primeira tarefa após a aprovação pode ser uma página comparando as três lado a lado.
 2. **Atendimento sem agendamento**: você não incluiu "dono agenda pelo cliente". Proponho que o cliente que chega sem hora marcada seja tratado com um bloqueio manual de horário na primeira versão, e com um "atendimento avulso" na fase do caixa, para a receita dele entrar no fechamento. Confirma?
 3. **Proteção contra abuso da agenda**: você não quis controle de faltas, e respeitei. Ainda assim recomendo um limite técnico de três agendamentos futuros por conta, só para impedir que alguém lote a agenda de propósito. Pode ser ajustado ou desligado nas configurações.
-4. **Hospedagem**: proponho manter a Cloudflare, para onde o projeto já é compilado hoje, no plano gratuito.
+4. **Hospedagem**: aprovada a Cloudflare, para onde o projeto já é compilado hoje, no plano gratuito. O domínio já existe na Hostinger e pode continuar lá, apontado para a Cloudflare; os passos ficam para a Fase 5.
 
 ### Para a primeira versão ir ao ar
 

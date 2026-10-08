@@ -29,15 +29,20 @@ Sem datas, por decisão sua: cada fase começa quando a anterior é aprovada. O 
 
 Deixar o projeto independente, legível e seguro para evoluir, sem mudar nada do que aparece na tela.
 
-- Criar o repositório git e o repositório privado no GitHub.
-- Trocar o preset do Lovable por uma configuração de build própria; remover o relatório de erros do Lovable.
-- Trazer as fotos para dentro do projeto (as atuais, se você baixá-las, ou as primeiras do banco de imagens).
-- Formatar todo o código e dividir os dois arquivos gigantes por área, sem alterar comportamento.
-- Adotar npm; ignorar `.env` no git; criar o modelo de variáveis de ambiente.
-- Criar `CLAUDE.md`, as Skills e a verificação automática no GitHub.
-- Traduzir as páginas de erro e de "não encontrada".
+**Situação: feita no computador, falta publicar o repositório no GitHub.** Ramificação `fase-0-fundacao`.
 
-**Pronto quando**: o sistema roda e compila fora do Lovable, igual ao protótipo; os 8 testes atuais passam; a verificação automática está verde.
+- [x] Criar o repositório git local, com o protótipo original como primeiro commit.
+- [ ] Criar o repositório privado no GitHub e enviar o código (depende da sua conta).
+- [x] Trocar o preset do Lovable por uma configuração de build própria; remover o relatório de erros do Lovable.
+- [x] Trazer as fotos para dentro do projeto (as três atuais, baixadas do Lovable). Origem e licença ainda a confirmar.
+- [x] Formatar todo o código e dividir os dois arquivos gigantes por área, sem alterar comportamento.
+- [x] Adotar npm; ignorar `.env` no git; criar o modelo de variáveis de ambiente.
+- [x] Criar `CLAUDE.md`, as Skills e o fluxo de verificação automática (ainda não executado no GitHub).
+- [x] Traduzir as páginas de erro e de "não encontrada".
+
+**Pronto quando**: o sistema roda e compila fora do Lovable, igual ao protótipo; os testes atuais passam; a verificação automática está verde no GitHub.
+
+**Verificado:** compilação, tipos, ESLint sem erros, 21 testes (os 8 originais mais 13 de tela do painel), todas as páginas respondendo e o HTML de cada módulo do painel idêntico ao de antes da divisão. **Não verificado:** layout no celular, o fluxo de agendamento clicado no navegador e a execução da verificação automática no GitHub.
 
 ## Fase 1 — Identidade e Design System
 

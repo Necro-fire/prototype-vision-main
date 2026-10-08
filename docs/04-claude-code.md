@@ -1,103 +1,60 @@
 # 04 — Estrutura para o Claude Code
 
-Estes arquivos fazem com que cada sessão do Claude Code comece sabendo como o projeto funciona, sem você repetir as regras. Nenhum deles foi criado ainda: são a primeira entrega da Fase 0, depois da aprovação.
+Estes arquivos fazem com que cada sessão do Claude Code comece sabendo como o projeto funciona, sem você repetir as regras. Foram criados na Fase 0.
 
-## O que será criado
+## O que existe
 
 ```
 CLAUDE.md                         regras do projeto, lidas em toda sessão
-AGENTS.md                         passa a apontar para o CLAUDE.md
+AGENTS.md                         aponta para o CLAUDE.md, para outras ferramentas
 .claude/
-  settings.json                   permissões de comandos do dia a dia
+  settings.json                   comandos liberados sem pergunta
   skills/
-    migracao-banco/SKILL.md
+    verificar-entrega/SKILL.md
+    regras-agenda/SKILL.md
     nova-funcionalidade/SKILL.md
     design-system/SKILL.md
-    regras-agenda/SKILL.md
-    email-transacional/SKILL.md
-    verificar-entrega/SKILL.md
+.github/workflows/verificar.yml   roda `npm run verificar` a cada envio
 ```
 
-## O `AGENTS.md` atual
+O `CLAUDE.md` é curto de propósito: o que é regra fica nele; o detalhe fica nas Skills e em `docs/`. Leia o arquivo em [CLAUDE.md](../CLAUDE.md).
 
-As instruções existentes descrevem o protótipo e deixam de valer:
+## O `AGENTS.md` antigo
 
-| Regra atual                                                           | Destino                                           |
-| --------------------------------------------------------------------- | ------------------------------------------------- |
-| Projeto conectado ao Lovable; não reescrever o histórico              | Removida ao sair do Lovable                       |
-| Manter catálogos, clientes e agendamentos no `ShopProvider`           | Substituída: os dados passam a viver no banco     |
-| Rotas públicas independentes e painel em rota-mãe; metadados por rota | Mantida                                           |
-| Validação de agenda em função pura, com testes                        | Mantida e ampliada                                |
-| Importar fotos por arquivos JSON de ponteiro                          | Substituída: fotos dentro do projeto              |
-| Nunca usar a captura de tela de referência como conteúdo              | Mantida, junto com "nenhuma imagem gerada por IA" |
+As instruções do protótipo foram substituídas:
 
-## Rascunho do `CLAUDE.md`
-
-Curto de propósito: o que é regra fica aqui; o detalhe fica nas Skills e em `docs/`.
-
-```markdown
-# ON-STYLE
-
-Sistema de agendamento e gestão de uma barbearia de bairro: um barbeiro, uma agenda.
-Perfis: dono e cliente. Idioma do produto e do código de domínio: português do Brasil.
-
-## Comandos
-
-- `npm run dev` — desenvolvimento
-- `npm run verificar` — formatação, tipos, testes e compilação; rode antes de dizer que terminou
-- `npm run test:e2e` — fluxo de agendamento de ponta a ponta
-- `npm run db:migrar` — aplica as migrações no banco de desenvolvimento
-- `npm run db:tipos` — regenera os tipos do banco
-
-## Arquitetura
-
-- TanStack Start + React 19 + Tailwind 4; Supabase (Postgres, Auth, Storage, Realtime).
-- `src/routes/` só carrega dados e monta a tela. A lógica mora em `src/features/<área>/`.
-- Regras de negócio são funções puras com teste. O cálculo de horários livres
-  fica em `src/features/agenda/disponibilidade.ts`.
-- Detalhes em `docs/02-arquitetura.md`.
-
-## Regras que não se quebram
-
-- Toda tabela tem RLS ativa e nasce fechada. Tabela nova sem regra e sem teste de permissão não entra.
-- Nunca confie na tela para proteger dados: páginas de `/admin` e `/cliente` verificam a sessão no servidor.
-- A chave administrativa do Supabase nunca vai para código que roda no navegador.
-- Toda função de servidor valida a entrada com Zod.
-- Dinheiro em centavos inteiros. Datas como instante com fuso; exibição em `America/Sao_Paulo`.
-- Migração aplicada não se edita: cria-se outra.
-- Agendar é uma operação única no banco; não reimplemente a verificação de conflito na tela.
-
-## Interface
-
-- Use apenas os tokens de função e os componentes de `src/components/ui/`. Sem cores ou tamanhos soltos.
-- Nenhum texto abaixo de 14px; alvos de toque com 44px ou mais; desenhe a partir de 360px.
-- Texto de interface em frases curtas, com maiúscula só no início.
-- Fotos reais e licenciadas, com crédito em `docs/creditos-imagens.md`. Nenhuma imagem gerada por IA.
-- Detalhes em `docs/03-design-system.md`.
-
-## Como trabalhar
-
-- Siga a fase atual de `docs/05-roadmap.md`. Não adiante fases nem amplie o escopo sem combinar.
-- Preserve o que já funciona: cada fase termina com tudo o que existia ainda funcionando.
-- Mudança em regra de negócio vem com teste. Mudança em permissão vem com teste de permissão.
-- Decisões novas de produto são do dono do projeto: pergunte antes de assumir.
-- Código legível: uma instrução por linha, formatado pelo Prettier.
-```
+| Regra antiga                                                     | Destino                                                                                   |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Projeto conectado ao Lovable; não reescrever o histórico         | Removida: o projeto saiu do Lovable. A regra de não reescrever histórico já enviado segue |
+| Manter catálogos, clientes e agendamentos no `ShopProvider`      | Substituída: o `ShopProvider` é provisório e sai com o banco                              |
+| Rotas públicas independentes e painel em rota-mãe; metadados     | Mantida, no `CLAUDE.md` e na Skill `nova-funcionalidade`                                  |
+| Validação de agenda em função pura, com testes                   | Mantida e ampliada, na Skill `regras-agenda`                                              |
+| Importar fotos por arquivos JSON de ponteiro                     | Substituída: fotos em `public/fotos` e créditos em `docs/creditos-imagens.md`             |
+| Nunca usar a captura de tela de referência como conteúdo do site | Mantida, junto com "nenhuma imagem gerada por IA"                                         |
 
 ## Skills do projeto
 
 Cada Skill é um roteiro que o Claude carrega sozinho quando a tarefa pede, ou que você chama com `/nome`.
 
-| Skill                 | Quando entra                                                   | O que garante                                                                                                                                          |
-| --------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `migracao-banco`      | Qualquer mudança de tabela, regra de acesso ou função do banco | Nome e ordem da migração; RLS na mesma migração; teste de permissão; tipos regenerados; aplicação em desenvolvimento antes de produção                 |
-| `nova-funcionalidade` | Criar uma tela ou módulo                                       | A forma padrão de uma pasta em `features/`: validação, função de servidor, consulta, componentes, rota com título e descrição, testes                  |
-| `design-system`       | Qualquer trabalho de interface                                 | Tokens e componentes permitidos; limites de tamanho de texto e toque; a voz dos textos; lista de conferência em celular e computador antes de entregar |
-| `regras-agenda`       | Mexer em horários, bloqueios ou situações do agendamento       | As regras A1 a A11 e o diagrama de situações; onde ficam as funções puras; os casos de teste que precisam continuar passando                           |
-| `email-transacional`  | Criar ou alterar um aviso por e-mail                           | O padrão de fila; modelo com versão em texto simples; respeito às preferências do cliente; teste de envio em desenvolvimento                           |
-| `verificar-entrega`   | Antes de encerrar qualquer tarefa                              | Formatação, tipos, testes, compilação, o fluxo de agendamento no navegador e um resumo honesto do que foi e do que não foi verificado                  |
+| Skill                 | Quando entra                                             | O que garante                                                                                              |
+| --------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `verificar-entrega`   | Antes de encerrar qualquer tarefa                        | Verificação completa, conferência no navegador, e um relato honesto do que foi e do que não foi verificado |
+| `regras-agenda`       | Mexer em horários, bloqueios ou situações do agendamento | As regras vigentes e planejadas, onde ficam as funções puras, como testar os limites                       |
+| `nova-funcionalidade` | Criar uma tela ou módulo                                 | Onde cada parte fica, rotas com título e descrição, testes                                                 |
+| `design-system`       | Qualquer trabalho de interface                           | Limites de texto, toque e contraste; voz dos textos; regras das fotos                                      |
 
-### Skills que já existem e serão usadas
+### Skills que entram com a infraestrutura
+
+Criar agora descreveria comandos que ainda não existem.
+
+| Skill                | Entra na | O que garante                                                                                                             |
+| -------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `migracao-banco`     | Fase 2   | Nome e ordem da migração; RLS na mesma migração; teste de permissão; tipos regenerados; desenvolvimento antes de produção |
+| `email-transacional` | Fase 4   | Padrão de fila; modelo com versão em texto simples; respeito às preferências do cliente; teste de envio                   |
+
+A Skill `design-system` é atualizada na Fase 1, quando a direção visual for fechada.
+
+### Skills que já existem no Claude Code e serão usadas
 
 | Skill             | Uso                                                           |
 | ----------------- | ------------------------------------------------------------- |
@@ -108,11 +65,11 @@ Cada Skill é um roteiro que o Claude carrega sozinho quando a tarefa pede, ou q
 
 ## Configurações
 
-**`.claude/settings.json`** libera sem perguntar os comandos repetitivos e seguros: `npm run dev`, `npm run verificar`, os testes e a leitura do estado do git. Continuam pedindo confirmação: instalar pacotes, aplicar migrações, enviar código ao GitHub e publicar.
+**`.claude/settings.json`** libera sem perguntar os comandos repetitivos e seguros: `npm run dev`, `verificar`, `lint`, `typecheck`, `format`, `test`, `build` e a leitura do estado do git. Continuam pedindo confirmação: instalar pacotes, enviar código ao GitHub, aplicar migrações e publicar.
 
 **Produção fica fora do alcance do Claude.** As chaves do projeto `onstyle-prod` não ficam nesta máquina; migrações e publicações em produção passam pelo GitHub, depois da sua aprovação.
 
-**Memória do projeto**: as decisões deste planejamento ficam em `docs/`, versionadas com o código, e não em anotações soltas. Ao mudar uma decisão, o documento correspondente é atualizado na mesma entrega.
+**Memória do projeto:** as decisões do planejamento ficam em `docs/`, versionadas com o código. Ao mudar uma decisão, o documento correspondente é atualizado na mesma entrega.
 
 ## Rotina de cada fase
 

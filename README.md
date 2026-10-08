@@ -1,24 +1,49 @@
-# Prototype Vision
+# ON-STYLE
 
-Desenvolva um prototipo sobre esse PRD, aonde a imagem é a referencia, sabendo que não pode utilizar imagens por Genericas geradas por IA
+Sistema de agendamento e gestão de uma barbearia de bairro: site público para o cliente marcar horário e painel para o dono cuidar do dia.
 
-This project was built with [Lovable](https://lovable.dev).
+**Situação:** protótipo em evolução. Hoje os dados vivem na memória do navegador e somem ao recarregar a página. O caminho até um sistema real está em [docs/05-roadmap.md](docs/05-roadmap.md); a fase atual é a Fase 0 (fundação).
 
-## Build with Lovable
+## Como rodar
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/f33790aa-acd3-4827-9f0f-d6d5a19e2f88).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Pré-requisito: Node.js 24 e npm.
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+npm install
 npm run dev
 ```
+
+Abra http://localhost:8080. O painel fica em `/admin`; o acesso demonstrativo aparece na própria tela de entrada.
+
+## Comandos
+
+| Comando             | O que faz                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------- |
+| `npm run dev`       | Servidor de desenvolvimento                                                           |
+| `npm run verificar` | Formatação, ESLint, tipos, testes e compilação. Rode antes de enviar qualquer mudança |
+| `npm test`          | Só os testes                                                                          |
+| `npm run format`    | Aplica o Prettier                                                                     |
+| `npm run build`     | Compila para publicação (saída em `.output/`)                                         |
+
+## Tecnologia
+
+TanStack Start, React 19, Tailwind 4 e shadcn/ui, publicado na Cloudflare. Banco e login (Supabase) entram na Fase 2.
+
+## Estrutura
+
+```
+src/
+  routes/       páginas
+  features/     regras e telas por área (agenda, catalogo, admin, ...)
+  components/   componentes de interface
+  lib/          utilidades
+public/fotos/   fotografias do site
+docs/           planejamento
+.claude/        instruções e Skills do Claude Code
+```
+
+## Documentação
+
+- [Planejamento completo](docs/README.md): diagnóstico, arquitetura, identidade, roadmap
+- [CLAUDE.md](CLAUDE.md): regras do projeto para o Claude Code
+- [Créditos das imagens](docs/creditos-imagens.md)

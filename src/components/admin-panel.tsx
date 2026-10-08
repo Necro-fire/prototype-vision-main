@@ -15,15 +15,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import {
-  useShop,
-  money,
-  categories,
-  today,
-  type Service,
-  type Product,
-  grossRevenue,
-} from "@/lib/barbershop";
+import { today } from "@/features/agenda/disponibilidade";
+import { categories, type Product, type Service } from "@/features/catalogo/tipos";
+import { useShop } from "@/features/demo/shop-provider";
+import { grossRevenue } from "@/features/financeiro/faturamento";
+import { money } from "@/lib/dinheiro";
 export const moduleNames: Record<string, string> = {
   dashboard: "Visão geral",
   agendamentos: "Agendamentos",

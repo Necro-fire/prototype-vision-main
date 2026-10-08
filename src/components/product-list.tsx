@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { ArrowUpRight, Scissors, ListFilter, Package } from "lucide-react";
-import { useShop, money, type Product } from "@/lib/barbershop";
+import type { Product } from "@/features/catalogo/tipos";
+import { useShop } from "@/features/demo/shop-provider";
+import { money } from "@/lib/dinheiro";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { fotos } from "@/assets/fotos";

@@ -11,7 +11,7 @@ import {
 import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { ShopProvider } from "@/lib/barbershop";
+import { ShopProvider } from "@/features/demo/shop-provider";
 
 function NotFoundComponent() {
   return (

@@ -21,7 +21,8 @@ import {
 import { Brand } from "@/components/shop-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useShop, DEMO_ADMIN } from "@/lib/barbershop";
+import { DEMO_ADMIN } from "@/features/conta/admin-demo";
+import { useShop } from "@/features/demo/shop-provider";
 const modules = [
   { id: "agendamentos", label: "Agendamentos", icon: CalendarDays },
   { id: "servicos", label: "Serviços", icon: Scissors },

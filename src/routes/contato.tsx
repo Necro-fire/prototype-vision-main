@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, MapPin, ArrowUpRight } from "lucide-react";
 import { ShopLayout } from "@/components/shop-layout";
 import { Button } from "@/components/ui/button";
-import { useShop } from "@/lib/barbershop";
+import { useShop } from "@/features/demo/shop-provider";
 import { fotos } from "@/assets/fotos";
 const photo = { url: fotos.acabamentoNavalha };
 export const Route = createFileRoute("/contato")({

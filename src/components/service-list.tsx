@@ -9,7 +9,9 @@ import {
   Droplets,
 } from "lucide-react";
 import { useState } from "react";
-import { useShop, categories, money } from "@/lib/barbershop";
+import { categories } from "@/features/catalogo/tipos";
+import { useShop } from "@/features/demo/shop-provider";
+import { money } from "@/lib/dinheiro";
 import { Button } from "@/components/ui/button";
 const icons = [Scissors, Slice, Scissors, Droplets, Sparkles, WandSparkles];
 export function ServiceList({ filters = false }: { filters?: boolean }) {

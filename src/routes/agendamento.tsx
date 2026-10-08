@@ -12,14 +12,11 @@ import {
 import { ShopLayout } from "@/components/shop-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  useShop,
-  availableTimes,
-  money,
-  today,
-  normalizePhone,
-  type Booking,
-} from "@/lib/barbershop";
+import { availableTimes, today } from "@/features/agenda/disponibilidade";
+import type { Booking } from "@/features/agenda/tipos";
+import { useShop } from "@/features/demo/shop-provider";
+import { money } from "@/lib/dinheiro";
+import { normalizePhone } from "@/lib/telefone";
 export const Route = createFileRoute("/agendamento")({
   component: Appointment,
   validateSearch: (search: Record<string, unknown>) => ({

@@ -4,7 +4,9 @@ import { ArrowRight, CalendarDays } from "lucide-react";
 import { ShopLayout } from "@/components/shop-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useShop, normalizePhone, money } from "@/lib/barbershop";
+import { useShop } from "@/features/demo/shop-provider";
+import { money } from "@/lib/dinheiro";
+import { normalizePhone } from "@/lib/telefone";
 export const Route = createFileRoute("/cliente")({
   component: Customer,
   head: () => ({

@@ -1,0 +1,5 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { ShopLayout } from '@/components/shop-layout';
+import { ProductList } from '@/components/product-list';
+export const Route=createFileRoute('/produtos')({component:Products,head:()=>({meta:[{title:'Produtos — Slick Barbearia'},{name:'description',content:'Equipamentos e cuidados selecionados pela Slick Barbearia.'},{property:'og:title',content:'Produtos — Slick Barbearia'},{property:'og:description',content:'O cuidado continua em casa. Explore a seleção Slick.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]})});
+function Products(){return <ShopLayout><section className="section-wrap catalog-page"><span className="eyebrow">O CUIDADO CONTINUA EM CASA</span><h1>SELEÇÃO <span className="text-primary">SLICK.</span></h1><p className="page-intro">Ferramentas de quem entende. Para o seu dia a dia.</p><ProductList/></section></ShopLayout>}

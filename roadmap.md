@@ -1,4 +1,5 @@
 # Protótipo da barbearia
+
 - [x] Criar área pública inspirada na referência, com fotografias reais.
 - [x] Implementar catálogo e agendamento demonstrativo com dados compartilhados.
 - [x] Criar painel demonstrativo de gestão e configurações.

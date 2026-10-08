@@ -29,17 +29,17 @@ Supabase
 
 ### O que fica, o que sai, o que entra
 
-| | Tecnologia | Motivo |
-| --- | --- | --- |
-| Fica | TanStack Start, React 19, Tailwind 4, shadcn/ui, Vitest | Base moderna e já em uso; trocar seria retrabalho sem ganho |
-| Fica | React Query, React Hook Form, Zod, react-day-picker | Já instalados; passam a ser usados de fato |
-| Sai | Preset `@lovable.dev/vite-tanstack-config`, relatório de erros do Lovable, fotos em `/__l5e/` | Decisão de sair do Lovable |
-| Sai | Componentes shadcn e bibliotecas sem uso | Menos código para manter |
-| Entra | Supabase | Banco, login e regras de acesso prontos, plano gratuito |
-| Entra | Resend | Envio de e-mails transacionais, plano gratuito |
-| Entra | GitHub + GitHub Actions | Histórico do código e verificação automática a cada mudança |
-| Entra | Playwright | Teste de ponta a ponta do fluxo de agendamento |
-| Entra | npm como gerenciador de pacotes | Já está instalado; o Bun não |
+|       | Tecnologia                                                                                    | Motivo                                                      |
+| ----- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Fica  | TanStack Start, React 19, Tailwind 4, shadcn/ui, Vitest                                       | Base moderna e já em uso; trocar seria retrabalho sem ganho |
+| Fica  | React Query, React Hook Form, Zod, react-day-picker                                           | Já instalados; passam a ser usados de fato                  |
+| Sai   | Preset `@lovable.dev/vite-tanstack-config`, relatório de erros do Lovable, fotos em `/__l5e/` | Decisão de sair do Lovable                                  |
+| Sai   | Componentes shadcn e bibliotecas sem uso                                                      | Menos código para manter                                    |
+| Entra | Supabase                                                                                      | Banco, login e regras de acesso prontos, plano gratuito     |
+| Entra | Resend                                                                                        | Envio de e-mails transacionais, plano gratuito              |
+| Entra | GitHub + GitHub Actions                                                                       | Histórico do código e verificação automática a cada mudança |
+| Entra | Playwright                                                                                    | Teste de ponta a ponta do fluxo de agendamento              |
+| Entra | npm como gerenciador de pacotes                                                               | Já está instalado; o Bun não                                |
 
 ### Organização do código
 
@@ -73,27 +73,27 @@ Cada pasta de `features/` tem a mesma forma: esquemas de validação, funções 
 
 ### Ambientes
 
-| Ambiente | Aplicação | Banco |
-| --- | --- | --- |
-| Desenvolvimento | Seu computador | Projeto Supabase `onstyle-dev` |
-| Produção | Cloudflare, no domínio da barbearia | Projeto Supabase `onstyle-prod` |
+| Ambiente        | Aplicação                           | Banco                           |
+| --------------- | ----------------------------------- | ------------------------------- |
+| Desenvolvimento | Seu computador                      | Projeto Supabase `onstyle-dev`  |
+| Produção        | Cloudflare, no domínio da barbearia | Projeto Supabase `onstyle-prod` |
 
 O plano gratuito do Supabase permite dois projetos. As mudanças de banco são sempre escritas como migrações, testadas em desenvolvimento e só então aplicadas em produção.
 
 ## Perfis e permissões
 
-| Recurso | Visitante | Cliente | Dono |
-| --- | --- | --- | --- |
-| Serviços, produtos, horários e dados da barbearia | Ver ativos | Ver ativos | Tudo |
-| Horários livres de um dia | Ver | Ver | Ver |
-| Agendamentos | — | Criar, ver, remarcar e cancelar os **seus** | Tudo |
-| Perfil | — | Ver e editar o **seu**; excluir a conta | Ver todos |
-| Bloqueios e folgas | — | — | Tudo |
-| Vendas, caixa, financeiro | — | — | Tudo |
-| Cupons | — | Usar um código válido | Tudo |
-| Cartão fidelidade | — | Ver o **seu** saldo | Tudo |
-| Alertas do sistema | — | — | Ver e marcar como lidos |
-| Configurações | — | — | Tudo |
+| Recurso                                           | Visitante  | Cliente                                     | Dono                    |
+| ------------------------------------------------- | ---------- | ------------------------------------------- | ----------------------- |
+| Serviços, produtos, horários e dados da barbearia | Ver ativos | Ver ativos                                  | Tudo                    |
+| Horários livres de um dia                         | Ver        | Ver                                         | Ver                     |
+| Agendamentos                                      | —          | Criar, ver, remarcar e cancelar os **seus** | Tudo                    |
+| Perfil                                            | —          | Ver e editar o **seu**; excluir a conta     | Ver todos               |
+| Bloqueios e folgas                                | —          | —                                           | Tudo                    |
+| Vendas, caixa, financeiro                         | —          | —                                           | Tudo                    |
+| Cupons                                            | —          | Usar um código válido                       | Tudo                    |
+| Cartão fidelidade                                 | —          | Ver o **seu** saldo                         | Tudo                    |
+| Alertas do sistema                                | —          | —                                           | Ver e marcar como lidos |
+| Configurações                                     | —          | —                                           | Tudo                    |
 
 Três barreiras garantem a tabela acima: a regra no banco (a que vale), a verificação de perfil no servidor antes de abrir qualquer página de `/admin` ou `/cliente`, e a interface, que nem mostra o que o perfil não pode usar.
 
@@ -105,44 +105,44 @@ Os endereços atuais são mantidos. Itens marcados com a fase em que entram; sem
 
 **Área pública**
 
-| Rota | Conteúdo |
-| --- | --- |
-| `/` | Aberto ou fechado agora, serviços com preço, próximo horário livre, como chegar |
-| `/servicos` | Catálogo por categoria |
-| `/produtos` | Vitrine |
-| `/contato` | Endereço, mapa, canais, horários |
-| `/agendamento` | Serviço → dia e horário → confirmar |
-| `/privacidade`, `/termos` | Textos legais |
+| Rota                      | Conteúdo                                                                        |
+| ------------------------- | ------------------------------------------------------------------------------- |
+| `/`                       | Aberto ou fechado agora, serviços com preço, próximo horário livre, como chegar |
+| `/servicos`               | Catálogo por categoria                                                          |
+| `/produtos`               | Vitrine                                                                         |
+| `/contato`                | Endereço, mapa, canais, horários                                                |
+| `/agendamento`            | Serviço → dia e horário → confirmar                                             |
+| `/privacidade`, `/termos` | Textos legais                                                                   |
 
 **Conta**
 
-| Rota | Conteúdo |
-| --- | --- |
-| `/entrar`, `/criar-conta` | E-mail e senha ou Google |
-| `/recuperar-senha`, `/redefinir-senha` | Recuperação por e-mail |
+| Rota                                   | Conteúdo                 |
+| -------------------------------------- | ------------------------ |
+| `/entrar`, `/criar-conta`              | E-mail e senha ou Google |
+| `/recuperar-senha`, `/redefinir-senha` | Recuperação por e-mail   |
 
 **Cliente** (exige login)
 
-| Rota | Conteúdo |
-| --- | --- |
-| `/cliente` | Próximos horários e histórico; remarcar, cancelar, agendar de novo |
-| `/cliente/perfil` | Nome, celular, preferências de e-mail, excluir conta |
-| `/cliente/fidelidade` | Cartão fidelidade (fase 7) |
+| Rota                  | Conteúdo                                                           |
+| --------------------- | ------------------------------------------------------------------ |
+| `/cliente`            | Próximos horários e histórico; remarcar, cancelar, agendar de novo |
+| `/cliente/perfil`     | Nome, celular, preferências de e-mail, excluir conta               |
+| `/cliente/fidelidade` | Cartão fidelidade (fase 7)                                         |
 
 **Painel do dono** (exige login com perfil de dono)
 
-| Rota | Conteúdo |
-| --- | --- |
-| `/admin` | Hoje: linha do tempo do dia, próximo cliente, ações rápidas |
-| `/admin/agendamentos` | Agenda por semana e lista com busca e filtros; bloqueios |
-| `/admin/servicos`, `/admin/produtos` | Catálogo |
-| `/admin/clientes`, `/admin/clientes/$id` | Lista e histórico de cada cliente |
-| `/admin/vendas` | Registro e histórico de vendas |
-| `/admin/financeiro` | Faturamento por período |
-| `/admin/caixa` | Abertura, fechamento e conferência (fase 6) |
-| `/admin/descontos` | Cupons e regra de fidelidade (fase 7) |
-| `/admin/alertas` | Histórico do sino |
-| `/admin/configuracoes` | Empresa, horários, e-mails, regras da agenda |
+| Rota                                     | Conteúdo                                                    |
+| ---------------------------------------- | ----------------------------------------------------------- |
+| `/admin`                                 | Hoje: linha do tempo do dia, próximo cliente, ações rápidas |
+| `/admin/agendamentos`                    | Agenda por semana e lista com busca e filtros; bloqueios    |
+| `/admin/servicos`, `/admin/produtos`     | Catálogo                                                    |
+| `/admin/clientes`, `/admin/clientes/$id` | Lista e histórico de cada cliente                           |
+| `/admin/vendas`                          | Registro e histórico de vendas                              |
+| `/admin/financeiro`                      | Faturamento por período                                     |
+| `/admin/caixa`                           | Abertura, fechamento e conferência (fase 6)                 |
+| `/admin/descontos`                       | Cupons e regra de fidelidade (fase 7)                       |
+| `/admin/alertas`                         | Histórico do sino                                           |
+| `/admin/configuracoes`                   | Empresa, horários, e-mails, regras da agenda                |
 
 O endereço único `/admin/$module` dá lugar a um arquivo de rota por módulo. Os endereços que o usuário vê não mudam.
 
@@ -169,19 +169,19 @@ O login fica no fim de propósito: o cliente só é interrompido quando já deci
 
 ### Agenda
 
-| # | Regra | Origem |
-| --- | --- | --- |
-| A1 | Só existem horários dentro do funcionamento, e o atendimento precisa terminar antes do fechamento | Protótipo |
-| A2 | Um horário está ocupado durante toda a duração do serviço que o reservou | Protótipo |
-| A3 | Agendamentos cancelados ou marcados como falta liberam o horário | Protótipo |
-| A4 | Não se agenda no passado nem em dia fechado | Protótipo |
-| A5 | Cada dia da semana pode ter um ou mais intervalos de funcionamento; o almoço é o espaço entre dois intervalos | Nova |
-| A6 | Bloqueios (feriado, férias, saída) tiram um período da agenda; não se cria bloqueio sobre agendamento ativo sem antes resolver o agendamento | Nova |
-| A7 | Todos os horários são calculados no fuso da barbearia (`America/Sao_Paulo`), nunca no relógio do aparelho | Nova |
-| A8 | O banco recusa dois agendamentos ativos sobrepostos, mesmo que cheguem no mesmo instante | Nova |
-| A9 | O intervalo da grade (30 min por padrão) e a antecedência máxima (30 dias por padrão) são configuráveis | Nova |
-| A10 | O cliente pode cancelar ou remarcar até o início do horário; não há prazo mínimo | Sua decisão |
-| A11 | Limite técnico de agendamentos futuros por conta, contra abuso | Proposta pendente |
+| #   | Regra                                                                                                                                        | Origem            |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| A1  | Só existem horários dentro do funcionamento, e o atendimento precisa terminar antes do fechamento                                            | Protótipo         |
+| A2  | Um horário está ocupado durante toda a duração do serviço que o reservou                                                                     | Protótipo         |
+| A3  | Agendamentos cancelados ou marcados como falta liberam o horário                                                                             | Protótipo         |
+| A4  | Não se agenda no passado nem em dia fechado                                                                                                  | Protótipo         |
+| A5  | Cada dia da semana pode ter um ou mais intervalos de funcionamento; o almoço é o espaço entre dois intervalos                                | Nova              |
+| A6  | Bloqueios (feriado, férias, saída) tiram um período da agenda; não se cria bloqueio sobre agendamento ativo sem antes resolver o agendamento | Nova              |
+| A7  | Todos os horários são calculados no fuso da barbearia (`America/Sao_Paulo`), nunca no relógio do aparelho                                    | Nova              |
+| A8  | O banco recusa dois agendamentos ativos sobrepostos, mesmo que cheguem no mesmo instante                                                     | Nova              |
+| A9  | O intervalo da grade (30 min por padrão) e a antecedência máxima (30 dias por padrão) são configuráveis                                      | Nova              |
+| A10 | O cliente pode cancelar ou remarcar até o início do horário; não há prazo mínimo                                                             | Sua decisão       |
+| A11 | Limite técnico de agendamentos futuros por conta, contra abuso                                                                               | Proposta pendente |
 
 ### Situação do agendamento
 
@@ -196,21 +196,21 @@ Concluído, Cancelado e Não compareceu são finais. O dono pode corrigir um eng
 
 ### Catálogo, clientes e dinheiro
 
-| # | Regra | Origem |
-| --- | --- | --- |
-| C1 | Preço, duração e nome do serviço são copiados para o agendamento no momento da reserva | Protótipo |
-| C2 | Serviço ou produto inativo some do site, mas permanece no histórico | Protótipo |
-| C3 | Serviço ou produto com histórico não é apagado, só desativado | Nova |
-| C4 | O "mais pedido" é calculado pelos atendimentos concluídos ou marcado pelo dono, nunca fixo no código | Nova |
-| P1 | A identidade do cliente é a conta com e-mail verificado; o celular é um dado de contato, normalizado como hoje | Nova |
-| P2 | Para agendar é preciso ter o e-mail confirmado, nome e celular | Nova |
-| F1 | Valores são guardados em centavos inteiros | Nova |
-| F2 | Faturamento bruto = atendimentos concluídos + vendas de produtos | Protótipo |
-| F3 | Venda não é apagada; é estornada, e o estorno fica no histórico | Nova |
-| F4 | Concluir um atendimento pede a forma de pagamento: Pix, dinheiro, débito ou crédito | Fase 6 |
-| F5 | O caixa do dia é aberto com um valor inicial e fechado com conferência do dinheiro contado | Fase 6 |
-| F6 | Um cupom tem validade, limite de usos e desconto em percentual ou valor fixo; o desconto nunca passa do total | Fase 7 |
-| F7 | Cartão fidelidade: a cada N atendimentos concluídos, um serviço escolhido pelo dono sai grátis; cancelados e faltas não contam | Fase 7 |
+| #   | Regra                                                                                                                          | Origem    |
+| --- | ------------------------------------------------------------------------------------------------------------------------------ | --------- |
+| C1  | Preço, duração e nome do serviço são copiados para o agendamento no momento da reserva                                         | Protótipo |
+| C2  | Serviço ou produto inativo some do site, mas permanece no histórico                                                            | Protótipo |
+| C3  | Serviço ou produto com histórico não é apagado, só desativado                                                                  | Nova      |
+| C4  | O "mais pedido" é calculado pelos atendimentos concluídos ou marcado pelo dono, nunca fixo no código                           | Nova      |
+| P1  | A identidade do cliente é a conta com e-mail verificado; o celular é um dado de contato, normalizado como hoje                 | Nova      |
+| P2  | Para agendar é preciso ter o e-mail confirmado, nome e celular                                                                 | Nova      |
+| F1  | Valores são guardados em centavos inteiros                                                                                     | Nova      |
+| F2  | Faturamento bruto = atendimentos concluídos + vendas de produtos                                                               | Protótipo |
+| F3  | Venda não é apagada; é estornada, e o estorno fica no histórico                                                                | Nova      |
+| F4  | Concluir um atendimento pede a forma de pagamento: Pix, dinheiro, débito ou crédito                                            | Fase 6    |
+| F5  | O caixa do dia é aberto com um valor inicial e fechado com conferência do dinheiro contado                                     | Fase 6    |
+| F6  | Um cupom tem validade, limite de usos e desconto em percentual ou valor fixo; o desconto nunca passa do total                  | Fase 7    |
+| F7  | Cartão fidelidade: a cada N atendimentos concluídos, um serviço escolhido pelo dono sai grátis; cancelados e faltas não contam | Fase 7    |
 
 ## Banco de dados
 
@@ -218,29 +218,29 @@ Todas as tabelas têm regras de acesso por linha ativas e começam fechadas: sem
 
 ### Primeira versão
 
-| Tabela | Guarda |
-| --- | --- |
-| `perfis` | Uma linha por conta: nome, celular, perfil (`dono` ou `cliente`), preferências de e-mail |
-| `empresa` | Linha única: nome, endereço, telefone, redes, fuso, intervalo da grade, antecedência máxima |
-| `funcionamento` | Intervalos de funcionamento por dia da semana |
-| `bloqueios` | Períodos indisponíveis, com motivo |
-| `categorias` | Categorias de serviço, com ordem |
-| `servicos` | Nome, descrição, preço em centavos, duração, ativo, destaque, foto |
-| `produtos` | Nome, descrição, preço em centavos, ativo, foto |
-| `agendamentos` | Cliente, serviço, cópia de nome/preço/duração, início e fim com fuso, situação, observação |
-| `agendamento_eventos` | Histórico de mudanças de situação: de, para, quem, quando |
-| `vendas` | Cabeçalho da venda: cliente opcional, total, data; já prevê forma de pagamento, desconto e estorno |
-| `venda_itens` | Produto, cópia de nome e preço, quantidade |
-| `alertas` | Avisos do sino do dono: tipo, texto, agendamento relacionado, lido em |
-| `emails_fila` | E-mails a enviar: destinatário, modelo, dados, enviar a partir de, enviado em, erro |
+| Tabela                | Guarda                                                                                             |
+| --------------------- | -------------------------------------------------------------------------------------------------- |
+| `perfis`              | Uma linha por conta: nome, celular, perfil (`dono` ou `cliente`), preferências de e-mail           |
+| `empresa`             | Linha única: nome, endereço, telefone, redes, fuso, intervalo da grade, antecedência máxima        |
+| `funcionamento`       | Intervalos de funcionamento por dia da semana                                                      |
+| `bloqueios`           | Períodos indisponíveis, com motivo                                                                 |
+| `categorias`          | Categorias de serviço, com ordem                                                                   |
+| `servicos`            | Nome, descrição, preço em centavos, duração, ativo, destaque, foto                                 |
+| `produtos`            | Nome, descrição, preço em centavos, ativo, foto                                                    |
+| `agendamentos`        | Cliente, serviço, cópia de nome/preço/duração, início e fim com fuso, situação, observação         |
+| `agendamento_eventos` | Histórico de mudanças de situação: de, para, quem, quando                                          |
+| `vendas`              | Cabeçalho da venda: cliente opcional, total, data; já prevê forma de pagamento, desconto e estorno |
+| `venda_itens`         | Produto, cópia de nome e preço, quantidade                                                         |
+| `alertas`             | Avisos do sino do dono: tipo, texto, agendamento relacionado, lido em                              |
+| `emails_fila`         | E-mails a enviar: destinatário, modelo, dados, enviar a partir de, enviado em, erro                |
 
 ### Fases seguintes
 
-| Tabela | Fase | Guarda |
-| --- | --- | --- |
-| `caixas` | 6 | Abertura, valor inicial, fechamento, valor contado, diferença |
-| `cupons` | 7 | Código, tipo e valor do desconto, validade, limite e contagem de usos |
-| `fidelidade_movimentos` | 7 | Pontos ganhos e resgatados por cliente; o saldo é a soma |
+| Tabela                  | Fase | Guarda                                                                |
+| ----------------------- | ---- | --------------------------------------------------------------------- |
+| `caixas`                | 6    | Abertura, valor inicial, fechamento, valor contado, diferença         |
+| `cupons`                | 7    | Código, tipo e valor do desconto, validade, limite e contagem de usos |
+| `fidelidade_movimentos` | 7    | Pontos ganhos e resgatados por cliente; o saldo é a soma              |
 
 ### Três mecanismos que resolvem as falhas mais graves
 
@@ -250,28 +250,28 @@ Todas as tabelas têm regras de acesso por linha ativas e começam fechadas: sem
 
 ## Autenticação e segurança
 
-| Tema | Medida |
-| --- | --- |
-| Login do cliente | E-mail e senha com confirmação de e-mail, ou Google; recuperação de senha por e-mail |
-| Login do dono | A mesma tela; o perfil de dono leva ao painel. As credenciais demonstrativas são removidas |
-| Sessão | Cookie seguro lido no servidor; páginas protegidas verificam a sessão antes de renderizar |
-| Entradas | Toda função de servidor valida os dados com esquema antes de usá-los |
-| Chaves | A chave administrativa do Supabase existe apenas no envio de e-mails, nunca no navegador; `.env` passa a ser ignorado pelo git |
-| Abuso | Limites de tentativas do próprio Supabase no login; verificação anti-robô no cadastro, se necessário |
-| Cabeçalhos | Política de segurança de conteúdo e demais cabeçalhos de proteção |
-| LGPD | Política de privacidade, aceite no cadastro, coleta mínima (nome, e-mail, celular), exclusão de conta pelo próprio cliente |
-| Auditoria | Mudanças de situação e estornos registram autor e hora |
+| Tema                | Medida                                                                                                                                                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Login do cliente    | E-mail e senha com confirmação de e-mail, ou Google; recuperação de senha por e-mail                                                                                                                                |
+| Login do dono       | A mesma tela; o perfil de dono leva ao painel. As credenciais demonstrativas são removidas                                                                                                                          |
+| Sessão              | Cookie seguro lido no servidor; páginas protegidas verificam a sessão antes de renderizar                                                                                                                           |
+| Entradas            | Toda função de servidor valida os dados com esquema antes de usá-los                                                                                                                                                |
+| Chaves              | A chave administrativa do Supabase existe apenas no envio de e-mails, nunca no navegador; `.env` passa a ser ignorado pelo git                                                                                      |
+| Abuso               | Limites de tentativas do próprio Supabase no login; verificação anti-robô no cadastro, se necessário                                                                                                                |
+| Cabeçalhos          | Política de segurança de conteúdo e demais cabeçalhos de proteção                                                                                                                                                   |
+| LGPD                | Política de privacidade, aceite no cadastro, coleta mínima (nome, e-mail, celular), exclusão de conta pelo próprio cliente                                                                                          |
+| Auditoria           | Mudanças de situação e estornos registram autor e hora                                                                                                                                                              |
 | Cópias de segurança | Exportação semanal automática do banco de produção. O plano gratuito do Supabase tem limites de backup e pausa projetos sem uso; confirmo os limites atuais ao criar o projeto e aviso se valer a pena o plano pago |
 
 ## Integrações
 
-| Serviço | Uso | Custo esperado |
-| --- | --- | --- |
-| Supabase | Banco, login, arquivos, tempo real | Gratuito no porte de uma barbearia |
-| Google Cloud | Apenas para o botão "Entrar com Google" | Gratuito |
-| Resend | E-mails do sistema e do login | Gratuito no volume esperado |
-| Cloudflare | Hospedagem e domínio | Gratuito, fora o registro do domínio |
-| GitHub | Código e verificação automática | Gratuito |
+| Serviço      | Uso                                     | Custo esperado                       |
+| ------------ | --------------------------------------- | ------------------------------------ |
+| Supabase     | Banco, login, arquivos, tempo real      | Gratuito no porte de uma barbearia   |
+| Google Cloud | Apenas para o botão "Entrar com Google" | Gratuito                             |
+| Resend       | E-mails do sistema e do login           | Gratuito no volume esperado          |
+| Cloudflare   | Hospedagem e domínio                    | Gratuito, fora o registro do domínio |
+| GitHub       | Código e verificação automática         | Gratuito                             |
 
 Os valores dos planos mudam; confirmo cada um no momento da criação das contas.
 
@@ -285,10 +285,10 @@ Os e-mails saem de uma fila gravada no banco. Se o envio falhar, o sistema tenta
 
 ## Qualidade
 
-| Tipo | Cobre |
-| --- | --- |
-| Testes de unidade | Disponibilidade, situações do agendamento, dinheiro, cupons, fidelidade |
-| Testes de permissão | Cada linha da tabela de perfis, executada contra o banco de desenvolvimento |
-| Teste de ponta a ponta | Criar conta, agendar, cancelar; dono confirma e conclui |
-| Verificação automática | Formatação, tipos, testes e compilação a cada envio ao GitHub |
-| Acessibilidade | Navegação por teclado, contraste e leitores de tela nas telas principais |
+| Tipo                   | Cobre                                                                       |
+| ---------------------- | --------------------------------------------------------------------------- |
+| Testes de unidade      | Disponibilidade, situações do agendamento, dinheiro, cupons, fidelidade     |
+| Testes de permissão    | Cada linha da tabela de perfis, executada contra o banco de desenvolvimento |
+| Teste de ponta a ponta | Criar conta, agendar, cancelar; dono confirma e conclui                     |
+| Verificação automática | Formatação, tipos, testes e compilação a cada envio ao GitHub               |
+| Acessibilidade         | Navegação por teclado, contraste e leitores de tela nas telas principais    |

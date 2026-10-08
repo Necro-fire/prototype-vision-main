@@ -2,12 +2,12 @@
 
 ## De onde parte o desenho
 
-| | |
-| --- | --- |
-| **O que é** | ON-STYLE, barbearia de bairro com um barbeiro e clientela fiel |
-| **Quem usa** | Moradores da região, quase sempre pelo celular, muitas vezes na rua; e o próprio barbeiro, com o telefone na mão entre um corte e outro |
-| **Trabalho do site** | Mostrar o preço e marcar um horário em menos de um minuto |
-| **Trabalho do painel** | Responder "quem é o próximo?" sem precisar procurar |
+|                        |                                                                                                                                         |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **O que é**            | ON-STYLE, barbearia de bairro com um barbeiro e clientela fiel                                                                          |
+| **Quem usa**           | Moradores da região, quase sempre pelo celular, muitas vezes na rua; e o próprio barbeiro, com o telefone na mão entre um corte e outro |
+| **Trabalho do site**   | Mostrar o preço e marcar um horário em menos de um minuto                                                                               |
+| **Trabalho do painel** | Responder "quem é o próximo?" sem precisar procurar                                                                                     |
 
 O protótipo veste a barbearia com o uniforme de todo site do ramo: fundo quase preto, um laranja, títulos condensados em caixa alta, frases de efeito ("Reserve sua cadeira", "Qual é o seu ritual?"). Isso comunica uma barbearia cara e distante. Uma barbearia de bairro é o contrário: clara, direta, com o preço na parede e o cliente chamado pelo nome.
 
@@ -30,14 +30,14 @@ Os contrastes citados foram calculados; todos os pares de texto atendem ao míni
 
 A placa pintada à mão na fachada e a tabela de preços na parede. Popular, alegre e muito legível.
 
-| Cor | Hex | Uso |
-| --- | --- | --- |
-| Cal | `#FDFDFB` | Fundo |
-| Tinta | `#16181D` | Texto (17,4:1 sobre Cal) |
-| Azul placa | `#1F3FBF` | Ações, links, marca (texto branco sobre ele: 8,3:1) |
+| Cor          | Hex       | Uso                                                                  |
+| ------------ | --------- | -------------------------------------------------------------------- |
+| Cal          | `#FDFDFB` | Fundo                                                                |
+| Tinta        | `#16181D` | Texto (17,4:1 sobre Cal)                                             |
+| Azul placa   | `#1F3FBF` | Ações, links, marca (texto branco sobre ele: 8,3:1)                  |
 | Amarelo gema | `#FFC42E` | Destaques e o "ON" aceso, sempre como fundo de texto escuro (11,2:1) |
-| Cimento | `#5F6672` | Texto secundário (5,7:1) |
-| Tijolo | `#C8321E` | Erros e cancelamentos (5,3:1) |
+| Cimento      | `#5F6672` | Texto secundário (5,7:1)                                             |
+| Tijolo       | `#C8321E` | Erros e cancelamentos (5,3:1)                                        |
 
 **Tipografia**: Bricolage Grotesque nos títulos, uma fonte com desenho irregular que lembra letra pintada sem imitar caligrafia; Figtree no texto. Preços e horários com algarismos de largura fixa, para alinhar em coluna.
 
@@ -69,14 +69,14 @@ A placa pintada à mão na fachada e a tabela de preços na parede. Popular, ale
 
 A parede de azulejo, a louça da pia, a capa de corte. Limpa, fresca e tranquila.
 
-| Cor | Hex | Uso |
-| --- | --- | --- |
-| Louça | `#FFFFFF` | Fundo |
-| Gelo | `#EEF4F3` | Superfícies e faixas |
-| Marinho capa | `#12263A` | Texto (15,4:1 sobre Louça) |
-| Verde azulejo | `#17695A` | Ações e marca (5,9:1 sobre Gelo) |
-| Rejunte | `#C9D3D1` | Linhas e divisórias |
-| Vermelho poste | `#D93A2B` | Só no "ON" aceso e em alertas |
+| Cor            | Hex       | Uso                              |
+| -------------- | --------- | -------------------------------- |
+| Louça          | `#FFFFFF` | Fundo                            |
+| Gelo           | `#EEF4F3` | Superfícies e faixas             |
+| Marinho capa   | `#12263A` | Texto (15,4:1 sobre Louça)       |
+| Verde azulejo  | `#17695A` | Ações e marca (5,9:1 sobre Gelo) |
+| Rejunte        | `#C9D3D1` | Linhas e divisórias              |
+| Vermelho poste | `#D93A2B` | Só no "ON" aceso e em alertas    |
 
 **Tipografia**: Gabarito nos títulos, geométrica e amigável; Hanken Grotesk no texto.
 
@@ -105,14 +105,14 @@ A parede de azulejo, a louça da pia, a capa de corte. Limpa, fresca e tranquila
 
 O poste listrado de barbeiro, à noite. Para quem quer manter um site escuro, sem cair no preto com laranja.
 
-| Cor | Hex | Uso |
-| --- | --- | --- |
-| Marinho noite | `#0F1B33` | Fundo |
-| Marinho raso | `#182A4D` | Superfícies |
-| Branco | `#F5F7FA` | Texto (16,0:1) |
-| Névoa | `#9FB3D1` | Texto secundário (8,0:1) |
-| Vermelho poste | `#D42A22` | Ação principal (texto branco: 5,1:1) |
-| Azul poste | `#2458E0` | Ação secundária e seleção (texto branco: 5,9:1) |
+| Cor            | Hex       | Uso                                             |
+| -------------- | --------- | ----------------------------------------------- |
+| Marinho noite  | `#0F1B33` | Fundo                                           |
+| Marinho raso   | `#182A4D` | Superfícies                                     |
+| Branco         | `#F5F7FA` | Texto (16,0:1)                                  |
+| Névoa          | `#9FB3D1` | Texto secundário (8,0:1)                        |
+| Vermelho poste | `#D42A22` | Ação principal (texto branco: 5,1:1)            |
+| Azul poste     | `#2458E0` | Ação secundária e seleção (texto branco: 5,9:1) |
 
 **Tipografia**: uma só família, Archivo, em duas larguras: expandida nos títulos, normal no texto.
 
@@ -155,48 +155,48 @@ Trocar a identidade no futuro significa alterar o primeiro nível, sem tocar nas
 
 ### Escala
 
-| Tema | Regra |
-| --- | --- |
-| Texto | Corpo em 16px; nenhum texto abaixo de 14px. Escala: 14, 16, 18, 20, 24, 32, 40, 56 |
-| Linha | No máximo 75 caracteres por linha |
-| Espaço | Múltiplos de 4px |
-| Toque | Todo alvo de toque com pelo menos 44px |
-| Cantos | Raio maior em blocos grandes, menor em controles; não um raio único para tudo |
-| Contraste | Mínimo de 4,5:1 em texto e 3:1 em ícones e bordas de campos |
-| Telas | Desenhado a partir de 360px e ampliado em 640, 768, 1024 e 1280px |
+| Tema      | Regra                                                                                   |
+| --------- | --------------------------------------------------------------------------------------- |
+| Texto     | Corpo em 16px; nenhum texto abaixo de 14px. Escala: 14, 16, 18, 20, 24, 32, 40, 56      |
+| Linha     | No máximo 75 caracteres por linha                                                       |
+| Espaço    | Múltiplos de 4px                                                                        |
+| Toque     | Todo alvo de toque com pelo menos 44px                                                  |
+| Cantos    | Raio maior em blocos grandes, menor em controles; não um raio único para tudo           |
+| Contraste | Mínimo de 4,5:1 em texto e 3:1 em ícones e bordas de campos                             |
+| Telas     | Desenhado a partir de 360px e ampliado em 640, 768, 1024 e 1280px                       |
 | Movimento | Só em resposta a uma ação (abrir, confirmar, avançar). "Reduzir movimento" é respeitado |
-| Tema | Um tema só, o da direção escolhida. Não mantemos claro e escuro em paralelo |
+| Tema      | Um tema só, o da direção escolhida. Não mantemos claro e escuro em paralelo             |
 
 ### Componentes
 
 Dos 46 componentes instalados ficam os que têm uso; os demais saem e podem voltar quando houver necessidade.
 
-| Componente | Substitui ou resolve |
-| --- | --- |
-| Botão, Campo, Seleção, Área de texto | Campos com rótulo, ajuda e erro ligados ao campo certo |
-| Faixa de dias e Grade de horários | O seletor de data nativo do navegador |
-| Linha de serviço | Os cartões numerados atuais |
-| Selo de situação | Texto solto; cada situação ganha cor, ícone e nome |
-| Passos | O indicador do fluxo de agendamento, o único lugar onde numeração faz sentido |
-| Diálogo de confirmação | `window.confirm` |
-| Aviso temporário | A faixa de aviso do painel |
-| Lista adaptável | Tabela no computador, lista de linhas no celular, sem rolagem horizontal |
-| Estado vazio, Carregando | Telas sem dados e espera de rede, que hoje não existem |
-| Sino de alertas | Novo |
-| Estrutura do painel | Menu lateral no computador; barra inferior no celular |
+| Componente                           | Substitui ou resolve                                                          |
+| ------------------------------------ | ----------------------------------------------------------------------------- |
+| Botão, Campo, Seleção, Área de texto | Campos com rótulo, ajuda e erro ligados ao campo certo                        |
+| Faixa de dias e Grade de horários    | O seletor de data nativo do navegador                                         |
+| Linha de serviço                     | Os cartões numerados atuais                                                   |
+| Selo de situação                     | Texto solto; cada situação ganha cor, ícone e nome                            |
+| Passos                               | O indicador do fluxo de agendamento, o único lugar onde numeração faz sentido |
+| Diálogo de confirmação               | `window.confirm`                                                              |
+| Aviso temporário                     | A faixa de aviso do painel                                                    |
+| Lista adaptável                      | Tabela no computador, lista de linhas no celular, sem rolagem horizontal      |
+| Estado vazio, Carregando             | Telas sem dados e espera de rede, que hoje não existem                        |
+| Sino de alertas                      | Novo                                                                          |
+| Estrutura do painel                  | Menu lateral no computador; barra inferior no celular                         |
 
 ### Voz
 
 Frases curtas, como o barbeiro falaria. Maiúscula só no início da frase.
 
-| Em vez de | Escrever |
-| --- | --- |
-| RESERVE SUA CADEIRA | Agendar horário |
-| QUAL É O SEU RITUAL? | Qual serviço? |
-| MEUS MOMENTOS | Meus horários |
-| Continuar | O que acontece em seguida: "Escolher horário", "Confirmar agendamento" |
-| Não foi possível agendar | "Esse horário acabou de ser reservado. Escolha outro." |
-| Page not found | "Não achamos essa página." com um botão "Ir para o início" |
+| Em vez de                | Escrever                                                               |
+| ------------------------ | ---------------------------------------------------------------------- |
+| RESERVE SUA CADEIRA      | Agendar horário                                                        |
+| QUAL É O SEU RITUAL?     | Qual serviço?                                                          |
+| MEUS MOMENTOS            | Meus horários                                                          |
+| Continuar                | O que acontece em seguida: "Escolher horário", "Confirmar agendamento" |
+| Não foi possível agendar | "Esse horário acabou de ser reservado. Escolha outro."                 |
+| Page not found           | "Não achamos essa página." com um botão "Ir para o início"             |
 
 Um botão mantém o mesmo nome do começo ao fim: quem toca em "Confirmar agendamento" lê "Agendamento confirmado".
 

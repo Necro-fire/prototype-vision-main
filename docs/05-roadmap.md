@@ -4,26 +4,26 @@ Sem datas, por decisão sua: cada fase começa quando a anterior é aprovada. O 
 
 ## Prioridades
 
-| Prioridade | Significado | O que entra |
-| --- | --- | --- |
-| **P0** | Sem isso o sistema não pode ser usado de verdade | Salvar dados, login real, permissões, horário sem conflito, independência do Lovable |
-| **P1** | Necessário para a primeira versão ser boa | Nova identidade, texto legível, tela "Hoje", bloqueios, sino e e-mails |
-| **P2** | Logo depois da estreia | Formas de pagamento e caixa |
-| **P3** | Quando o uso real pedir | Cupons, fidelidade, relatórios, instalação no celular |
+| Prioridade | Significado                                      | O que entra                                                                          |
+| ---------- | ------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| **P0**     | Sem isso o sistema não pode ser usado de verdade | Salvar dados, login real, permissões, horário sem conflito, independência do Lovable |
+| **P1**     | Necessário para a primeira versão ser boa        | Nova identidade, texto legível, tela "Hoje", bloqueios, sino e e-mails               |
+| **P2**     | Logo depois da estreia                           | Formas de pagamento e caixa                                                          |
+| **P3**     | Quando o uso real pedir                          | Cupons, fidelidade, relatórios, instalação no celular                                |
 
 ## Visão geral
 
-| Fase | Nome | Prioridade | Tamanho | O usuário percebe? |
-| --- | --- | --- | --- | --- |
-| 0 | Fundação | P0 | M | Não |
-| 1 | Identidade e Design System | P1 | G | Sim, tudo muda de cara |
-| 2 | Banco e contas | P0 | G | Login real |
-| 3 | Agendamento real e conta do cliente | P0 | G | Sim |
-| 4 | Painel do dono, sino e e-mails | P0 / P1 | G | Sim |
-| 5 | Publicação | P0 | M | **Versão 1.0 no ar** |
-| 6 | Caixa e formas de pagamento | P2 | M | Dono |
-| 7 | Descontos e fidelidade | P3 | M | Sim |
-| 8 | Refinos | P3 | P | Sim |
+| Fase | Nome                                | Prioridade | Tamanho | O usuário percebe?     |
+| ---- | ----------------------------------- | ---------- | ------- | ---------------------- |
+| 0    | Fundação                            | P0         | M       | Não                    |
+| 1    | Identidade e Design System          | P1         | G       | Sim, tudo muda de cara |
+| 2    | Banco e contas                      | P0         | G       | Login real             |
+| 3    | Agendamento real e conta do cliente | P0         | G       | Sim                    |
+| 4    | Painel do dono, sino e e-mails      | P0 / P1    | G       | Sim                    |
+| 5    | Publicação                          | P0         | M       | **Versão 1.0 no ar**   |
+| 6    | Caixa e formas de pagamento         | P2         | M       | Dono                   |
+| 7    | Descontos e fidelidade              | P3         | M       | Sim                    |
+| 8    | Refinos                             | P3         | P       | Sim                    |
 
 ## Fase 0 — Fundação
 
@@ -127,14 +127,14 @@ Itens independentes, escolhidos por você conforme a necessidade:
 
 ## Riscos e como são tratados
 
-| Risco | Tratamento |
-| --- | --- |
-| A saída do preset do Lovable quebrar a compilação | É a primeira tarefa da Fase 0, isolada, com o protótipo como referência de comparação |
-| As fotos atuais se perderem ao desconectar | Baixar antes; se não der, entram as do banco de imagens |
-| Erro de permissão expor dados de clientes | Tabelas nascem fechadas; teste de permissão obrigatório; revisão de segurança nas fases 2 e 5 |
-| E-mails caírem em spam | Envio pelo domínio da barbearia, com as autenticações de remetente configuradas na Fase 5 |
-| Limites dos planos gratuitos | Conferidos na criação de cada conta; aviso antes de qualquer custo |
-| Escopo crescer no meio de uma fase | Ideias novas entram no roadmap, não na fase em andamento |
+| Risco                                             | Tratamento                                                                                    |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| A saída do preset do Lovable quebrar a compilação | É a primeira tarefa da Fase 0, isolada, com o protótipo como referência de comparação         |
+| As fotos atuais se perderem ao desconectar        | Baixar antes; se não der, entram as do banco de imagens                                       |
+| Erro de permissão expor dados de clientes         | Tabelas nascem fechadas; teste de permissão obrigatório; revisão de segurança nas fases 2 e 5 |
+| E-mails caírem em spam                            | Envio pelo domínio da barbearia, com as autenticações de remetente configuradas na Fase 5     |
+| Limites dos planos gratuitos                      | Conferidos na criação de cada conta; aviso antes de qualquer custo                            |
+| Escopo crescer no meio de uma fase                | Ideias novas entram no roadmap, não na fase em andamento                                      |
 
 ## Fora do escopo, por decisão
 

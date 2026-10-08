@@ -4,13 +4,13 @@ Este é o planejamento para levar o protótipo da barbearia a um sistema real. N
 
 ## Como ler
 
-| Documento | O que responde |
-| --- | --- |
-| [01 — Diagnóstico](01-diagnostico.md) | Como o sistema é hoje, o que funciona, o que falha e o que falta |
-| [02 — Arquitetura desejada](02-arquitetura.md) | Módulos, páginas, permissões, regras de negócio, banco, autenticação, integrações |
-| [03 — Identidade e Design System](03-design-system.md) | Três direções de identidade para escolher, fundamentos visuais e UX de cada área |
-| [04 — Estrutura para o Claude Code](04-claude-code.md) | `CLAUDE.md`, Skills e configurações que serão criados |
-| [05 — Roadmap](05-roadmap.md) | Fases, entregas, critérios de aceite e prioridades |
+| Documento                                              | O que responde                                                                    |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| [01 — Diagnóstico](01-diagnostico.md)                  | Como o sistema é hoje, o que funciona, o que falha e o que falta                  |
+| [02 — Arquitetura desejada](02-arquitetura.md)         | Módulos, páginas, permissões, regras de negócio, banco, autenticação, integrações |
+| [03 — Identidade e Design System](03-design-system.md) | Três direções de identidade para escolher, fundamentos visuais e UX de cada área  |
+| [04 — Estrutura para o Claude Code](04-claude-code.md) | `CLAUDE.md`, Skills e configurações que serão criados                             |
+| [05 — Roadmap](05-roadmap.md)                          | Fases, entregas, critérios de aceite e prioridades                                |
 
 Se for ler só uma coisa, leia a seção "O que preciso de você" abaixo e o [roadmap](05-roadmap.md).
 
@@ -23,23 +23,23 @@ Se for ler só uma coisa, leia a seção "O que preciso de você" abaixo e o [ro
 
 ## Decisões que você já tomou
 
-| Tema | Decisão |
-| --- | --- |
-| Escopo | Uma única barbearia, um barbeiro, agenda única |
-| Marca | ON-STYLE, sem identidade pronta; posicionamento de bairro e acessível |
-| Perfis | Dono (acesso total) e cliente com conta |
-| Login do cliente | E-mail e senha, ou Google |
-| Pagamento | Só na barbearia, sem cobrança online |
-| Notificações | Alertas dentro do sistema apenas para o dono; o cliente recebe e-mail |
-| Produtos | Vitrine no site e registro de vendas, sem controle de estoque |
-| Financeiro | Formas de pagamento e caixa; descontos e fidelidade |
-| Agenda | Bloqueios e folgas (almoço, feriados, férias, bloqueio manual) |
-| Plataforma | Sair do Lovable; banco e autenticação no Supabase |
-| Identidade visual | Nova direção, escolhida entre propostas |
-| Fotografias | Banco de imagens reais licenciadas, nunca geradas por IA |
-| Primeira versão | Núcleo de agendamento; caixa e fidelidade vêm depois |
-| Prazo | Sem data fixa |
-| Dados anteriores | Nenhum; o sistema começa do zero |
+| Tema              | Decisão                                                               |
+| ----------------- | --------------------------------------------------------------------- |
+| Escopo            | Uma única barbearia, um barbeiro, agenda única                        |
+| Marca             | ON-STYLE, sem identidade pronta; posicionamento de bairro e acessível |
+| Perfis            | Dono (acesso total) e cliente com conta                               |
+| Login do cliente  | E-mail e senha, ou Google                                             |
+| Pagamento         | Só na barbearia, sem cobrança online                                  |
+| Notificações      | Alertas dentro do sistema apenas para o dono; o cliente recebe e-mail |
+| Produtos          | Vitrine no site e registro de vendas, sem controle de estoque         |
+| Financeiro        | Formas de pagamento e caixa; descontos e fidelidade                   |
+| Agenda            | Bloqueios e folgas (almoço, feriados, férias, bloqueio manual)        |
+| Plataforma        | Sair do Lovable; banco e autenticação no Supabase                     |
+| Identidade visual | Nova direção, escolhida entre propostas                               |
+| Fotografias       | Banco de imagens reais licenciadas, nunca geradas por IA              |
+| Primeira versão   | Núcleo de agendamento; caixa e fidelidade vêm depois                  |
+| Prazo             | Sem data fixa                                                         |
+| Dados anteriores  | Nenhum; o sistema começa do zero                                      |
 
 ## O que preciso de você
 

@@ -1,9 +1,124 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { useState } from 'react';
-import { ArrowRight, CalendarDays } from 'lucide-react';
-import { ShopLayout } from '@/components/shop-layout';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useShop, normalizePhone, money } from '@/lib/barbershop';
-export const Route=createFileRoute('/cliente')({component:Customer,head:()=>({meta:[{title:'Minha conta — Slick Barbearia'},{name:'description',content:'Acompanhe seus agendamentos na Slick Barbearia.'},{property:'og:title',content:'Minha conta — Slick Barbearia'},{property:'og:description',content:'Seu próximo momento Slick.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]})});
-function Customer(){const shop=useShop();const [phone,setPhone]=useState('');const [error,setError]=useState('');const client=shop.clients.find(c=>c.phone===shop.currentPhone);const bookings=shop.bookings.filter(b=>b.phone===shop.currentPhone);return <ShopLayout><section className="section-wrap catalog-page"><span className="eyebrow">SEU ESPAÇO NA SLICK</span><h1>MEUS <span className="text-primary">MOMENTOS.</span></h1>{!shop.currentPhone?<form className="customer-form" onSubmit={e=>{e.preventDefault();const normalized=normalizePhone(phone);if(!/^\d{10,11}$/.test(normalized)){setError('Informe um celular válido com DDD.');return}shop.setCurrentPhone(normalized);setError('')}}><h2>BOAS-VINDAS.</h2><label className="field-label" htmlFor="customer-phone">Seu celular com DDD</label><Input id="customer-phone" type="tel" placeholder="(11) 99999-9999" value={phone} onChange={e=>setPhone(e.target.value)}/>{error&&<p className="form-error">{error}</p>}<Button type="submit">Continuar <ArrowRight/></Button><p className="demo-note">Acesso demonstrativo por celular, sem verificação de identidade. Não use dados pessoais reais.</p></form>:<><div className="customer-welcome"><p>Olá, {client?.name??'bem-vindo'}. Estes são seus agendamentos.</p><Button variant="ghost" onClick={()=>shop.setCurrentPhone('')}>Sair</Button></div>{bookings.length===0?<div className="empty-state"><CalendarDays size={32}/><h2>SUA PRIMEIRA VISITA COMEÇA AQUI.</h2><p>Você ainda não tem agendamentos nesta sessão.</p><Button asChild><Link to="/agendamento" search={{service:undefined}}>Agendar horário <ArrowRight/></Link></Button></div>:<div className="customer-bookings">{bookings.map(b=><div className="customer-booking" key={b.id}><CalendarDays/><div><h3>{b.serviceName}</h3><p>{new Date(`${b.date}T12:00:00`).toLocaleDateString('pt-BR')} · {b.time} · {money(b.price)}</p></div><span className="status-badge">{b.status}</span>{['Agendado','Confirmado'].includes(b.status)&&<Button variant="outline" onClick={()=>{if(window.confirm('Cancelar este agendamento?'))shop.setBookings(old=>old.map(item=>item.id===b.id?{...item,status:'Cancelado'}:item))}}>Cancelar</Button>}</div>)}</div>}</>}</section></ShopLayout>}
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { ArrowRight, CalendarDays } from "lucide-react";
+import { ShopLayout } from "@/components/shop-layout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useShop, normalizePhone, money } from "@/lib/barbershop";
+export const Route = createFileRoute("/cliente")({
+  component: Customer,
+  head: () => ({
+    meta: [
+      { title: "Minha conta — Slick Barbearia" },
+      { name: "description", content: "Acompanhe seus agendamentos na Slick Barbearia." },
+      { property: "og:title", content: "Minha conta — Slick Barbearia" },
+      { property: "og:description", content: "Seu próximo momento Slick." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+});
+function Customer() {
+  const shop = useShop();
+  const [phone, setPhone] = useState("");
+  const [error, setError] = useState("");
+  const client = shop.clients.find((c) => c.phone === shop.currentPhone);
+  const bookings = shop.bookings.filter((b) => b.phone === shop.currentPhone);
+  return (
+    <ShopLayout>
+      <section className="section-wrap catalog-page">
+        <span className="eyebrow">SEU ESPAÇO NA SLICK</span>
+        <h1>
+          MEUS <span className="text-primary">MOMENTOS.</span>
+        </h1>
+        {!shop.currentPhone ? (
+          <form
+            className="customer-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const normalized = normalizePhone(phone);
+              if (!/^\d{10,11}$/.test(normalized)) {
+                setError("Informe um celular válido com DDD.");
+                return;
+              }
+              shop.setCurrentPhone(normalized);
+              setError("");
+            }}
+          >
+            <h2>BOAS-VINDAS.</h2>
+            <label className="field-label" htmlFor="customer-phone">
+              Seu celular com DDD
+            </label>
+            <Input
+              id="customer-phone"
+              type="tel"
+              placeholder="(11) 99999-9999"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            {error && <p className="form-error">{error}</p>}
+            <Button type="submit">
+              Continuar <ArrowRight />
+            </Button>
+            <p className="demo-note">
+              Acesso demonstrativo por celular, sem verificação de identidade. Não use dados
+              pessoais reais.
+            </p>
+          </form>
+        ) : (
+          <>
+            <div className="customer-welcome">
+              <p>Olá, {client?.name ?? "bem-vindo"}. Estes são seus agendamentos.</p>
+              <Button variant="ghost" onClick={() => shop.setCurrentPhone("")}>
+                Sair
+              </Button>
+            </div>
+            {bookings.length === 0 ? (
+              <div className="empty-state">
+                <CalendarDays size={32} />
+                <h2>SUA PRIMEIRA VISITA COMEÇA AQUI.</h2>
+                <p>Você ainda não tem agendamentos nesta sessão.</p>
+                <Button asChild>
+                  <Link to="/agendamento" search={{ service: undefined }}>
+                    Agendar horário <ArrowRight />
+                  </Link>
+                </Button>
+              </div>
+            ) : (
+              <div className="customer-bookings">
+                {bookings.map((b) => (
+                  <div className="customer-booking" key={b.id}>
+                    <CalendarDays />
+                    <div>
+                      <h3>{b.serviceName}</h3>
+                      <p>
+                        {new Date(`${b.date}T12:00:00`).toLocaleDateString("pt-BR")} · {b.time} ·{" "}
+                        {money(b.price)}
+                      </p>
+                    </div>
+                    <span className="status-badge">{b.status}</span>
+                    {["Agendado", "Confirmado"].includes(b.status) && (
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          if (window.confirm("Cancelar este agendamento?"))
+                            shop.setBookings((old) =>
+                              old.map((item) =>
+                                item.id === b.id ? { ...item, status: "Cancelado" } : item,
+                              ),
+                            );
+                        }}
+                      >
+                        Cancelar
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </section>
+    </ShopLayout>
+  );
+}

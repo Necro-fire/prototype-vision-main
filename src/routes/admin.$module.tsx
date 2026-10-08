@@ -1,4 +1,25 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { AdminPanel, moduleNames } from '@/components/admin-panel';
-export const Route=createFileRoute('/admin/$module')({component:Module,head:({params})=>({meta:[{title:`${moduleNames[params.module]??'Módulo'} — Gestão Slick`},{name:'description',content:`Gestão de ${moduleNames[params.module]??'operações'} da Slick Barbearia, ambiente demonstrativo.`},{property:'og:title',content:`${moduleNames[params.module]??'Módulo'} — Gestão Slick`},{property:'og:description',content:`Painel demonstrativo: ${moduleNames[params.module]??'gestão'}.`},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'}]})});
-function Module(){const {module}=Route.useParams();return <AdminPanel key={module} module={module}/>}
+import { createFileRoute } from "@tanstack/react-router";
+import { AdminPanel, moduleNames } from "@/components/admin-panel";
+export const Route = createFileRoute("/admin/$module")({
+  component: Module,
+  head: ({ params }) => ({
+    meta: [
+      { title: `${moduleNames[params.module] ?? "Módulo"} — Gestão Slick` },
+      {
+        name: "description",
+        content: `Gestão de ${moduleNames[params.module] ?? "operações"} da Slick Barbearia, ambiente demonstrativo.`,
+      },
+      { property: "og:title", content: `${moduleNames[params.module] ?? "Módulo"} — Gestão Slick` },
+      {
+        property: "og:description",
+        content: `Painel demonstrativo: ${moduleNames[params.module] ?? "gestão"}.`,
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+});
+function Module() {
+  const { module } = Route.useParams();
+  return <AdminPanel key={module} module={module} />;
+}

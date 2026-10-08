@@ -1,12 +1,323 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { useState } from 'react';
-import { ArrowLeft, ArrowRight, Check, CalendarDays, Clock, Scissors, CheckCircle2 } from 'lucide-react';
-import { ShopLayout } from '@/components/shop-layout';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useShop, availableTimes, money, today, normalizePhone, type Booking } from '@/lib/barbershop';
-export const Route=createFileRoute('/agendamento')({component:Appointment,validateSearch:(search:Record<string,unknown>)=>({service:typeof search['service']==='string'?search['service']:undefined}),head:()=>({meta:[{title:'Agende seu horário — Slick Barbearia'},{name:'description',content:'Escolha seu serviço, data e horário na Slick Barbearia.'},{property:'og:title',content:'Agende seu horário — Slick Barbearia'},{property:'og:description',content:'Sua cadeira está esperando. Reserve seu próximo corte.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]})});
-function Appointment(){const shop=useShop(); const search=Route.useSearch();const [step,setStep]=useState(search['service']?1:0);const [serviceId,setServiceId]=useState(search['service']??'');const [date,setDate]=useState(today());const [time,setTime]=useState('');const [name,setName]=useState('');const [phone,setPhone]=useState('');const [note,setNote]=useState('');const [error,setError]=useState('');const [result,setResult]=useState<Booking|null>(null);const service=shop.services.find(s=>s.id===serviceId && s.active);const times=service?availableTimes(date,service.duration,shop.bookings,shop.hours.open,shop.hours.close,shop.hours.days):[];const client=shop.clients.find(c=>c.phone===normalizePhone(phone));
-function next(){setError('');if(step===0&&!service){setError('Escolha um serviço para continuar.');return}if(step===1&&!times.includes(time)){setError('Escolha um horário disponível.');return}if(step===2&&(!/^\d{10,11}$/.test(normalizePhone(phone))||!(client?.name||name).trim())){setError('Informe seu nome e celular com DDD.');return}setStep(step+1)}
-function confirm(){try{const booking=shop.book({serviceId,date,time,name:client?.name||name,phone,note});setResult(booking);setError('')}catch(e){setError(e instanceof Error?e.message:'Não foi possível agendar.')}}
-return <ShopLayout><section className="section-wrap appointment-page"><span className="eyebrow">UM TEMPO SÓ SEU</span><h1>RESERVE SUA <span className="text-primary">CADEIRA.</span></h1>{result?<div className="booking-success"><CheckCircle2 size={48}/><h2>HORÁRIO RESERVADO.</h2><p>{result.name}, seu próximo momento de cuidado está marcado.</p><div className="success-details"><strong>{result.serviceName}</strong><span>{new Date(`${result.date}T12:00:00`).toLocaleDateString('pt-BR')} · {result.time}</span><span>{money(result.price)} · {result.duration} minutos</span></div><p className="demo-note">Reserva demonstrativa, válida apenas nesta sessão. Nenhuma mensagem foi enviada.</p><Button asChild><Link to="/cliente">Ver meus agendamentos <ArrowRight/></Link></Button></div>:<><div className="stepper">{['Serviço','Data e horário','Seus dados','Confirmação'].map((label,i)=><div key={label} className={i<=step?'active':''}><span>{i<step?<Check size={14}/>:String(i+1).padStart(2,'0')}</span>{label}</div>)}</div><div className="booking-layout"><div className="booking-main">{step===0&&<><h2>QUAL É O SEU RITUAL?</h2><div className="booking-services">{shop.services.filter(s=>s.active).map(s=><Button key={s.id} variant="outline" className={`booking-service ${s.id===serviceId?'selected':''}`} onClick={()=>{setServiceId(s.id);setTime('')}}><Scissors/><span><strong>{s.name}</strong><small>{s.duration} minutos</small></span><b>{money(s.price)}</b>{s.id===serviceId&&<Check size={16}/>}</Button>)}</div></>}{step===1&&<><h2>ESCOLHA SEU MOMENTO.</h2><label className="field-label" htmlFor="date">Data</label><Input id="date" type="date" min={today()} value={date} onChange={e=>{setDate(e.target.value);setTime('')}}/><label className="field-label">Horários disponíveis</label><div className="time-grid">{times.map(t=><Button variant="outline" className={time===t?'selected':''} key={t} onClick={()=>setTime(t)}>{t}</Button>)}</div>{times.length===0&&<p className="empty-state">Não há horários disponíveis nesta data. Escolha outro dia.</p>}</>}{step===2&&<><h2>COMO PODEMOS TE CHAMAR?</h2><label className="field-label" htmlFor="phone">Celular com DDD</label><Input id="phone" type="tel" placeholder="(11) 99999-9999" value={phone} onChange={e=>setPhone(e.target.value)}/>{client&&<p className="returning-client">Bem-vindo de volta, {client.name}. Vamos usar seu cadastro existente.</p>}<label className="field-label" htmlFor="name">Seu nome</label><Input id="name" autoComplete="name" placeholder="Nome e sobrenome" value={client?.name||name} disabled={!!client} onChange={e=>setName(e.target.value)}/><label className="field-label" htmlFor="note">Observações <span>(opcional)</span></label><textarea id="note" className="shop-textarea" placeholder="Algo que a gente precisa saber?" value={note} onChange={e=>setNote(e.target.value)}/></>}{step===3&&<><h2>TUDO CERTO POR AQUI?</h2><div className="review-row"><span>Cliente</span><strong>{client?.name||name}</strong></div><div className="review-row"><span>Celular</span><strong>{phone}</strong></div><div className="review-row"><span>Serviço</span><strong>{service?.name}</strong></div><div className="review-row"><span>Quando</span><strong>{new Date(`${date}T12:00:00`).toLocaleDateString('pt-BR')} às {time}</strong></div>{note&&<p className="review-note">{note}</p>}<p className="demo-note">Este agendamento é uma demonstração. Não gera cobrança nem reserva real.</p></>}{error&&<p role="alert" className="form-error">{error}</p>}<div className="booking-controls">{step>0?<Button variant="ghost" onClick={()=>{setStep(step-1);setError('')}}><ArrowLeft/> Voltar</Button>:<span/>}<Button onClick={step===3?confirm:next}>{step===3?'Confirmar agendamento':'Continuar'}<ArrowRight/></Button></div></div><aside className="booking-summary"><span className="eyebrow">SEU MOMENTO SLICK</span><Scissors className="summary-scissors"/><h3>{service?.name??'Seu próximo ritual'}</h3><p><Clock size={16}/>{service?`${service.duration} minutos`:'Escolha um serviço'}</p>{time&&<p><CalendarDays size={16}/>{new Date(`${date}T12:00:00`).toLocaleDateString('pt-BR')} · {time}</p>}<div className="summary-total"><span>Total</span><strong>{service?money(service.price):'—'}</strong></div><small>Pagamento na barbearia.<br/>Sem cobrança antecipada.</small></aside></div></>}</section></ShopLayout>}
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  CalendarDays,
+  Clock,
+  Scissors,
+  CheckCircle2,
+} from "lucide-react";
+import { ShopLayout } from "@/components/shop-layout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  useShop,
+  availableTimes,
+  money,
+  today,
+  normalizePhone,
+  type Booking,
+} from "@/lib/barbershop";
+export const Route = createFileRoute("/agendamento")({
+  component: Appointment,
+  validateSearch: (search: Record<string, unknown>) => ({
+    service: typeof search["service"] === "string" ? search["service"] : undefined,
+  }),
+  head: () => ({
+    meta: [
+      { title: "Agende seu horário — Slick Barbearia" },
+      { name: "description", content: "Escolha seu serviço, data e horário na Slick Barbearia." },
+      { property: "og:title", content: "Agende seu horário — Slick Barbearia" },
+      {
+        property: "og:description",
+        content: "Sua cadeira está esperando. Reserve seu próximo corte.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+});
+function Appointment() {
+  const shop = useShop();
+  const search = Route.useSearch();
+  const [step, setStep] = useState(search["service"] ? 1 : 0);
+  const [serviceId, setServiceId] = useState(search["service"] ?? "");
+  const [date, setDate] = useState(today());
+  const [time, setTime] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [note, setNote] = useState("");
+  const [error, setError] = useState("");
+  const [result, setResult] = useState<Booking | null>(null);
+  const service = shop.services.find((s) => s.id === serviceId && s.active);
+  const times = service
+    ? availableTimes(
+        date,
+        service.duration,
+        shop.bookings,
+        shop.hours.open,
+        shop.hours.close,
+        shop.hours.days,
+      )
+    : [];
+  const client = shop.clients.find((c) => c.phone === normalizePhone(phone));
+  function next() {
+    setError("");
+    if (step === 0 && !service) {
+      setError("Escolha um serviço para continuar.");
+      return;
+    }
+    if (step === 1 && !times.includes(time)) {
+      setError("Escolha um horário disponível.");
+      return;
+    }
+    if (
+      step === 2 &&
+      (!/^\d{10,11}$/.test(normalizePhone(phone)) || !(client?.name || name).trim())
+    ) {
+      setError("Informe seu nome e celular com DDD.");
+      return;
+    }
+    setStep(step + 1);
+  }
+  function confirm() {
+    try {
+      const booking = shop.book({ serviceId, date, time, name: client?.name || name, phone, note });
+      setResult(booking);
+      setError("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Não foi possível agendar.");
+    }
+  }
+  return (
+    <ShopLayout>
+      <section className="section-wrap appointment-page">
+        <span className="eyebrow">UM TEMPO SÓ SEU</span>
+        <h1>
+          RESERVE SUA <span className="text-primary">CADEIRA.</span>
+        </h1>
+        {result ? (
+          <div className="booking-success">
+            <CheckCircle2 size={48} />
+            <h2>HORÁRIO RESERVADO.</h2>
+            <p>{result.name}, seu próximo momento de cuidado está marcado.</p>
+            <div className="success-details">
+              <strong>{result.serviceName}</strong>
+              <span>
+                {new Date(`${result.date}T12:00:00`).toLocaleDateString("pt-BR")} · {result.time}
+              </span>
+              <span>
+                {money(result.price)} · {result.duration} minutos
+              </span>
+            </div>
+            <p className="demo-note">
+              Reserva demonstrativa, válida apenas nesta sessão. Nenhuma mensagem foi enviada.
+            </p>
+            <Button asChild>
+              <Link to="/cliente">
+                Ver meus agendamentos <ArrowRight />
+              </Link>
+            </Button>
+          </div>
+        ) : (
+          <>
+            <div className="stepper">
+              {["Serviço", "Data e horário", "Seus dados", "Confirmação"].map((label, i) => (
+                <div key={label} className={i <= step ? "active" : ""}>
+                  <span>{i < step ? <Check size={14} /> : String(i + 1).padStart(2, "0")}</span>
+                  {label}
+                </div>
+              ))}
+            </div>
+            <div className="booking-layout">
+              <div className="booking-main">
+                {step === 0 && (
+                  <>
+                    <h2>QUAL É O SEU RITUAL?</h2>
+                    <div className="booking-services">
+                      {shop.services
+                        .filter((s) => s.active)
+                        .map((s) => (
+                          <Button
+                            key={s.id}
+                            variant="outline"
+                            className={`booking-service ${s.id === serviceId ? "selected" : ""}`}
+                            onClick={() => {
+                              setServiceId(s.id);
+                              setTime("");
+                            }}
+                          >
+                            <Scissors />
+                            <span>
+                              <strong>{s.name}</strong>
+                              <small>{s.duration} minutos</small>
+                            </span>
+                            <b>{money(s.price)}</b>
+                            {s.id === serviceId && <Check size={16} />}
+                          </Button>
+                        ))}
+                    </div>
+                  </>
+                )}
+                {step === 1 && (
+                  <>
+                    <h2>ESCOLHA SEU MOMENTO.</h2>
+                    <label className="field-label" htmlFor="date">
+                      Data
+                    </label>
+                    <Input
+                      id="date"
+                      type="date"
+                      min={today()}
+                      value={date}
+                      onChange={(e) => {
+                        setDate(e.target.value);
+                        setTime("");
+                      }}
+                    />
+                    <label className="field-label">Horários disponíveis</label>
+                    <div className="time-grid">
+                      {times.map((t) => (
+                        <Button
+                          variant="outline"
+                          className={time === t ? "selected" : ""}
+                          key={t}
+                          onClick={() => setTime(t)}
+                        >
+                          {t}
+                        </Button>
+                      ))}
+                    </div>
+                    {times.length === 0 && (
+                      <p className="empty-state">
+                        Não há horários disponíveis nesta data. Escolha outro dia.
+                      </p>
+                    )}
+                  </>
+                )}
+                {step === 2 && (
+                  <>
+                    <h2>COMO PODEMOS TE CHAMAR?</h2>
+                    <label className="field-label" htmlFor="phone">
+                      Celular com DDD
+                    </label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="(11) 99999-9999"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                    {client && (
+                      <p className="returning-client">
+                        Bem-vindo de volta, {client.name}. Vamos usar seu cadastro existente.
+                      </p>
+                    )}
+                    <label className="field-label" htmlFor="name">
+                      Seu nome
+                    </label>
+                    <Input
+                      id="name"
+                      autoComplete="name"
+                      placeholder="Nome e sobrenome"
+                      value={client?.name || name}
+                      disabled={!!client}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                    <label className="field-label" htmlFor="note">
+                      Observações <span>(opcional)</span>
+                    </label>
+                    <textarea
+                      id="note"
+                      className="shop-textarea"
+                      placeholder="Algo que a gente precisa saber?"
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}
+                    />
+                  </>
+                )}
+                {step === 3 && (
+                  <>
+                    <h2>TUDO CERTO POR AQUI?</h2>
+                    <div className="review-row">
+                      <span>Cliente</span>
+                      <strong>{client?.name || name}</strong>
+                    </div>
+                    <div className="review-row">
+                      <span>Celular</span>
+                      <strong>{phone}</strong>
+                    </div>
+                    <div className="review-row">
+                      <span>Serviço</span>
+                      <strong>{service?.name}</strong>
+                    </div>
+                    <div className="review-row">
+                      <span>Quando</span>
+                      <strong>
+                        {new Date(`${date}T12:00:00`).toLocaleDateString("pt-BR")} às {time}
+                      </strong>
+                    </div>
+                    {note && <p className="review-note">{note}</p>}
+                    <p className="demo-note">
+                      Este agendamento é uma demonstração. Não gera cobrança nem reserva real.
+                    </p>
+                  </>
+                )}
+                {error && (
+                  <p role="alert" className="form-error">
+                    {error}
+                  </p>
+                )}
+                <div className="booking-controls">
+                  {step > 0 ? (
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        setStep(step - 1);
+                        setError("");
+                      }}
+                    >
+                      <ArrowLeft /> Voltar
+                    </Button>
+                  ) : (
+                    <span />
+                  )}
+                  <Button onClick={step === 3 ? confirm : next}>
+                    {step === 3 ? "Confirmar agendamento" : "Continuar"}
+                    <ArrowRight />
+                  </Button>
+                </div>
+              </div>
+              <aside className="booking-summary">
+                <span className="eyebrow">SEU MOMENTO SLICK</span>
+                <Scissors className="summary-scissors" />
+                <h3>{service?.name ?? "Seu próximo ritual"}</h3>
+                <p>
+                  <Clock size={16} />
+                  {service ? `${service.duration} minutos` : "Escolha um serviço"}
+                </p>
+                {time && (
+                  <p>
+                    <CalendarDays size={16} />
+                    {new Date(`${date}T12:00:00`).toLocaleDateString("pt-BR")} · {time}
+                  </p>
+                )}
+                <div className="summary-total">
+                  <span>Total</span>
+                  <strong>{service ? money(service.price) : "—"}</strong>
+                </div>
+                <small>
+                  Pagamento na barbearia.
+                  <br />
+                  Sem cobrança antecipada.
+                </small>
+              </aside>
+            </div>
+          </>
+        )}
+      </section>
+    </ShopLayout>
+  );
+}

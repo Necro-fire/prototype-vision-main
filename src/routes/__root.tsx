@@ -76,9 +76,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Slick — Barbearia & Estilo" },
-      { name: "description", content: "Cortes precisos, barba bem cuidada e um estilo que é só seu. Conheça a Slick Barbearia." },
+      {
+        name: "description",
+        content:
+          "Cortes precisos, barba bem cuidada e um estilo que é só seu. Conheça a Slick Barbearia.",
+      },
       { property: "og:title", content: "Slick — Barbearia & Estilo" },
-      { property: "og:description", content: "Seu estilo. Nosso ofício. Conheça a Slick Barbearia." },
+      {
+        property: "og:description",
+        content: "Seu estilo. Nosso ofício. Conheça a Slick Barbearia.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -88,7 +95,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -117,7 +127,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <ShopProvider><Outlet /></ShopProvider>
+      <ShopProvider>
+        <Outlet />
+      </ShopProvider>
     </QueryClientProvider>
   );
 }

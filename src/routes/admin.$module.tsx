@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AdminPanel, moduleNames } from "@/components/admin-panel";
+import { moduleNames } from "@/features/admin/modulos";
+import { AdminPanel } from "@/features/admin/painel";
 export const Route = createFileRoute("/admin/$module")({
   component: Module,
   head: ({ params }) => ({

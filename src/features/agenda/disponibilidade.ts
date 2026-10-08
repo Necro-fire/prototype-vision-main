@@ -1,9 +1,9 @@
 import type { Booking } from "./tipos";
 
-export const today = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-};
+export const isoDate = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+export const today = () => isoDate(new Date());
 
 const minutes = (time: string) => {
   const [h = 0, m = 0] = time.split(":").map(Number);

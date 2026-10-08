@@ -46,6 +46,8 @@ Deixar o projeto independente, legível e seguro para evoluir, sem mudar nada do
 
 ## Fase 1 — Identidade e Design System
 
+**Situação: começou.** Ramificação `fase-1-identidade`. Feita a página `/identidade`, que compara as três direções com dados reais. Aguardando a sua escolha para fechar a direção e seguir.
+
 - Página de comparação das três direções, se você quiser decidir vendo; em seguida, a direção escolhida é fechada.
 - Marca ON-STYLE com o "ON" aceso ou apagado, ícone do site e imagem de compartilhamento.
 - Tokens, escala de texto e espaço, e os componentes base.

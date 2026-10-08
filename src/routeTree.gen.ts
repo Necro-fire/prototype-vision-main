@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AgendamentoRouteImport } from './routes/agendamento'
 import { Route as ClienteRouteImport } from './routes/cliente'
 import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as IdentidadeRouteImport } from './routes/identidade'
 import { Route as ProdutosRouteImport } from './routes/produtos'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -44,6 +45,11 @@ const ContatoRoute = ContatoRouteImport.update({
   path: '/contato',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IdentidadeRoute = IdentidadeRouteImport.update({
+  id: '/identidade',
+  path: '/identidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProdutosRoute = ProdutosRouteImport.update({
   id: '/produtos',
   path: '/produtos',
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/agendamento': typeof AgendamentoRoute
   '/cliente': typeof ClienteRoute
   '/contato': typeof ContatoRoute
+  '/identidade': typeof IdentidadeRoute
   '/produtos': typeof ProdutosRoute
   '/servicos': typeof ServicosRoute
   '/admin/$module': typeof AdminModuleRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/agendamento': typeof AgendamentoRoute
   '/cliente': typeof ClienteRoute
   '/contato': typeof ContatoRoute
+  '/identidade': typeof IdentidadeRoute
   '/produtos': typeof ProdutosRoute
   '/servicos': typeof ServicosRoute
   '/admin/$module': typeof AdminModuleRoute
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/agendamento': typeof AgendamentoRoute
   '/cliente': typeof ClienteRoute
   '/contato': typeof ContatoRoute
+  '/identidade': typeof IdentidadeRoute
   '/produtos': typeof ProdutosRoute
   '/servicos': typeof ServicosRoute
   '/admin/$module': typeof AdminModuleRoute
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/agendamento'
     | '/cliente'
     | '/contato'
+    | '/identidade'
     | '/produtos'
     | '/servicos'
     | '/admin/$module'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/agendamento'
     | '/cliente'
     | '/contato'
+    | '/identidade'
     | '/produtos'
     | '/servicos'
     | '/admin/$module'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/agendamento'
     | '/cliente'
     | '/contato'
+    | '/identidade'
     | '/produtos'
     | '/servicos'
     | '/admin/$module'
@@ -139,6 +151,7 @@ export interface RootRouteChildren {
   AgendamentoRoute: typeof AgendamentoRoute
   ClienteRoute: typeof ClienteRoute
   ContatoRoute: typeof ContatoRoute
+  IdentidadeRoute: typeof IdentidadeRoute
   ProdutosRoute: typeof ProdutosRoute
   ServicosRoute: typeof ServicosRoute
 }
@@ -178,6 +191,13 @@ declare module '@tanstack/react-router' {
       path: '/contato'
       fullPath: '/contato'
       preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/identidade': {
+      id: '/identidade'
+      path: '/identidade'
+      fullPath: '/identidade'
+      preLoaderRoute: typeof IdentidadeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/produtos': {
@@ -229,6 +249,7 @@ const rootRouteChildren: RootRouteChildren = {
   AgendamentoRoute: AgendamentoRoute,
   ClienteRoute: ClienteRoute,
   ContatoRoute: ContatoRoute,
+  IdentidadeRoute: IdentidadeRoute,
   ProdutosRoute: ProdutosRoute,
   ServicosRoute: ServicosRoute,
 }

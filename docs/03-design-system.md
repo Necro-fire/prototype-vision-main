@@ -24,7 +24,9 @@ O nome traz um interruptor. Em qualquer direção escolhida, o "ON" da marca mos
 
 ## Três direções de identidade
 
-Os contrastes citados foram calculados; todos os pares de texto atendem ao mínimo de 4,5:1 para leitura.
+**Veja as três funcionando** em `/identidade` (`npm run dev`, depois http://localhost:8080/identidade). A página usa os serviços, os preços e a agenda do protótipo, calcula o "aberto agora" e o próximo horário livre na hora, e tem um seletor para ver o "ON" aceso e apagado. `/identidade?estado=aberto` abre já com o ON aceso. A página é temporária e some quando a direção for escolhida.
+
+Os contrastes foram calculados pelo código da própria página, que mostra o valor de cada par. Os pares de texto atendem ao mínimo de 4,5:1, e bordas de campo ao de 3:1. A construção das propostas revelou dois ajustes, já incorporados abaixo: a borda dos campos do Azulejo e o uso do azul do Poste.
 
 ### A — Letreiro (recomendada)
 
@@ -69,14 +71,15 @@ A placa pintada à mão na fachada e a tabela de preços na parede. Popular, ale
 
 A parede de azulejo, a louça da pia, a capa de corte. Limpa, fresca e tranquila.
 
-| Cor            | Hex       | Uso                              |
-| -------------- | --------- | -------------------------------- |
-| Louça          | `#FFFFFF` | Fundo                            |
-| Gelo           | `#EEF4F3` | Superfícies e faixas             |
-| Marinho capa   | `#12263A` | Texto (15,4:1 sobre Louça)       |
-| Verde azulejo  | `#17695A` | Ações e marca (5,9:1 sobre Gelo) |
-| Rejunte        | `#C9D3D1` | Linhas e divisórias              |
-| Vermelho poste | `#D93A2B` | Só no "ON" aceso e em alertas    |
+| Cor            | Hex       | Uso                                                                   |
+| -------------- | --------- | --------------------------------------------------------------------- |
+| Louça          | `#FFFFFF` | Fundo                                                                 |
+| Gelo           | `#EEF4F3` | Superfícies e faixas                                                  |
+| Marinho capa   | `#12263A` | Texto (15,4:1 sobre Louça)                                            |
+| Verde azulejo  | `#17695A` | Ações e marca (5,9:1 sobre Gelo)                                      |
+| Rejunte        | `#C9D3D1` | Divisórias (só decoração)                                             |
+| Linha de campo | `#6F8581` | Borda de campos e azulejos (3,9:1)                                    |
+| Vermelho poste | `#D93A2B` | Só no "ON" aceso e em alertas, sempre sobre Louça ou com texto branco |
 
 **Tipografia**: Gabarito nos títulos, geométrica e amigável; Hanken Grotesk no texto.
 
@@ -105,14 +108,16 @@ A parede de azulejo, a louça da pia, a capa de corte. Limpa, fresca e tranquila
 
 O poste listrado de barbeiro, à noite. Para quem quer manter um site escuro, sem cair no preto com laranja.
 
-| Cor            | Hex       | Uso                                             |
-| -------------- | --------- | ----------------------------------------------- |
-| Marinho noite  | `#0F1B33` | Fundo                                           |
-| Marinho raso   | `#182A4D` | Superfícies                                     |
-| Branco         | `#F5F7FA` | Texto (16,0:1)                                  |
-| Névoa          | `#9FB3D1` | Texto secundário (8,0:1)                        |
-| Vermelho poste | `#D42A22` | Ação principal (texto branco: 5,1:1)            |
-| Azul poste     | `#2458E0` | Ação secundária e seleção (texto branco: 5,9:1) |
+| Cor            | Hex       | Uso                                                                 |
+| -------------- | --------- | ------------------------------------------------------------------- |
+| Marinho noite  | `#0F1B33` | Fundo                                                               |
+| Marinho raso   | `#182A4D` | Superfícies                                                         |
+| Branco         | `#F5F7FA` | Texto (16,0:1)                                                      |
+| Névoa          | `#9FB3D1` | Texto secundário (8,0:1)                                            |
+| Vermelho poste | `#D42A22` | Ação principal (texto branco: 5,1:1)                                |
+| Azul poste     | `#2458E0` | Só como preenchimento com texto branco (5,9:1): seleção e etiquetas |
+| Azul claro     | `#7FA6FF` | Links e texto de destaque (7,2:1 sobre Marinho noite)               |
+| Rosa de erro   | `#FF9A92` | Mensagens de erro (8,4:1 sobre Marinho noite)                       |
 
 **Tipografia**: uma só família, Archivo, em duas larguras: expandida nos títulos, normal no texto.
 

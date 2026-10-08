@@ -1,0 +1,646 @@
+/* Página temporária /identidade: compara três direções de identidade.
+   Tudo usa o prefixo idp- para não interferir no site. Removida junto com a pasta
+   quando a direção for escolhida. */
+
+.idp-page {
+  background: #e8e9ec;
+  color: #1a1c20;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.idp-page *,
+.idp-page *::before,
+.idp-page *::after {
+  box-sizing: border-box;
+}
+.idp-intro {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px 28px;
+}
+.idp-intro h1 {
+  margin: 0 0 12px;
+  font:
+    700 28px/1.2 system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+}
+.idp-intro p {
+  margin: 0 0 12px;
+  max-width: 65ch;
+  color: #3a3f47;
+}
+.idp-seletor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+.idp-seletor span {
+  margin-right: 4px;
+  font-weight: 600;
+}
+.idp-seletor button {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 2px solid #1a1c20;
+  border-radius: 8px;
+  background: transparent;
+  color: #1a1c20;
+  font:
+    600 16px/1 system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  cursor: pointer;
+}
+.idp-seletor button[aria-pressed="true"] {
+  background: #1a1c20;
+  color: #ffffff;
+}
+.idp-seletor button:focus-visible {
+  outline: 3px solid #1f3fbf;
+  outline-offset: 2px;
+}
+.idp-atalhos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.idp-atalhos a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 2px solid #1a1c20;
+  border-radius: 8px;
+  color: #1a1c20;
+  font-weight: 600;
+}
+.idp-atalhos a:focus-visible {
+  outline: 3px solid #1f3fbf;
+  outline-offset: 2px;
+}
+
+/* ---------- base de cada direção ---------- */
+.idp {
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: var(--fonte-texto);
+}
+.idp-in {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 20px 64px;
+}
+.idp h1,
+.idp h2,
+.idp h3,
+.idp h4 {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+}
+.idp p {
+  margin: 0;
+}
+.idp ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.idp a {
+  color: inherit;
+  text-decoration: none;
+}
+.idp-nome {
+  margin-bottom: 20px;
+  max-width: 70ch;
+  color: var(--suave);
+  font-size: 14px;
+}
+.idp-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--linha-suave);
+}
+.idp-menu {
+  display: none;
+  gap: 8px;
+}
+.idp-menu a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  color: var(--suave);
+  font-weight: 600;
+}
+.idp-menu a:hover {
+  color: var(--texto);
+}
+@media (min-width: 720px) {
+  .idp-menu {
+    display: flex;
+  }
+}
+
+/* marca com o ON que acende */
+.idp-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--fonte-titulo);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--texto);
+}
+.idp-site {
+  font-family: var(--fonte-titulo);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.idp-on {
+  display: inline-block;
+  padding: 5px 8px 4px;
+  border: 2px solid var(--suave);
+  border-radius: var(--raio-on);
+  color: var(--suave);
+}
+.idp-on[data-ligado="true"] {
+  border-color: var(--destaque);
+  background: var(--destaque);
+  color: var(--sobre-destaque);
+}
+
+.idp-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  font-weight: 600;
+}
+.idp-status::before {
+  content: "";
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--suave);
+  border-radius: 50%;
+}
+.idp-status[data-ligado="true"]::before {
+  border-color: var(--destaque);
+  background: var(--destaque);
+}
+
+.idp-hero {
+  display: grid;
+  gap: 32px;
+  padding: 36px 0 8px;
+}
+@media (min-width: 900px) {
+  .idp-hero {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 56px;
+    align-items: start;
+  }
+}
+.idp-hero h1 {
+  margin-top: 8px;
+  font-size: clamp(2.1rem, 6vw, 3.4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+}
+
+/* botões e campo */
+.idp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 2px solid transparent;
+  border-radius: var(--raio-btn);
+  font: 700 16px/1.2 var(--fonte-texto);
+  text-align: center;
+  cursor: pointer;
+}
+.idp-btn-primario {
+  background: var(--acao);
+  color: var(--sobre-acao);
+}
+.idp-btn-secundario {
+  border-color: var(--borda-controle);
+  background: transparent;
+  color: var(--texto);
+}
+.idp-btn:disabled {
+  border-color: transparent;
+  background: var(--desabilitado-fundo);
+  color: var(--desabilitado-texto);
+  cursor: not-allowed;
+}
+.idp a:focus-visible,
+.idp button:focus-visible,
+.idp input:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 3px;
+}
+.idp-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.idp-vazio {
+  margin-top: 20px;
+  color: var(--suave);
+}
+
+/* linhas de serviço (compartilhadas) */
+.idp-linha {
+  display: grid;
+  align-items: center;
+  gap: 12px;
+  min-height: 68px;
+  padding: 14px 18px;
+}
+.idp-linha strong {
+  font: 700 20px/1.2 var(--fonte-titulo);
+}
+.idp-linha small {
+  display: block;
+  margin-top: 2px;
+  color: var(--suave);
+  font-size: 14px;
+}
+.idp-preco {
+  font: 800 22px/1 var(--fonte-titulo);
+  font-variant-numeric: tabular-nums;
+}
+.idp-tag {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--destaque);
+  color: var(--sobre-destaque);
+  font: 700 14px/1.2 var(--fonte-texto);
+  vertical-align: 2px;
+}
+
+/* ---------- kit: cores, tipos e componentes ---------- */
+.idp-kit {
+  display: grid;
+  gap: 40px;
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--linha-suave);
+}
+@media (min-width: 900px) {
+  .idp-kit {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
+  }
+}
+.idp-kit h3 {
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 700;
+}
+.idp-kit h4 {
+  margin: 24px 0 12px;
+  color: var(--suave);
+  font: 600 14px/1.3 var(--fonte-texto);
+}
+.idp-cores,
+.idp-pares {
+  display: grid;
+  gap: 10px;
+}
+.idp-cores li,
+.idp-pares li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.idp-cores small,
+.idp-pares small {
+  display: block;
+  color: var(--suave);
+  font-size: 14px;
+}
+.idp-amostra {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--linha-suave);
+  border-radius: 8px;
+}
+.idp-par {
+  display: inline-grid;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid var(--linha-suave);
+  border-radius: 8px;
+  font: 800 18px/1 var(--fonte-titulo);
+}
+.idp-tipo-titulo {
+  font: 800 clamp(2rem, 5vw, 2.75rem) / 1.05 var(--fonte-titulo);
+  letter-spacing: -0.02em;
+}
+.idp-tipo-preco {
+  margin: 4px 0 12px;
+  font: 800 28px/1 var(--fonte-titulo);
+  font-variant-numeric: tabular-nums;
+}
+.idp-tipo-corpo {
+  max-width: 48ch;
+  line-height: 1.6;
+}
+.idp-tipo-nota {
+  margin-top: 12px;
+  color: var(--suave);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.idp-controles {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+}
+.idp-campo {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  max-width: 340px;
+  margin-top: 8px;
+}
+.idp-campo label {
+  font-weight: 600;
+}
+.idp-campo input {
+  min-height: 48px;
+  padding: 0 14px;
+  border: 2px solid var(--borda-controle);
+  border-radius: var(--raio-btn);
+  background: transparent;
+  color: var(--texto);
+  font: 500 16px/1 var(--fonte-texto);
+}
+.idp-campo input[aria-invalid="true"] {
+  border-color: var(--perigo);
+}
+.idp-erro {
+  color: var(--perigo);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ================= A: Letreiro ================= */
+.idp-letreiro {
+  --fundo: #fdfdfb;
+  --superficie: #ffffff;
+  --texto: #16181d;
+  --suave: #5f6672;
+  --linha: #16181d;
+  --linha-suave: #d9dbdf;
+  --acao: #1f3fbf;
+  --sobre-acao: #ffffff;
+  --destaque: #ffc42e;
+  --sobre-destaque: #16181d;
+  --perigo: #c8321e;
+  --borda-controle: #5f6672;
+  --foco: #1f3fbf;
+  --desabilitado-fundo: #e7e8ea;
+  --desabilitado-texto: #5f6672;
+  --raio-btn: 6px;
+  --raio-on: 6px;
+  --fonte-titulo: "Bricolage Grotesque", system-ui, sans-serif;
+  --fonte-texto: "Figtree", system-ui, sans-serif;
+}
+.idp-letreiro .idp-hero h1 {
+  max-width: 14ch;
+  margin-bottom: 28px;
+}
+.idp-proximo {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  padding: 20px;
+  border: 2px solid var(--linha);
+  border-radius: 6px;
+  background: var(--superficie);
+}
+.idp-proximo p {
+  color: var(--suave);
+}
+.idp-proximo strong {
+  margin-bottom: 12px;
+  font: 800 30px/1.1 var(--fonte-titulo);
+}
+.idp-tabela {
+  overflow: hidden;
+  border: 2px solid var(--linha);
+  border-radius: 6px;
+  background: var(--superficie);
+}
+.idp-tabela li + li {
+  border-top: 1px solid var(--linha-suave);
+}
+.idp-tabela .idp-linha {
+  grid-template-columns: auto 1fr auto;
+}
+.idp-tabela .idp-linha:hover {
+  background: #fff3cc;
+}
+.idp-pontos {
+  align-self: center;
+  height: 0;
+  margin-top: -6px;
+  border-bottom: 2px dotted #8a909b;
+}
+
+/* ================= B: Azulejo ================= */
+.idp-azulejo {
+  --fundo: #ffffff;
+  --superficie: #eef4f3;
+  --texto: #12263a;
+  --suave: #4b5e70;
+  --linha: #6f8581;
+  --linha-suave: #c9d3d1;
+  --acao: #17695a;
+  --sobre-acao: #ffffff;
+  --destaque: #d93a2b;
+  --sobre-destaque: #ffffff;
+  --perigo: #d93a2b;
+  --borda-controle: #6f8581;
+  --foco: #12263a;
+  --desabilitado-fundo: #e3e9e8;
+  --desabilitado-texto: #4b5e70;
+  --raio-btn: 10px;
+  --raio-on: 8px;
+  --fonte-titulo: "Gabarito", system-ui, sans-serif;
+  --fonte-texto: "Hanken Grotesk", system-ui, sans-serif;
+}
+.idp-azulejos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+.idp-azulejo-hora {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 56px;
+  border: 2px solid var(--linha);
+  border-radius: 10px;
+  background: var(--superficie);
+  box-shadow:
+    inset 0 2px 0 #ffffff,
+    inset 0 -3px 0 rgb(18 38 58 / 0.08);
+  color: var(--texto);
+  font: 600 18px/1 var(--fonte-titulo);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.idp-azulejo-hora[aria-pressed="true"] {
+  border-color: var(--acao);
+  background: var(--acao);
+  box-shadow: none;
+  color: var(--sobre-acao);
+}
+.idp-painel {
+  overflow: hidden;
+  border: 2px solid var(--linha-suave);
+  border-radius: 14px;
+  background: var(--superficie);
+}
+.idp-painel li + li {
+  border-top: 2px solid #ffffff;
+}
+.idp-painel .idp-linha {
+  grid-template-columns: 1fr auto;
+}
+.idp-painel .idp-linha:hover {
+  background: #e1ebe9;
+}
+
+/* ================= C: Poste ================= */
+.idp-poste {
+  --fundo: #0f1b33;
+  --superficie: #182a4d;
+  --texto: #f5f7fa;
+  --suave: #9fb3d1;
+  --linha: #9fb3d1;
+  --linha-suave: #2c4170;
+  --acao: #d42a22;
+  --sobre-acao: #ffffff;
+  --destaque: #d42a22;
+  --sobre-destaque: #ffffff;
+  --perigo: #ff9a92;
+  --borda-controle: #9fb3d1;
+  --foco: #ffffff;
+  --desabilitado-fundo: #243a66;
+  --desabilitado-texto: #9fb3d1;
+  --raio-btn: 4px;
+  --raio-on: 4px;
+  --fonte-titulo: "Archivo", system-ui, sans-serif;
+  --fonte-texto: "Archivo", system-ui, sans-serif;
+}
+.idp-poste h1,
+.idp-poste h2,
+.idp-poste h3,
+.idp-poste .idp-marca,
+.idp-poste .idp-site,
+.idp-poste .idp-linha strong,
+.idp-poste .idp-preco {
+  font-stretch: 125%;
+}
+.idp-listras {
+  height: 16px;
+  background: repeating-linear-gradient(
+    135deg,
+    #d42a22 0 14px,
+    #f5f7fa 14px 28px,
+    #2458e0 28px 42px,
+    #f5f7fa 42px 56px
+  );
+}
+.idp-poste .idp-site {
+  display: none;
+}
+.idp-poste .idp-topo {
+  justify-content: flex-end;
+}
+.idp-poste .idp-hero {
+  padding-top: 24px;
+}
+.idp-poste h1.idp-grande {
+  margin: 36px 0 0;
+}
+.idp-marca-grande {
+  gap: 6px;
+  font-size: clamp(2.6rem, 11.5vw, 6.5rem);
+  letter-spacing: -0.03em;
+}
+.idp-marca-grande .idp-on {
+  padding: 0.08em 0.16em 0.04em;
+  border-width: 4px;
+  border-radius: 8px;
+}
+.idp-poste .idp-on[data-ligado="true"] {
+  box-shadow: 0 0 40px rgb(212 42 34 / 0.65);
+}
+.idp-poste .idp-status {
+  margin-bottom: 20px;
+}
+.idp-chamada {
+  max-width: 28ch;
+  margin-bottom: 24px;
+  font: 700 22px/1.25 var(--fonte-titulo);
+  font-stretch: 112%;
+}
+.idp-lista .idp-linha {
+  grid-template-columns: 1fr auto;
+  padding-inline: 4px;
+  border-bottom: 1px solid var(--linha-suave);
+}
+.idp-lista li:first-child .idp-linha {
+  border-top: 1px solid var(--linha-suave);
+}
+.idp-lista .idp-linha:hover {
+  background: var(--superficie);
+}
+.idp-poste .idp-tag {
+  background: #2458e0;
+  color: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .idp-page * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

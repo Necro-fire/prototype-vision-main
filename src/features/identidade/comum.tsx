@@ -52,9 +52,9 @@ export function useProposta() {
 }
 
 // O "ON" da marca fica aceso quando a barbearia está aberta.
-export function Marca({ ligado, grande = false }: { ligado: boolean; grande?: boolean }) {
+export function Marca({ ligado }: { ligado: boolean }) {
   return (
-    <span className={`idp-marca ${grande ? "idp-marca-grande" : ""}`}>
+    <span className="idp-marca">
       <span className="idp-on" data-ligado={ligado}>
         ON
       </span>

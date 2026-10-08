@@ -29,26 +29,25 @@ function abrir(estado?: "aberto" | "fechado") {
 
 afterEach(cleanup);
 
-describe("Página de comparação das direções de identidade", () => {
-  it("mostra as três direções com os serviços do protótipo", async () => {
+describe("Página de comparação do Letreiro, claro e escuro", () => {
+  it("mostra as duas versões com os serviços do protótipo", async () => {
     abrir();
-    for (const nome of ["Letreiro", "Azulejo", "Poste"]) {
-      expect(await screen.findByText(new RegExp(`^Direção [ABC]: ${nome}`))).toBeInTheDocument();
-    }
-    expect(screen.getAllByText("Corte clássico").length).toBeGreaterThanOrEqual(3);
+    expect(await screen.findByText(/^Letreiro claro\./)).toBeInTheDocument();
+    expect(screen.getByText(/^Letreiro escuro\./)).toBeInTheDocument();
+    expect(screen.getAllByText("Corte clássico")).toHaveLength(2);
   });
 
-  it("acende o ON nas três quando a barbearia está aberta", async () => {
+  it("acende o ON nas duas quando a barbearia está aberta", async () => {
     abrir("aberto");
     const avisos = await screen.findAllByText(/^Aberto agora, até as 19h$/);
-    expect(avisos).toHaveLength(3);
+    expect(avisos).toHaveLength(2);
     for (const aviso of avisos) expect(aviso).toHaveAttribute("data-ligado", "true");
   });
 
-  it("apaga o ON nas três quando a barbearia está fechada", async () => {
+  it("apaga o ON nas duas quando a barbearia está fechada", async () => {
     abrir("fechado");
     const avisos = await screen.findAllByText(/^Fechado\. Abre /);
-    expect(avisos).toHaveLength(3);
+    expect(avisos).toHaveLength(2);
     for (const aviso of avisos) expect(aviso).toHaveAttribute("data-ligado", "false");
   });
 
@@ -57,13 +56,14 @@ describe("Página de comparação das direções de identidade", () => {
     await screen.findAllByText(/^Fechado\. Abre /);
     const seletor = screen.getByRole("group", { name: "Estado da barbearia" });
     fireEvent.click(within(seletor).getByRole("button", { name: "Aberta" }));
-    expect(await screen.findAllByText(/^Aberto agora/)).toHaveLength(3);
+    expect(await screen.findAllByText(/^Aberto agora/)).toHaveLength(2);
   });
 
-  it("calcula o contraste dos pares de cor e avisa o único que não passa", async () => {
+  it("calcula o contraste e avisa o único par que não passa: laranja como texto no claro", async () => {
     abrir();
-    await screen.findByText(/^Direção A/);
-    // O azul do Poste sobre o fundo escuro não serve de texto nem de borda, e a página diz isso.
-    expect(screen.getAllByText(/\(não passa\)/)).toHaveLength(1);
+    await screen.findByText(/^Letreiro claro\./);
+    const reprovados = screen.getAllByText(/\(não passa\)/);
+    expect(reprovados).toHaveLength(1);
+    expect(reprovados[0]?.closest("li")).toHaveTextContent("Laranja como texto (não usar)");
   });
 });

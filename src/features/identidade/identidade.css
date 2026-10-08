@@ -170,12 +170,6 @@
   white-space: nowrap;
   color: var(--texto);
 }
-.idp-site {
-  font-family: var(--fonte-titulo);
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-}
 .idp-on {
   display: inline-block;
   padding: 5px 8px 4px;
@@ -416,27 +410,69 @@
   font-weight: 600;
 }
 
-/* ================= A: Letreiro ================= */
+/* ================= Letreiro: laranja, preto e um pouco de azul ================= */
 .idp-letreiro {
   --fundo: #fdfdfb;
   --superficie: #ffffff;
-  --texto: #16181d;
+  --texto: #131416;
   --suave: #5f6672;
-  --linha: #16181d;
+  --linha: #131416;
   --linha-suave: #d9dbdf;
-  --acao: #1f3fbf;
-  --sobre-acao: #ffffff;
-  --destaque: #ffc42e;
-  --sobre-destaque: #16181d;
-  --perigo: #c8321e;
+  --acao: #ff7a1a;
+  --sobre-acao: #131416;
+  --destaque: #ff7a1a;
+  --sobre-destaque: #131416;
+  --azul: #2b4fd9;
+  --sobre-azul: #ffffff;
+  --azul-texto: #2b4fd9;
+  --perigo: #b42318;
   --borda-controle: #5f6672;
-  --foco: #1f3fbf;
+  --foco: #2b4fd9;
+  --faixa: #131416;
+  --linha-hover: #ffe9d9;
+  --pontilhado: #8a909b;
   --desabilitado-fundo: #e7e8ea;
   --desabilitado-texto: #5f6672;
   --raio-btn: 6px;
   --raio-on: 6px;
   --fonte-titulo: "Bricolage Grotesque", system-ui, sans-serif;
   --fonte-texto: "Figtree", system-ui, sans-serif;
+}
+.idp-letreiro-escuro {
+  --fundo: #111214;
+  --superficie: #1b1d21;
+  --texto: #f6f4f1;
+  --suave: #a8adb5;
+  --linha: #f6f4f1;
+  --linha-suave: #34373d;
+  --azul: #2f5bea;
+  --azul-texto: #7c9cff;
+  --perigo: #ff8a7a;
+  --borda-controle: #8a9099;
+  --foco: #7c9cff;
+  --faixa: #111214;
+  --linha-hover: #26292e;
+  --pontilhado: #6b717b;
+  --desabilitado-fundo: #26292e;
+  --desabilitado-texto: #a8adb5;
+}
+.idp-in-nome {
+  padding-bottom: 0;
+}
+.idp-faixa {
+  --texto: #ffffff;
+  --suave: #a8adb5;
+  --foco: #7c9cff;
+  background: var(--faixa);
+  border-bottom: 1px solid var(--linha-suave);
+}
+.idp-in-topo {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.idp-faixa .idp-topo {
+  padding-bottom: 0;
+  border-bottom: 0;
 }
 .idp-letreiro .idp-hero h1 {
   max-width: 14ch;
@@ -455,8 +491,21 @@
   color: var(--suave);
 }
 .idp-proximo strong {
-  margin-bottom: 12px;
+  margin-bottom: 4px;
   font: 800 30px/1.1 var(--fonte-titulo);
+}
+.idp-proximo .idp-acoes {
+  align-items: center;
+  margin-top: 8px;
+}
+.idp-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  color: var(--azul-texto);
+  font-weight: 700;
+  text-decoration: underline !important;
+  text-underline-offset: 4px;
 }
 .idp-tabela {
   overflow: hidden;
@@ -471,171 +520,17 @@
   grid-template-columns: auto 1fr auto;
 }
 .idp-tabela .idp-linha:hover {
-  background: #fff3cc;
+  background: var(--linha-hover);
 }
 .idp-pontos {
   align-self: center;
   height: 0;
   margin-top: -6px;
-  border-bottom: 2px dotted #8a909b;
+  border-bottom: 2px dotted var(--pontilhado);
 }
-
-/* ================= B: Azulejo ================= */
-.idp-azulejo {
-  --fundo: #ffffff;
-  --superficie: #eef4f3;
-  --texto: #12263a;
-  --suave: #4b5e70;
-  --linha: #6f8581;
-  --linha-suave: #c9d3d1;
-  --acao: #17695a;
-  --sobre-acao: #ffffff;
-  --destaque: #d93a2b;
-  --sobre-destaque: #ffffff;
-  --perigo: #d93a2b;
-  --borda-controle: #6f8581;
-  --foco: #12263a;
-  --desabilitado-fundo: #e3e9e8;
-  --desabilitado-texto: #4b5e70;
-  --raio-btn: 10px;
-  --raio-on: 8px;
-  --fonte-titulo: "Gabarito", system-ui, sans-serif;
-  --fonte-texto: "Hanken Grotesk", system-ui, sans-serif;
-}
-.idp-azulejos {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
-  gap: 10px;
-  margin-top: 20px;
-}
-.idp-azulejo-hora {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 56px;
-  border: 2px solid var(--linha);
-  border-radius: 10px;
-  background: var(--superficie);
-  box-shadow:
-    inset 0 2px 0 #ffffff,
-    inset 0 -3px 0 rgb(18 38 58 / 0.08);
-  color: var(--texto);
-  font: 600 18px/1 var(--fonte-titulo);
-  font-variant-numeric: tabular-nums;
-  cursor: pointer;
-}
-.idp-azulejo-hora[aria-pressed="true"] {
-  border-color: var(--acao);
-  background: var(--acao);
-  box-shadow: none;
-  color: var(--sobre-acao);
-}
-.idp-painel {
-  overflow: hidden;
-  border: 2px solid var(--linha-suave);
-  border-radius: 14px;
-  background: var(--superficie);
-}
-.idp-painel li + li {
-  border-top: 2px solid #ffffff;
-}
-.idp-painel .idp-linha {
-  grid-template-columns: 1fr auto;
-}
-.idp-painel .idp-linha:hover {
-  background: #e1ebe9;
-}
-
-/* ================= C: Poste ================= */
-.idp-poste {
-  --fundo: #0f1b33;
-  --superficie: #182a4d;
-  --texto: #f5f7fa;
-  --suave: #9fb3d1;
-  --linha: #9fb3d1;
-  --linha-suave: #2c4170;
-  --acao: #d42a22;
-  --sobre-acao: #ffffff;
-  --destaque: #d42a22;
-  --sobre-destaque: #ffffff;
-  --perigo: #ff9a92;
-  --borda-controle: #9fb3d1;
-  --foco: #ffffff;
-  --desabilitado-fundo: #243a66;
-  --desabilitado-texto: #9fb3d1;
-  --raio-btn: 4px;
-  --raio-on: 4px;
-  --fonte-titulo: "Archivo", system-ui, sans-serif;
-  --fonte-texto: "Archivo", system-ui, sans-serif;
-}
-.idp-poste h1,
-.idp-poste h2,
-.idp-poste h3,
-.idp-poste .idp-marca,
-.idp-poste .idp-site,
-.idp-poste .idp-linha strong,
-.idp-poste .idp-preco {
-  font-stretch: 125%;
-}
-.idp-listras {
-  height: 16px;
-  background: repeating-linear-gradient(
-    135deg,
-    #d42a22 0 14px,
-    #f5f7fa 14px 28px,
-    #2458e0 28px 42px,
-    #f5f7fa 42px 56px
-  );
-}
-.idp-poste .idp-site {
-  display: none;
-}
-.idp-poste .idp-topo {
-  justify-content: flex-end;
-}
-.idp-poste .idp-hero {
-  padding-top: 24px;
-}
-.idp-poste h1.idp-grande {
-  margin: 36px 0 0;
-}
-.idp-marca-grande {
-  gap: 6px;
-  font-size: clamp(2.6rem, 11.5vw, 6.5rem);
-  letter-spacing: -0.03em;
-}
-.idp-marca-grande .idp-on {
-  padding: 0.08em 0.16em 0.04em;
-  border-width: 4px;
-  border-radius: 8px;
-}
-.idp-poste .idp-on[data-ligado="true"] {
-  box-shadow: 0 0 40px rgb(212 42 34 / 0.65);
-}
-.idp-poste .idp-status {
-  margin-bottom: 20px;
-}
-.idp-chamada {
-  max-width: 28ch;
-  margin-bottom: 24px;
-  font: 700 22px/1.25 var(--fonte-titulo);
-  font-stretch: 112%;
-}
-.idp-lista .idp-linha {
-  grid-template-columns: 1fr auto;
-  padding-inline: 4px;
-  border-bottom: 1px solid var(--linha-suave);
-}
-.idp-lista li:first-child .idp-linha {
-  border-top: 1px solid var(--linha-suave);
-}
-.idp-lista .idp-linha:hover {
-  background: var(--superficie);
-}
-.idp-poste .idp-tag {
-  background: #2458e0;
-  color: #ffffff;
+.idp-letreiro .idp-tag {
+  background: var(--azul);
+  color: var(--sobre-azul);
 }
 
 @media (prefers-reduced-motion: reduce) {

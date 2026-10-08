@@ -22,7 +22,25 @@ O nome traz um interruptor. Em qualquer direção escolhida, o "ON" da marca mos
 
 É a informação mais útil para quem mora perto, vem direto do nome e não existe em nenhum modelo pronto. É a única ousadia da identidade; todo o resto fica discreto ao redor dela.
 
-## Três direções de identidade
+## Decisão
+
+**Escolhida em 8 de outubro de 2026: A, Letreiro, em laranja, preto e um pouco de azul.** Azulejo e Poste foram descartadas; as descrições abaixo ficam como registro.
+
+A paleta do Letreiro mudou em relação à proposta original (que usava azul e amarelo):
+
+| Papel                                 | Cor                        | Observação                                                                              |
+| ------------------------------------- | -------------------------- | --------------------------------------------------------------------------------------- |
+| Ação, ON aceso, destaques             | Laranja `#FF7A1A`          | Sempre fundo com texto preto (7,1:1). Como texto sobre o claro só tem 2,6:1: nunca usar |
+| Texto de destaque sobre o claro       | Laranja queimado `#B34700` | 5,4:1 sobre Cal                                                                         |
+| Texto, bordas, faixa do cabeçalho     | Preto `#131416`            | 18,1:1 sobre Cal                                                                        |
+| Fundo da versão clara                 | Cal `#FDFDFB`              |                                                                                         |
+| Pontos de azul: links, etiqueta, foco | Azul `#2B4FD9`             | 6,4:1 como texto sobre Cal; 6,5:1 com texto branco                                      |
+| Texto secundário e borda de campo     | Cimento `#5F6672`          | 5,7:1                                                                                   |
+| Erro                                  | Vermelho `#B42318`         | 6,5:1                                                                                   |
+
+Em aberto: **versão clara** (fundo claro, faixa preta no alto) ou **escura** (fundo `#111214`, azul claro `#7C9CFF` nos links, rosa `#FF8A7A` nos erros). A página `/identidade` mostra as duas.
+
+---
 
 **Veja as três funcionando** em `/identidade` (`npm run dev`, depois http://localhost:8080/identidade). A página usa os serviços, os preços e a agenda do protótipo, calcula o "aberto agora" e o próximo horário livre na hora, e tem um seletor para ver o "ON" aceso e apagado. `/identidade?estado=aberto` abre já com o ON aceso. A página é temporária e some quando a direção for escolhida.
 

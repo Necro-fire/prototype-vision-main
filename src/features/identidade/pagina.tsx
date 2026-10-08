@@ -1,9 +1,7 @@
 import { useState } from "react";
 import "./identidade.css";
 import { SimulacaoContexto, type Simulacao } from "./comum";
-import { PropostaAzulejo } from "./proposta-azulejo";
 import { PropostaLetreiro } from "./proposta-letreiro";
-import { PropostaPoste } from "./proposta-poste";
 
 const estados: { valor: Simulacao; rotulo: string }[] = [
   { valor: "real", rotulo: "Hora real" },
@@ -21,17 +19,17 @@ export function PaginaIdentidade({
     <SimulacaoContexto.Provider value={simulacao}>
       <div className="idp-page">
         <div className="idp-intro">
-          <h1>Três direções para a ON-STYLE</h1>
+          <h1>Letreiro em laranja, preto e azul: claro ou escuro?</h1>
           <p>
-            Cada direção abaixo é a abertura da página inicial, com os serviços, os preços e a
+            Abaixo, a abertura da página inicial nas duas versões, com os serviços, os preços e a
             agenda do protótipo. O horário livre e o &ldquo;aberto agora&rdquo; são calculados na
             hora, a partir do que está configurado no painel. Os botões levam ao agendamento de
             verdade.
           </p>
           <p>
-            O &ldquo;ON&rdquo; do nome acende quando a barbearia está aberta e apaga quando está
-            fechada. É o que as três têm em comum. O que muda é o resto: cor, letra e o que vem
-            primeiro na tela.
+            O &ldquo;ON&rdquo; do nome acende em laranja quando a barbearia está aberta e apaga
+            quando está fechada. O laranja é sempre um fundo com texto preto; o azul aparece só em
+            pequenos pontos: links, etiquetas e o foco do teclado.
           </p>
           <div className="idp-seletor" role="group" aria-label="Estado da barbearia">
             <span>Ver a barbearia:</span>
@@ -48,19 +46,15 @@ export function PaginaIdentidade({
           </div>
           <ul className="idp-atalhos">
             <li>
-              <a href="#letreiro">A: Letreiro</a>
+              <a href="#letreiro-claro">Letreiro claro</a>
             </li>
             <li>
-              <a href="#azulejo">B: Azulejo</a>
-            </li>
-            <li>
-              <a href="#poste">C: Poste</a>
+              <a href="#letreiro-escuro">Letreiro escuro</a>
             </li>
           </ul>
         </div>
         <PropostaLetreiro />
-        <PropostaAzulejo />
-        <PropostaPoste />
+        <PropostaLetreiro escuro />
       </div>
     </SimulacaoContexto.Provider>
   );

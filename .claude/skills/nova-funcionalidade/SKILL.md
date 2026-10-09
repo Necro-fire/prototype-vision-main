@@ -33,7 +33,7 @@ description: Use ao criar uma tela, módulo ou funcionalidade nova no ON-STYLE (
 
 ## Estado e dados
 
-Hoje os dados vêm de `useShop()` (`src/features/demo/shop-provider.tsx`), provisório. Se a funcionalidade precisa de dados que o `useShop` não tem, avise: provavelmente é caso de esperar o banco. Não aumente o provedor provisório sem combinar.
+Os dados vêm do Supabase. Páginas públicas carregam no `loader` da rota (já na renderização do servidor) e passam para a tela; áreas com login leem com React Query pelo módulo `*-do-dono.ts` da área. Gravação sensível chama função do banco (skill `migracao-banco`), com o erro traduzido por `mensagemDoBanco`. Não existe mais estado em memória.
 
 ## Testes
 

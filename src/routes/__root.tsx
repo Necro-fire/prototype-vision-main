@@ -12,7 +12,6 @@ import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { lerExpediente } from "@/features/agenda/banco";
-import { ShopProvider } from "@/features/demo/shop-provider";
 import { NOME } from "@/lib/marca";
 import { ouNulo } from "@/lib/supabase";
 
@@ -135,9 +134,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <ShopProvider>
-        <Outlet />
-      </ShopProvider>
+      <Outlet />
     </QueryClientProvider>
   );
 }

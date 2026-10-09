@@ -2,7 +2,6 @@
 // barbearia. Funções puras; `agora` entra como parâmetro, nunca se lê o relógio do aparelho.
 import { z } from "zod";
 
-import { descreverDias } from "./funcionamento";
 import { dataLonga } from "@/lib/datas";
 import { diaDaSemanaDe, horaNoFuso, type Intervalo } from "./horarios-livres";
 
@@ -108,6 +107,24 @@ export function abertoAgora(expediente: Expediente, agora: Date): Funcionamento 
     return { aberto: false, texto: `Fechado. Abre ${quando} às ${horaCurta(primeiro.abre)}` };
   }
   return { aberto: false, texto: "Fechado no momento" };
+}
+
+// "segunda a sábado", "segunda a quarta e sexta", "sábado". Dias seguidos viram um intervalo.
+export function descreverDias(dias: number[]) {
+  const ordenados = [...new Set(dias)].sort((a, b) => a - b);
+  const trechos: string[] = [];
+  for (let i = 0; i < ordenados.length;) {
+    let fim = i;
+    while (ordenados[fim + 1] === (ordenados[fim] ?? -2) + 1) fim++;
+    const primeiro = diasDaSemana[ordenados[i] ?? 0] ?? "";
+    const ultimo = diasDaSemana[ordenados[fim] ?? 0] ?? "";
+    if (fim - i >= 2) trechos.push(`${primeiro} a ${ultimo}`);
+    else for (let k = i; k <= fim; k++) trechos.push(diasDaSemana[ordenados[k] ?? 0] ?? "");
+    i = fim + 1;
+  }
+  if (trechos.length === 0) return "";
+  if (trechos.length === 1) return trechos[0] ?? "";
+  return `${trechos.slice(0, -1).join(", ")} e ${trechos.at(-1)}`;
 }
 
 // Agrupa os dias que têm o mesmo horário: [{ dias: "segunda a sexta", horas: "9h às 19h" }, ...].

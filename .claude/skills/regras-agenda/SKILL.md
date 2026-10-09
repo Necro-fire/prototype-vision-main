@@ -9,9 +9,10 @@ A agenda é o coração do sistema. Uma barbearia, um barbeiro, uma cadeira: um 
 
 ## Onde fica
 
-- `src/features/agenda/disponibilidade.ts`: `availableTimes` e `today`. **Função pura**, sem estado e sem acesso a rede ou banco.
-- `src/features/agenda/disponibilidade.test.ts`: os testes que definem o comportamento.
-- `src/features/agenda/tipos.ts`: `Booking`.
+- `src/features/agenda/horarios-livres.ts`: `horariosLivres`, os horários livres de um dia no fuso da barbearia. **Função pura**: `agora` e os períodos ocupados entram como parâmetro, sem relógio do aparelho nem rede.
+- `src/features/agenda/expediente.ts`: funcionamento por dia (com almoço), "aberto agora" e datas no fuso.
+- `src/features/admin/situacoes.ts`: o caminho da situação do agendamento.
+- Testes ao lado de cada arquivo, e `supabase/testes/paridade.test.ts` e `situacoes.test.ts`, que provam que o site e o banco concordam.
 
 Regra nova entra aqui, como função pura com teste. Nunca dentro de componente ou de função de servidor.
 

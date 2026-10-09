@@ -50,6 +50,9 @@ describe("mensagemDoBanco", () => {
       "desconto_invalido",
       "venda_inexistente",
       "ja_estornada",
+      "intervalos_sobrepostos",
+      "intervalo_invalido",
+      "intervalos_invalidos",
     ];
     for (const codigo of codigos) {
       expect(mensagemDoBanco({ message: codigo }), codigo).not.toBe(PADRAO);

@@ -52,6 +52,9 @@ const doBanco: Record<string, string> = {
   desconto_invalido: "O desconto não pode ser maior que o valor da venda.",
   venda_inexistente: "Não encontramos essa venda.",
   ja_estornada: "Essa venda já foi estornada.",
+  intervalos_sobrepostos: "Há horários que se sobrepõem no mesmo dia. Ajuste e salve de novo.",
+  intervalo_invalido: "Cada horário precisa fechar depois de abrir.",
+  intervalos_invalidos: "Não foi possível ler os horários. Recarregue a página e tente de novo.",
 };
 
 // O banco levanta exceções com o código como mensagem (raise exception 'horario_indisponivel').

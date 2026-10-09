@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   abertoAgora,
+  descreverDias,
   descreverExpediente,
   expedienteDeLinhas,
   horaCurta,
@@ -173,5 +174,26 @@ describe("datas de calendário", () => {
     expect(rotuloDoDia("2026-10-12", "2026-10-12")).toBe("hoje");
     expect(rotuloDoDia("2026-10-13", "2026-10-12")).toBe("amanhã");
     expect(rotuloDoDia("2026-10-16", "2026-10-12")).toBe("sexta, 16/10");
+  });
+});
+
+describe("descreverDias", () => {
+  it("resume dias seguidos num intervalo", () => {
+    expect(descreverDias([1, 2, 3, 4, 5, 6])).toBe("segunda a sábado");
+    expect(descreverDias([0, 1, 2, 3])).toBe("domingo a quarta");
+  });
+  it("junta trechos separados", () => {
+    expect(descreverDias([1, 2, 3, 5])).toBe("segunda a quarta e sexta");
+    expect(descreverDias([1, 2, 4, 5, 6])).toBe("segunda, terça e quinta a sábado");
+  });
+  it("trata um dia só e nenhum dia", () => {
+    expect(descreverDias([6])).toBe("sábado");
+    expect(descreverDias([])).toBe("");
+  });
+  it("dois dias seguidos não viram intervalo", () => {
+    expect(descreverDias([1, 2])).toBe("segunda e terça");
+  });
+  it("ignora a ordem e repetições", () => {
+    expect(descreverDias([6, 1, 1, 2, 3])).toBe("segunda a quarta e sábado");
   });
 });

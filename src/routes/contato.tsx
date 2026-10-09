@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Clock, MapPin } from "lucide-react";
+import { Clock, MapPin, MessageCircle, Phone } from "lucide-react";
 
 import { Foto } from "@/components/foto";
 import { EstadoDeFuncionamento } from "@/components/marca";
@@ -7,16 +7,28 @@ import { ShopLayout } from "@/components/shop-layout";
 import { Button } from "@/components/ui/button";
 import { descreverExpediente } from "@/features/agenda/expediente";
 import { useFuncionamento } from "@/features/agenda/use-funcionamento";
+import { lerContato } from "@/features/contato/banco";
+import {
+  linkDoInstagram,
+  linkDoMapa,
+  linkDoTelefone,
+  linkDoWhatsapp,
+} from "@/features/contato/links";
 import { metasDaPagina } from "@/lib/marca";
+import { ouNulo } from "@/lib/supabase";
 
 export const Route = createFileRoute("/contato")({
   component: Contact,
+  loader: async () => ({ contato: await ouNulo(lerContato()) }),
   head: () => ({
     meta: metasDaPagina("Contato", "Horário de atendimento e como chegar à ON-STYLE."),
   }),
 });
 
+const linkClasse = "font-semibold text-info underline underline-offset-4 hover:no-underline";
+
 function Contact() {
+  const { contato } = Route.useLoaderData();
   const { funcionamento, expediente } = useFuncionamento();
   const atendimento = expediente ? descreverExpediente(expediente) : [];
   return (
@@ -56,9 +68,73 @@ function Contact() {
           <div className="flex gap-4 rounded-md border-2 border-foreground bg-card p-5">
             <MapPin aria-hidden="true" className="mt-1 size-6 shrink-0" />
             <div className="grid gap-1">
-              <dt className="font-display text-xl font-bold">Endereço e telefone</dt>
-              <dd className="text-lg text-muted-foreground">
-                A barbearia ainda não informou o endereço nem o telefone.
+              <dt className="font-display text-xl font-bold">Endereço</dt>
+              <dd className="text-lg">
+                {contato?.endereco ? (
+                  <>
+                    {contato.endereco}{" "}
+                    <a
+                      href={linkDoMapa(contato.endereco) ?? undefined}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={linkClasse}
+                    >
+                      Ver no mapa
+                    </a>
+                  </>
+                ) : (
+                  <span className="text-muted-foreground">
+                    A barbearia ainda não informou o endereço.
+                  </span>
+                )}
+              </dd>
+            </div>
+          </div>
+          <div className="flex gap-4 rounded-md border-2 border-foreground bg-card p-5">
+            <Phone aria-hidden="true" className="mt-1 size-6 shrink-0" />
+            <div className="grid gap-1">
+              <dt className="font-display text-xl font-bold">Telefone e redes</dt>
+              <dd className="grid gap-1 text-lg">
+                {!contato?.telefone && !contato?.whatsapp && !contato?.instagram && (
+                  <span className="text-muted-foreground">
+                    A barbearia ainda não informou telefone nem redes.
+                  </span>
+                )}
+                {contato?.telefone && (
+                  <span>
+                    Telefone:{" "}
+                    <a href={linkDoTelefone(contato.telefone) ?? undefined} className={linkClasse}>
+                      {contato.telefone}
+                    </a>
+                  </span>
+                )}
+                {contato?.whatsapp && (
+                  <span className="flex items-center gap-1">
+                    <MessageCircle aria-hidden="true" className="size-5" />
+                    WhatsApp:{" "}
+                    <a
+                      href={linkDoWhatsapp(contato.whatsapp) ?? undefined}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={linkClasse}
+                    >
+                      {contato.whatsapp}
+                    </a>
+                  </span>
+                )}
+                {contato?.instagram && (
+                  <span>
+                    Instagram:{" "}
+                    <a
+                      href={linkDoInstagram(contato.instagram) ?? undefined}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={linkClasse}
+                    >
+                      @{contato.instagram}
+                    </a>
+                  </span>
+                )}
               </dd>
             </div>
           </div>

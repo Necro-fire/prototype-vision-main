@@ -13,7 +13,7 @@ const ambiente = {
   SUPABASE_SERVICE_ROLE_KEY: "chave-de-servico",
   RESEND_API_KEY: "re_chave",
   EMAIL_REMETENTE: "ON-STYLE <oi@onstyle.example>",
-  SITE_URL: "https://onstyle.example",
+  VITE_SITE_URL: "https://onstyle.example",
   CRON_SECRET: "segredo-do-agendador",
 };
 const pedido = (autorizacao?: string) =>
@@ -40,7 +40,7 @@ describe("lerConfiguracao", () => {
     const resultado = lerConfiguracao({ VITE_SUPABASE_URL: ambiente.VITE_SUPABASE_URL });
     expect(resultado).toEqual({
       ok: false,
-      faltam: ["SUPABASE_SERVICE_ROLE_KEY", "RESEND_API_KEY", "EMAIL_REMETENTE", "SITE_URL"],
+      faltam: ["SUPABASE_SERVICE_ROLE_KEY", "RESEND_API_KEY", "EMAIL_REMETENTE", "VITE_SITE_URL"],
     });
   });
 });

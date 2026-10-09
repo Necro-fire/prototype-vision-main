@@ -47,12 +47,12 @@ function Contact() {
           alt="Cadeira de barbeiro antiga ao lado de uma porta aberta, com o sol entrando pelo piso de madeira."
         />
 
-        <dl className="grid gap-4">
+        <div className="grid gap-4">
           <div className="flex gap-4 rounded-md border-2 border-foreground bg-card p-5">
             <Clock aria-hidden="true" className="mt-1 size-6 shrink-0" />
             <div className="grid gap-1">
-              <dt className="font-display text-xl font-bold">Horário de atendimento</dt>
-              <dd className="text-lg">
+              <h2 className="font-display text-xl font-bold">Horário de atendimento</h2>
+              <div className="text-lg">
                 {atendimento.length > 0
                   ? atendimento.map((g) => (
                       <span key={g.dias} className="block">
@@ -60,14 +60,14 @@ function Contact() {
                       </span>
                     ))
                   : "A definir."}
-              </dd>
+              </div>
             </div>
           </div>
           <div className="flex gap-4 rounded-md border-2 border-foreground bg-card p-5">
             <MapPin aria-hidden="true" className="mt-1 size-6 shrink-0" />
             <div className="grid gap-1">
-              <dt className="font-display text-xl font-bold">Endereço</dt>
-              <dd className="text-lg">
+              <h2 className="font-display text-xl font-bold">Endereço</h2>
+              <div className="text-lg">
                 {contato?.endereco ? (
                   <>
                     {contato.endereco}{" "}
@@ -85,14 +85,14 @@ function Contact() {
                     A barbearia ainda não informou o endereço.
                   </span>
                 )}
-              </dd>
+              </div>
             </div>
           </div>
           <div className="flex gap-4 rounded-md border-2 border-foreground bg-card p-5">
             <Phone aria-hidden="true" className="mt-1 size-6 shrink-0" />
             <div className="grid gap-1">
-              <dt className="font-display text-xl font-bold">Telefone e redes</dt>
-              <dd className="grid gap-1 text-lg">
+              <h2 className="font-display text-xl font-bold">Telefone e redes</h2>
+              <div className="grid gap-1 text-lg">
                 {!contato?.telefone && !contato?.whatsapp && !contato?.instagram && (
                   <span className="text-muted-foreground">
                     A barbearia ainda não informou telefone nem redes.
@@ -133,10 +133,10 @@ function Contact() {
                     </a>
                   </span>
                 )}
-              </dd>
+              </div>
             </div>
           </div>
-        </dl>
+        </div>
 
         <div>
           <Button asChild size="lg">

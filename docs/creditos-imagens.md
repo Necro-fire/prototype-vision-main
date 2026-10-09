@@ -13,6 +13,8 @@ Duas fotos de banco de imagens, provisórias até a ON-STYLE ter fotos próprias
 
 A Unsplash License permite uso comercial, sem pedir autorização e sem exigir crédito na página. O crédito fica registrado aqui mesmo assim.
 
+A imagem de compartilhamento (`public/compartilhar.jpg`, 1200 por 630, usada quando o endereço do site é enviado por WhatsApp ou redes sociais) é um recorte da foto `cadeira-em-sala-clara-*`, de Caio Coelho, com a mesma licença.
+
 Cada foto foi recortada em 3:2 e salva em WebP nas larguras de 640, 960 e 1440 pixels. O recorte da segunda tira do quadro um frasco com rótulo que aparecia no canto da foto original.
 
 ## Histórico

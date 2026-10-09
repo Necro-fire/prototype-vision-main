@@ -22,7 +22,7 @@ const NOMES = {
   chaveDeServico: "SUPABASE_SERVICE_ROLE_KEY",
   chaveDoResend: "RESEND_API_KEY",
   remetente: "EMAIL_REMETENTE",
-  urlDoSite: "SITE_URL",
+  urlDoSite: "VITE_SITE_URL",
 } as const;
 
 // Lê o ambiente. Devolve o que falta pelo nome, para a rota explicar sem vazar valor nenhum.

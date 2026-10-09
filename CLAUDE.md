@@ -22,6 +22,7 @@ Gerenciador de pacotes: npm (não há Bun nesta máquina). Não reintroduza `bun
 - `src/routes/`: só páginas. Carregam dados, definem título e descrição e montam a tela.
 - `src/features/<área>/`: regras de negócio, tipos e componentes de cada área (agenda, catalogo, clientes, vendas, financeiro, conta, admin).
 - E-mails: o banco enche `emails_fila` por gatilho; `src/features/emails/` monta o texto e esvazia a fila; `src/lib/server/emails.ts` fala com o Resend e com o banco (chave `service_role`, só no servidor). Detalhes em `docs/07-emails.md`.
+- Publicação: `wrangler.jsonc` e o preset do Nitro geram o Worker da Cloudflare; `src/server.ts` põe os cabeçalhos de segurança em toda resposta; `/api/saude`, `/robots.txt` e `/sitemap.xml` são rotas de servidor. Passo a passo em `docs/08-publicacao.md`.
 - Dados e sessão: `src/lib/supabase.ts` (visitante), `src/lib/supabase-navegador.ts` (sessão no cookie) e `src/lib/server/supabase.ts` (servidor, nunca vai para o navegador). Cada área tem um módulo `banco.ts` ou `*-do-dono.ts` que lê e grava, e as telas usam esses módulos (leituras com React Query, gravações por função do banco). Não existe mais estado em memória.
 - `src/lib/`: utilidades sem regra de negócio (dinheiro, telefone, datas, contraste).
 - `supabase/`: migrações, seed e testes do banco. O banco é a barreira de segurança: regras de acesso e de reserva vivem lá (`docs/06-supabase.md`).

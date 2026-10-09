@@ -32,7 +32,7 @@ O servidor fala com o banco só pelas três funções acima, com a chave `servic
    - `SUPABASE_SERVICE_ROLE_KEY`: Project Settings > API > `service_role`. Dá acesso total ao banco. Não cole no chat nem no código.
    - `RESEND_API_KEY`: a chave criada no passo 2.
    - `EMAIL_REMETENTE`: por exemplo `ON-STYLE <onboarding@resend.dev>`.
-   - `SITE_URL`: `http://localhost:8080` em desenvolvimento.
+   - `VITE_SITE_URL`: `http://localhost:8080` em desenvolvimento (é público, por isso leva o prefixo).
    - `CRON_SECRET`: uma senha longa e aleatória, inventada por você.
 4. **Reiniciar `npm run dev`**: o servidor só lê o `.env` ao iniciar.
 
@@ -65,7 +65,7 @@ select cron.schedule(
 );
 ```
 
-Guarde o segredo no Vault do Supabase em vez de escrevê-lo na consulta. No Cloudflare, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `EMAIL_REMETENTE`, `SITE_URL` e `CRON_SECRET` entram como segredos do Worker, não como variáveis `VITE_*`.
+Guarde o segredo no Vault do Supabase em vez de escrevê-lo na consulta. No Cloudflare, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `EMAIL_REMETENTE` e `CRON_SECRET` entram como segredos do Worker, não como variáveis `VITE_*`. Detalhes em `docs/08-publicacao.md`.
 
 ## O que está provado e o que não está
 

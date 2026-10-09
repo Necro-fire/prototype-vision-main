@@ -13,7 +13,9 @@ import type { ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { lerExpediente } from "@/features/agenda/banco";
 import { lerContato } from "@/features/contato/banco";
+import { dadosDeNegocioLocal, jsonParaScript } from "@/features/contato/seo";
 import { NOME } from "@/lib/marca";
+import { imagemDeCompartilhamento, urlDoSite } from "@/lib/site";
 import { ouNulo } from "@/lib/supabase";
 
 function NotFoundComponent() {
@@ -81,38 +83,56 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     contato: await ouNulo(lerContato()),
   }),
   staleTime: 60_000,
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: `${NOME} — Barbearia` },
-      {
-        name: "description",
-        content:
-          "Corte, barba e sobrancelha com hora marcada. Veja os preços e agende em um minuto.",
-      },
-      { property: "og:title", content: `${NOME} — Barbearia` },
-      {
-        property: "og:description",
-        content: "Veja os preços e marque seu horário na ON-STYLE.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400..800&display=swap",
-      },
-    ],
-  }),
+  head: ({ loaderData }) => {
+    const site = urlDoSite();
+    const negocio = dadosDeNegocioLocal({
+      contato: loaderData?.contato ?? null,
+      expediente: loaderData?.expediente ?? null,
+      urlDoSite: site,
+    });
+    return {
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { title: `${NOME} — Barbearia` },
+        {
+          name: "description",
+          content:
+            "Corte, barba e sobrancelha com hora marcada. Veja os preços e agende em um minuto.",
+        },
+        { property: "og:title", content: `${NOME} — Barbearia` },
+        {
+          property: "og:description",
+          content: "Veja os preços e marque seu horário na ON-STYLE.",
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: site ? "summary_large_image" : "summary" },
+        ...(site
+          ? [
+              { property: "og:image", content: imagemDeCompartilhamento(site) },
+              { property: "og:image:width", content: "1200" },
+              { property: "og:image:height", content: "630" },
+              { property: "og:image:alt", content: "Cadeira de barbeiro preta em uma sala clara." },
+              { name: "twitter:image", content: imagemDeCompartilhamento(site) },
+            ]
+          : []),
+      ],
+      scripts: negocio ? [{ type: "application/ld+json", children: jsonParaScript(negocio) }] : [],
+      links: [
+        {
+          rel: "stylesheet",
+          href: appCss,
+        },
+        { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400..800&display=swap",
+        },
+      ],
+    };
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,

@@ -129,13 +129,17 @@ Falta, e depende do projeto no Supabase (guia 06):
 
 ## Fase 5 — Publicação (versão 1.0)
 
-- Publicação na Cloudflare, no domínio da barbearia; e-mails saindo do domínio próprio.
-- Dados reais: endereço, canais, horários, serviços e preços.
-- Cópia de segurança semanal automática do banco.
-- Monitoramento de erros e de disponibilidade.
-- Título, descrição, imagem de compartilhamento, mapa do site e dados de negócio local para buscadores.
-- Revisão final de segurança, acessibilidade e desempenho no celular.
-- Um ensaio completo com você: agendar como cliente, atender como dono.
+**Situação: o código está pronto e conferido no ambiente da Cloudflare em máquina local; falta o que depende das suas contas e do domínio.** Ramificação `fase-5-publicacao`. Passo a passo em `docs/08-publicacao.md`.
+
+- [ ] Publicação na Cloudflare, no domínio da barbearia; e-mails saindo do domínio próprio. _Depende de você: conta, domínio, Resend._
+- [ ] Dados reais: endereço, canais, horários, serviços e preços. _Pelo painel, por você._
+- [x] Cópia de segurança semanal automática do banco, cifrada (`.github/workflows/backup.yml`). Falta cadastrar os dois segredos e rodar uma vez; a restauração ainda não foi ensaiada.
+- [x] Monitoramento: rota `/api/saude` para o monitor de disponibilidade e registros de erro do servidor ligados (`wrangler.jsonc`). Falta criar o monitor.
+- [x] Título e descrição por página, imagem de compartilhamento, `robots.txt`, mapa do site (`sitemap.xml`) e dados de negócio local (schema.org) a partir do que o dono cadastrou.
+- [x] Revisão de segurança: cabeçalhos (política de conteúdo, `X-Frame-Options`, HSTS...), nenhum segredo no navegador, `npm audit` sem achados.
+- [x] Acessibilidade e layout conferidos em Chrome de verdade, em 360 e 1280 pixels (axe, rolagem, tamanhos, console). Corrigidos: títulos de produto fora de ordem e lista de definição inválida em Contato.
+- [ ] Desempenho medido no celular. _Ainda não medido._
+- [ ] Um ensaio completo com você: agendar como cliente, atender como dono.
 
 **Pronto quando**: você conclui o ensaio sem ajuda e autoriza a divulgação do endereço.
 

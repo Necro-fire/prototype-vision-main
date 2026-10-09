@@ -19,9 +19,12 @@ import { Route as EntrarRouteImport } from './routes/entrar'
 import { Route as ProdutosRouteImport } from './routes/produtos'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as ServicosRouteImport } from './routes/servicos'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminModuleRouteImport } from './routes/admin.$module'
+import { Route as ApiSaudeRouteImport } from './routes/api.saude'
 import { Route as AuthConfirmarRouteImport } from './routes/auth.confirmar'
 import { Route as ClienteIndexRouteImport } from './routes/cliente.index'
 import { Route as ClientePerfilRouteImport } from './routes/cliente.perfil'
@@ -77,9 +80,19 @@ const RedefinirSenhaRoute = RedefinirSenhaRouteImport.update({
   path: '/redefinir-senha',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicosRoute = ServicosRouteImport.update({
   id: '/servicos',
   path: '/servicos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -91,6 +104,11 @@ const AdminModuleRoute = AdminModuleRouteImport.update({
   id: '/$module',
   path: '/$module',
   getParentRoute: () => AdminRoute,
+} as any)
+const ApiSaudeRoute = ApiSaudeRouteImport.update({
+  id: '/api/saude',
+  path: '/api/saude',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthConfirmarRoute = AuthConfirmarRouteImport.update({
   id: '/auth/confirmar',
@@ -124,8 +142,11 @@ export interface FileRoutesByFullPath {
   '/produtos': typeof ProdutosRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/servicos': typeof ServicosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/$module': typeof AdminModuleRoute
+  '/api/saude': typeof ApiSaudeRoute
   '/auth/confirmar': typeof AuthConfirmarRoute
   '/cliente/perfil': typeof ClientePerfilRoute
   '/admin/': typeof AdminIndexRoute
@@ -141,8 +162,11 @@ export interface FileRoutesByTo {
   '/produtos': typeof ProdutosRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/servicos': typeof ServicosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/$module': typeof AdminModuleRoute
+  '/api/saude': typeof ApiSaudeRoute
   '/auth/confirmar': typeof AuthConfirmarRoute
   '/cliente/perfil': typeof ClientePerfilRoute
   '/admin': typeof AdminIndexRoute
@@ -161,8 +185,11 @@ export interface FileRoutesById {
   '/produtos': typeof ProdutosRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/servicos': typeof ServicosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/$module': typeof AdminModuleRoute
+  '/api/saude': typeof ApiSaudeRoute
   '/auth/confirmar': typeof AuthConfirmarRoute
   '/cliente/perfil': typeof ClientePerfilRoute
   '/admin/': typeof AdminIndexRoute
@@ -182,8 +209,11 @@ export interface FileRouteTypes {
     | '/produtos'
     | '/recuperar-senha'
     | '/redefinir-senha'
+    | '/robots.txt'
     | '/servicos'
+    | '/sitemap.xml'
     | '/admin/$module'
+    | '/api/saude'
     | '/auth/confirmar'
     | '/cliente/perfil'
     | '/admin/'
@@ -199,8 +229,11 @@ export interface FileRouteTypes {
     | '/produtos'
     | '/recuperar-senha'
     | '/redefinir-senha'
+    | '/robots.txt'
     | '/servicos'
+    | '/sitemap.xml'
     | '/admin/$module'
+    | '/api/saude'
     | '/auth/confirmar'
     | '/cliente/perfil'
     | '/admin'
@@ -218,8 +251,11 @@ export interface FileRouteTypes {
     | '/produtos'
     | '/recuperar-senha'
     | '/redefinir-senha'
+    | '/robots.txt'
     | '/servicos'
+    | '/sitemap.xml'
     | '/admin/$module'
+    | '/api/saude'
     | '/auth/confirmar'
     | '/cliente/perfil'
     | '/admin/'
@@ -238,7 +274,10 @@ export interface RootRouteChildren {
   ProdutosRoute: typeof ProdutosRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
   RedefinirSenhaRoute: typeof RedefinirSenhaRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
   ServicosRoute: typeof ServicosRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiSaudeRoute: typeof ApiSaudeRoute
   AuthConfirmarRoute: typeof AuthConfirmarRoute
   ApiEmailsProcessarRoute: typeof ApiEmailsProcessarRoute
 }
@@ -315,11 +354,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RedefinirSenhaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/servicos': {
       id: '/servicos'
       path: '/servicos'
       fullPath: '/servicos'
       preLoaderRoute: typeof ServicosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -335,6 +388,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/$module'
       preLoaderRoute: typeof AdminModuleRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/api/saude': {
+      id: '/api/saude'
+      path: '/api/saude'
+      fullPath: '/api/saude'
+      preLoaderRoute: typeof ApiSaudeRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/auth/confirmar': {
       id: '/auth/confirmar'
@@ -403,7 +463,10 @@ const rootRouteChildren: RootRouteChildren = {
   ProdutosRoute: ProdutosRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
   RedefinirSenhaRoute: RedefinirSenhaRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
   ServicosRoute: ServicosRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiSaudeRoute: ApiSaudeRoute,
   AuthConfirmarRoute: AuthConfirmarRoute,
   ApiEmailsProcessarRoute: ApiEmailsProcessarRoute,
 }

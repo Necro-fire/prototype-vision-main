@@ -1,0 +1,7 @@
+{
+  // Configuração da publicação na Cloudflare (Workers). O Nitro completa o resto na compilação
+  // (arquivo de entrada, arquivos estáticos e nodejs_compat). Passo a passo em docs/08-publicacao.md.
+  "name": "onstyle",
+  // Registros de erro e de requisições, lidos no painel da Cloudflare (Workers & Pages > onstyle > Logs).
+  "observability": { "enabled": true },
+}

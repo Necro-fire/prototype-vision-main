@@ -30,7 +30,7 @@ export function ProductList({ produtos }: { produtos: Produto[] | null }) {
           <div className="flex items-center gap-3">
             {p.fotoUrl && <Miniatura url={p.fotoUrl} />}
             <div className="grid gap-0.5">
-              <h3 className="font-display text-xl font-bold leading-tight">{p.nome}</h3>
+              <h2 className="font-display text-xl font-bold leading-tight">{p.nome}</h2>
               <p className="text-sm text-muted-foreground">{p.descricao}</p>
             </div>
           </div>

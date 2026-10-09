@@ -84,9 +84,9 @@ Falta, e depende de você:
 
 Depois disso, eu faço:
 
-- [ ] Criar conta, entrar, sair, confirmar e-mail, recuperar senha. Google, na sequência.
-- [ ] Páginas de `/admin` e `/cliente` protegidas no servidor.
-- [ ] Remover o login demonstrativo e a senha escrita no código.
+- [x] Criar conta, entrar, sair, confirmar e-mail, recuperar senha (`/criar-conta`, `/entrar`, `/recuperar-senha`, `/redefinir-senha`, `/auth/confirmar`). Google, na sequência.
+- [x] Páginas de `/admin` e `/cliente` protegidas no servidor (a sessão é conferida antes de renderizar; quem não é dono não abre `/admin`).
+- [x] Remover o login demonstrativo e a senha escrita no código.
 - [ ] Política de privacidade, termos e aceite no cadastro (precisam do nome e do documento da barbearia).
 
 **Pronto quando**: um cliente não consegue ler nem alterar dados de outro, comprovado por teste (feito, no banco); ninguém sem perfil de dono abre o painel (falta o login); a revisão de segurança não aponta pendência.

@@ -14,10 +14,15 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AgendamentoRouteImport } from './routes/agendamento'
 import { Route as ClienteRouteImport } from './routes/cliente'
 import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as CriarContaRouteImport } from './routes/criar-conta'
+import { Route as EntrarRouteImport } from './routes/entrar'
 import { Route as ProdutosRouteImport } from './routes/produtos'
+import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
+import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminModuleRouteImport } from './routes/admin.$module'
+import { Route as AuthConfirmarRouteImport } from './routes/auth.confirmar'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -44,9 +49,29 @@ const ContatoRoute = ContatoRouteImport.update({
   path: '/contato',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CriarContaRoute = CriarContaRouteImport.update({
+  id: '/criar-conta',
+  path: '/criar-conta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EntrarRoute = EntrarRouteImport.update({
+  id: '/entrar',
+  path: '/entrar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProdutosRoute = ProdutosRouteImport.update({
   id: '/produtos',
   path: '/produtos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
+  id: '/recuperar-senha',
+  path: '/recuperar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RedefinirSenhaRoute = RedefinirSenhaRouteImport.update({
+  id: '/redefinir-senha',
+  path: '/redefinir-senha',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosRoute = ServicosRouteImport.update({
@@ -64,6 +89,11 @@ const AdminModuleRoute = AdminModuleRouteImport.update({
   path: '/$module',
   getParentRoute: () => AdminRoute,
 } as any)
+const AuthConfirmarRoute = AuthConfirmarRouteImport.update({
+  id: '/auth/confirmar',
+  path: '/auth/confirmar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -71,9 +101,14 @@ export interface FileRoutesByFullPath {
   '/agendamento': typeof AgendamentoRoute
   '/cliente': typeof ClienteRoute
   '/contato': typeof ContatoRoute
+  '/criar-conta': typeof CriarContaRoute
+  '/entrar': typeof EntrarRoute
   '/produtos': typeof ProdutosRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/servicos': typeof ServicosRoute
   '/admin/$module': typeof AdminModuleRoute
+  '/auth/confirmar': typeof AuthConfirmarRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -81,9 +116,14 @@ export interface FileRoutesByTo {
   '/agendamento': typeof AgendamentoRoute
   '/cliente': typeof ClienteRoute
   '/contato': typeof ContatoRoute
+  '/criar-conta': typeof CriarContaRoute
+  '/entrar': typeof EntrarRoute
   '/produtos': typeof ProdutosRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/servicos': typeof ServicosRoute
   '/admin/$module': typeof AdminModuleRoute
+  '/auth/confirmar': typeof AuthConfirmarRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
@@ -93,9 +133,14 @@ export interface FileRoutesById {
   '/agendamento': typeof AgendamentoRoute
   '/cliente': typeof ClienteRoute
   '/contato': typeof ContatoRoute
+  '/criar-conta': typeof CriarContaRoute
+  '/entrar': typeof EntrarRoute
   '/produtos': typeof ProdutosRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/servicos': typeof ServicosRoute
   '/admin/$module': typeof AdminModuleRoute
+  '/auth/confirmar': typeof AuthConfirmarRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -106,9 +151,14 @@ export interface FileRouteTypes {
     | '/agendamento'
     | '/cliente'
     | '/contato'
+    | '/criar-conta'
+    | '/entrar'
     | '/produtos'
+    | '/recuperar-senha'
+    | '/redefinir-senha'
     | '/servicos'
     | '/admin/$module'
+    | '/auth/confirmar'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -116,9 +166,14 @@ export interface FileRouteTypes {
     | '/agendamento'
     | '/cliente'
     | '/contato'
+    | '/criar-conta'
+    | '/entrar'
     | '/produtos'
+    | '/recuperar-senha'
+    | '/redefinir-senha'
     | '/servicos'
     | '/admin/$module'
+    | '/auth/confirmar'
     | '/admin'
   id:
     | '__root__'
@@ -127,9 +182,14 @@ export interface FileRouteTypes {
     | '/agendamento'
     | '/cliente'
     | '/contato'
+    | '/criar-conta'
+    | '/entrar'
     | '/produtos'
+    | '/recuperar-senha'
+    | '/redefinir-senha'
     | '/servicos'
     | '/admin/$module'
+    | '/auth/confirmar'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -139,8 +199,13 @@ export interface RootRouteChildren {
   AgendamentoRoute: typeof AgendamentoRoute
   ClienteRoute: typeof ClienteRoute
   ContatoRoute: typeof ContatoRoute
+  CriarContaRoute: typeof CriarContaRoute
+  EntrarRoute: typeof EntrarRoute
   ProdutosRoute: typeof ProdutosRoute
+  RecuperarSenhaRoute: typeof RecuperarSenhaRoute
+  RedefinirSenhaRoute: typeof RedefinirSenhaRoute
   ServicosRoute: typeof ServicosRoute
+  AuthConfirmarRoute: typeof AuthConfirmarRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -180,11 +245,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContatoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/criar-conta': {
+      id: '/criar-conta'
+      path: '/criar-conta'
+      fullPath: '/criar-conta'
+      preLoaderRoute: typeof CriarContaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/entrar': {
+      id: '/entrar'
+      path: '/entrar'
+      fullPath: '/entrar'
+      preLoaderRoute: typeof EntrarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/produtos': {
       id: '/produtos'
       path: '/produtos'
       fullPath: '/produtos'
       preLoaderRoute: typeof ProdutosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recuperar-senha': {
+      id: '/recuperar-senha'
+      path: '/recuperar-senha'
+      fullPath: '/recuperar-senha'
+      preLoaderRoute: typeof RecuperarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/redefinir-senha': {
+      id: '/redefinir-senha'
+      path: '/redefinir-senha'
+      fullPath: '/redefinir-senha'
+      preLoaderRoute: typeof RedefinirSenhaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos': {
@@ -208,6 +301,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminModuleRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/auth/confirmar': {
+      id: '/auth/confirmar'
+      path: '/auth/confirmar'
+      fullPath: '/auth/confirmar'
+      preLoaderRoute: typeof AuthConfirmarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -229,8 +329,13 @@ const rootRouteChildren: RootRouteChildren = {
   AgendamentoRoute: AgendamentoRoute,
   ClienteRoute: ClienteRoute,
   ContatoRoute: ContatoRoute,
+  CriarContaRoute: CriarContaRoute,
+  EntrarRoute: EntrarRoute,
   ProdutosRoute: ProdutosRoute,
+  RecuperarSenhaRoute: RecuperarSenhaRoute,
+  RedefinirSenhaRoute: RedefinirSenhaRoute,
   ServicosRoute: ServicosRoute,
+  AuthConfirmarRoute: AuthConfirmarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

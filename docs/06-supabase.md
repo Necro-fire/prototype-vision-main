@@ -41,8 +41,11 @@ Todas as linhas precisam mostrar `rowsecurity = true`. Em **Authentication → P
 1. **Authentication → Sign In / Providers**: deixe **Email** ligado, com **Confirm email** ligado.
 2. **Authentication → URL Configuration**:
    - Site URL: `http://localhost:8080` (depois, o endereço do site).
-   - Redirect URLs: `http://localhost:8080/**`
-3. Entrar com Google fica para depois: exige criar um cliente OAuth no Google Cloud, e eu te guio quando chegar a hora.
+   - Redirect URLs: `http://localhost:*/**` (o asterisco cobre a porta: o Vite sobe em 8081, 8082... se a 8080 estiver ocupada, e o Supabase recusa o redirecionamento de qualquer endereço que não esteja na lista)
+3. **Modelos de e-mail (recomendado)**, em **Authentication → Email Templates**. O link padrão só funciona no mesmo navegador em que a conta foi criada; com o modelo abaixo, a pessoa pode criar a conta no computador e confirmar pelo celular:
+   - **Confirm signup**: troque o link por `<a href="{{ .SiteURL }}/auth/confirmar?token_hash={{ .TokenHash }}&type=signup">Confirmar meu e-mail</a>`
+   - **Reset password**: `<a href="{{ .SiteURL }}/auth/confirmar?token_hash={{ .TokenHash }}&type=recovery">Criar nova senha</a>`
+4. Entrar com Google fica para depois: exige criar um cliente OAuth no Google Cloud, e eu te guio quando chegar a hora.
 
 ## 5. Me passar as chaves públicas
 

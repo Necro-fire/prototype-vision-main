@@ -1,10 +1,6 @@
-import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, Outlet, redirect, useLocation } from "@tanstack/react-router";
 import {
   CalendarDays,
-  Eye,
-  EyeOff,
-  KeyRound,
   LayoutDashboard,
   type LucideIcon,
   MoreHorizontal,
@@ -18,11 +14,9 @@ import {
 
 import { MarcaLink } from "@/components/marca";
 import { Button } from "@/components/ui/button";
-import { Campo } from "@/components/ui/campo";
-import { Input } from "@/components/ui/input";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { DEMO_ADMIN } from "@/features/conta/admin-demo";
-import { useShop } from "@/features/demo/shop-provider";
+import { obterSessao } from "@/features/conta/sessao";
+import { useSair } from "@/features/conta/sair";
 import { cn } from "@/lib/utils";
 
 type ItemDoMenu = { id: string; label: string; icone: LucideIcon };
@@ -41,109 +35,17 @@ const modulos: ItemDoMenu[] = [
 const principaisNoCelular = ["dashboard", "agendamentos", "vendas"];
 
 export const Route = createFileRoute("/admin")({
-  component: AdminLayout,
+  component: AdminShell,
+  // O servidor confere a sessão antes de abrir qualquer página do painel. Quem não entrou vai
+  // para o login; quem entrou sem ser dono volta para a conta de cliente.
+  beforeLoad: async ({ location }) => {
+    const sessao = await obterSessao();
+    if (!sessao) throw redirect({ to: "/entrar", search: { voltar: location.href } });
+    if (sessao.papel !== "dono") throw redirect({ to: "/cliente" });
+    return { sessao };
+  },
   head: () => ({ meta: [{ name: "robots", content: "noindex" }] }),
 });
-
-function AdminLogin() {
-  const shop = useShop();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-
-  function submit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!shop.login(email, password)) {
-      setError("E-mail ou senha incorretos. Confira os dados e tente de novo.");
-    }
-  }
-
-  return (
-    <main className="mx-auto grid min-h-dvh w-full max-w-md content-center gap-6 px-5 py-10">
-      <MarcaLink />
-      <h1 className="font-display text-4xl font-extrabold leading-tight">Entrar na gestão</h1>
-      <form onSubmit={submit} noValidate className="grid gap-5">
-        <Campo id="admin-email" rotulo="E-mail">
-          {(props) => (
-            <Input
-              {...props}
-              type="email"
-              autoComplete="username"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          )}
-        </Campo>
-        <Campo id="admin-senha" rotulo="Senha" {...(error ? { erro: error } : {})}>
-          {(props) => (
-            <div className="relative">
-              <Input
-                {...props}
-                type={showPassword ? "text" : "password"}
-                autoComplete="current-password"
-                className="pr-14"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute right-0.5 top-0.5"
-                aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-                aria-pressed={showPassword}
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff /> : <Eye />}
-              </Button>
-            </div>
-          )}
-        </Campo>
-        <Button type="submit" size="lg">
-          Entrar
-        </Button>
-      </form>
-
-      <div className="grid gap-3 rounded-md border-2 border-dashed border-input p-4">
-        <p className="text-sm text-muted-foreground">
-          Acesso de demonstração. O login real, com e-mail e senha de verdade, chega com o banco de
-          dados.
-        </p>
-        <Button
-          type="button"
-          variant="outline"
-          className="h-auto justify-start py-3 text-left"
-          onClick={() => {
-            setEmail(DEMO_ADMIN.email);
-            setPassword(DEMO_ADMIN.password);
-            setError("");
-          }}
-        >
-          <KeyRound />
-          <span className="grid">
-            <span>Preencher acesso de demonstração</span>
-            <span className="text-sm font-normal text-muted-foreground">
-              {DEMO_ADMIN.email}, senha {DEMO_ADMIN.password}
-            </span>
-          </span>
-        </Button>
-      </div>
-      <Link
-        to="/"
-        className="inline-flex min-h-11 items-center font-semibold text-info underline underline-offset-4 hover:no-underline"
-      >
-        Voltar ao site
-      </Link>
-    </main>
-  );
-}
-
-function AdminLayout() {
-  const shop = useShop();
-  if (!shop.admin) return <AdminLogin />;
-  return <AdminShell />;
-}
 
 function Item({
   item,
@@ -190,7 +92,8 @@ function Item({
 }
 
 function AdminShell() {
-  const shop = useShop();
+  const { sessao } = Route.useRouteContext();
+  const sair = useSair();
   const { pathname } = useLocation();
   const atual =
     pathname === "/admin" || pathname === "/admin/" ? "dashboard" : pathname.split("/").pop();
@@ -225,11 +128,11 @@ function AdminShell() {
           >
             Ver o site
           </Link>
-          <p className="px-3 text-sm text-header-muted">Dono. Ambiente de demonstração.</p>
+          <p className="break-words px-3 text-sm text-header-muted">Dono: {sessao.email}</p>
           <Button
             variant="outline"
             className="border-white/40 bg-transparent text-header-foreground hover:bg-white/10"
-            onClick={shop.logout}
+            onClick={sair}
           >
             Sair
           </Button>
@@ -253,7 +156,7 @@ function AdminShell() {
           className="mx-auto grid w-full max-w-5xl gap-6 px-5 pb-28 pt-6 md:pb-12 md:pt-10"
         >
           <p className="rounded-md bg-info-soft px-4 py-2.5 text-sm font-semibold text-info">
-            Ambiente de demonstração: os dados são temporários e o login não é real.
+            Os dados deste painel ainda são de demonstração e somem ao recarregar. O login é real.
           </p>
           <Outlet />
         </main>
@@ -330,7 +233,7 @@ function AdminShell() {
               ))}
               <button
                 type="button"
-                onClick={shop.logout}
+                onClick={sair}
                 className="flex min-h-12 cursor-pointer items-center gap-3 text-left text-lg font-semibold text-destructive"
               >
                 Sair

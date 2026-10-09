@@ -6,7 +6,6 @@ import { availableTimes } from "@/features/agenda/disponibilidade";
 import type { Booking } from "@/features/agenda/tipos";
 import { initialProducts, initialServices } from "@/features/catalogo/dados-demo";
 import type { Client } from "@/features/clientes/tipos";
-import { checkAdmin } from "@/features/conta/admin-demo";
 import type { Sale } from "@/features/vendas/tipos";
 import { normalizePhone } from "@/lib/telefone";
 
@@ -18,12 +17,6 @@ function useShopState() {
   const [hours, setHours] = useState({ open: 9, close: 19, days: [1, 2, 3, 4, 5, 6] });
   const [currentPhone, setCurrentPhone] = useState("");
   const [sales, setSales] = useState<Sale[]>([]);
-  const [admin, setAdmin] = useState(false);
-  function login(email: string, password: string) {
-    const ok = checkAdmin(email, password);
-    setAdmin(ok);
-    return ok;
-  }
   function sell(productId: string, quantity: number, date: string) {
     const p = products.find((x) => x.id === productId && x.active);
     if (!p || !Number.isInteger(quantity) || quantity < 1)
@@ -99,9 +92,6 @@ function useShopState() {
     setCurrentPhone,
     sales,
     sell,
-    admin,
-    login,
-    logout: () => setAdmin(false),
   };
 }
 

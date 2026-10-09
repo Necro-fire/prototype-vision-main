@@ -2,7 +2,7 @@ name: Verificar
 
 on:
   push:
-    branches: [main]
+    branches: ["**"]
   pull_request:
 
 jobs:

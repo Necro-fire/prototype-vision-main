@@ -93,11 +93,19 @@ Depois disso, eu faço:
 
 ## Fase 3 — Agendamento real e conta do cliente
 
-- Catálogo e horários lidos do banco, no site e no agendamento.
-- Reserva como operação única no banco, com bloqueio de sobreposição.
-- Horários calculados no fuso da barbearia; intervalos por dia da semana; antecedência máxima.
-- Conta do cliente: próximos horários, histórico, cancelar, remarcar, agendar de novo, perfil, excluir conta.
-- Teste de ponta a ponta do fluxo completo.
+**Situação: o cálculo está pronto e provado; a ligação com os dados reais espera o projeto no Supabase.** Ramificação `fase-3-agendamento`.
+
+Feito, no computador:
+
+- [x] Reserva como operação única no banco, com bloqueio de sobreposição (Fase 2).
+- [x] Horários livres calculados no fuso da barbearia, com intervalos por dia da semana, grade configurável e antecedência máxima: `src/features/agenda/horarios-livres.ts`, sem usar o relógio do aparelho.
+- [x] **Paridade provada**: para cada horário do dia, o que o site oferece o banco aceita e o que o site esconde o banco recusa, em 7 cenários (dia livre, com agendamentos e bloqueio, almoço, domingo, longe demais, hoje e grade de 15 min). Se as regras divergirem, o teste aponta o horário.
+
+Falta, e depende do projeto no Supabase (guia 06):
+
+- [ ] Catálogo, horários e agendamentos lidos do banco no site e no agendamento.
+- [ ] Conta do cliente: próximos horários, histórico, cancelar, remarcar, agendar de novo, perfil, excluir conta.
+- [ ] Teste de ponta a ponta do fluxo completo.
 
 **Pronto quando**: o agendamento continua lá depois de recarregar a página e aparece em outro aparelho; dois pedidos simultâneos para o mesmo horário resultam em um aceito e um recusado com mensagem clara; todos os testes de agenda do protótipo passam.
 

@@ -129,12 +129,12 @@ Falta, e depende do projeto no Supabase (guia 06):
 
 ## Fase 5 — Publicação (versão 1.0)
 
-**Situação: o código está pronto e conferido no ambiente da Cloudflare em máquina local; falta o que depende das suas contas e do domínio.** Ramificação `fase-5-publicacao`. Passo a passo em `docs/08-publicacao.md`.
+**Situação: o código está pronto para a hospedagem Node.js (Hostinger) e conferido em máquina local; falta o que depende das suas contas e do domínio.** Ramificação `fase-5-publicacao`. Passo a passo em `docs/08-publicacao.md`.
 
-- [ ] Publicação na Cloudflare, no domínio da barbearia; e-mails saindo do domínio próprio. _Depende de você: conta, domínio, Resend._
+- [ ] Publicação na Hostinger (Node.js), no domínio da barbearia; e-mails saindo do domínio próprio. _Depende de você: conta, domínio, Resend._
 - [ ] Dados reais: endereço, canais, horários, serviços e preços. _Pelo painel, por você._
 - [x] Cópia de segurança semanal automática do banco, cifrada (`.github/workflows/backup.yml`). Falta cadastrar os dois segredos e rodar uma vez; a restauração ainda não foi ensaiada.
-- [x] Monitoramento: rota `/api/saude` para o monitor de disponibilidade e registros de erro do servidor ligados (`wrangler.jsonc`). Falta criar o monitor.
+- [x] Monitoramento: rota `/api/saude` para o monitor de disponibilidade e registros de erro do servidor (no painel da Hostinger). Falta criar o monitor.
 - [x] Título e descrição por página, imagem de compartilhamento, `robots.txt`, mapa do site (`sitemap.xml`) e dados de negócio local (schema.org) a partir do que o dono cadastrou.
 - [x] Revisão de segurança: cabeçalhos (política de conteúdo, `X-Frame-Options`, HSTS...), nenhum segredo no navegador, `npm audit` sem achados.
 - [x] Acessibilidade e layout conferidos em Chrome de verdade, em 360 e 1280 pixels (axe, rolagem, tamanhos, console). Corrigidos: títulos de produto fora de ordem e lista de definição inválida em Contato.

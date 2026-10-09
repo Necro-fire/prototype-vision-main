@@ -1,37 +1,46 @@
 # Publicação (Fase 5)
 
-Este guia leva o site do computador ao endereço da barbearia. O código já está pronto e foi conferido no ambiente da Cloudflare, em máquina local (veja "O que está provado"). O que falta são as contas e o domínio, que são seus.
+Este guia leva o site do computador ao endereço da barbearia. O site vai rodar como um processo Node.js na sua hospedagem da Hostinger. O código já está pronto e foi conferido em máquina local, rodando o servidor gerado pelo build (veja "O que está provado"). O que falta são as contas, o domínio e a publicação, que são seus.
 
 ## O que você precisa ter
 
-| Item                         | Para quê                                           | Custo                                             |
-| ---------------------------- | -------------------------------------------------- | ------------------------------------------------- |
-| Conta na Cloudflare          | Hospedar o site (Workers)                          | Plano gratuito atende uma barbearia               |
-| Domínio da barbearia         | O endereço (`onstyle.com.br`...)                   | Cerca de R$ 40 por ano no Registro.br             |
-| Conta no Resend              | E-mails (agendamento, lembrete) e e-mails de login | Gratuito até 3.000 e-mails por mês (100 por dia)  |
-| Projeto Supabase de produção | O banco                                            | Gratuito, com limites (veja "Cópia de segurança") |
+| Item                           | Para quê                                           | Custo                                             |
+| ------------------------------ | -------------------------------------------------- | ------------------------------------------------- |
+| Hospedagem Node.js (Hostinger) | Rodar o site                                       | Seu plano atual, com Node.js 24                   |
+| Domínio da barbearia           | O endereço (`onstyle.com.br`...)                   | Já existe na Hostinger, segundo o seu plano       |
+| Conta no Resend                | E-mails (agendamento, lembrete) e e-mails de login | Gratuito até 3.000 e-mails por mês (100 por dia)  |
+| Projeto Supabase de produção   | O banco                                            | Gratuito, com limites (veja "Cópia de segurança") |
 
-Dica: faça tudo primeiro com o endereço gratuito que a Cloudflare dá (`onstyle.<seu-usuario>.workers.dev`) e só depois ligue o domínio. Assim o ensaio acontece sem pressa.
+Dica: faça o ensaio primeiro com o endereço temporário que a Hostinger dá ao site (confira no painel) e só depois aponte o domínio da barbearia. Assim o ensaio acontece sem pressa.
 
-## 1. Publicar na Cloudflare
+## 1. Publicar na Hostinger
 
-1. No painel da Cloudflare: **Workers & Pages** > **Create** > **Import a repository** e escolha o repositório do GitHub.
-2. **Production branch**: `main`. Cada vez que algo entra na `main`, o site é publicado de novo.
-3. **Build command**: `npm run build`. **Deploy command**: `npx wrangler deploy`.
-4. Em **Variables and secrets**, de **build** (públicas, entram no site; o prefixo `VITE_` é isso):
+O site precisa de um plano com Node.js (a Hostinger indica o Business Web Hosting ou os planos Cloud) e da versão 24 do Node.js.
+
+1. No hPanel, crie um site **Node.js** e conecte o repositório do GitHub, ramificação `main`. Os nomes dos menus podem mudar: siga o fluxo de aplicativo Node.js.
+2. Configure:
+   - **Versão do Node.js**: `24`.
+   - **Comando de build**: `npm run build`.
+   - **Comando de início**: `npm start`.
+   - **Diretório raiz**: a pasta que tem o `package.json`.
+3. Em **variáveis de build** (públicas, entram no site; o prefixo `VITE_` é isso):
    - `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY`: os mesmos do `.env`.
    - `VITE_SITE_URL`: o endereço do site, sem barra no fim (`https://onstyle.com.br`). Aparece nos links dos e-mails e na imagem de compartilhamento.
-   - `NODE_VERSION`: `24`.
-5. Em **Variables and secrets**, de **execução**, como **Secret** (nunca como texto):
+4. Em **variáveis de execução** (secretas, nunca no código):
    - `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `EMAIL_REMETENTE` e `CRON_SECRET` (descritos em `docs/07-emails.md`).
-6. Publique. O primeiro endereço aparece no fim da execução. Abra `/api/saude`: deve responder `{"ok":true}`.
+   - O `.env` não vai para o servidor. Essas variáveis precisam estar cadastradas no painel.
+5. Não defina `NODE_ENV=production` antes do build. Vite e Nitro estão em `devDependencies` e precisam ser instalados para compilar.
+6. A porta vem da variável `PORT`, que a Hostinger define. O guia da Hostinger cita a porta 3000; se o painel mostrar outra, confie no painel.
+7. Publique. Abra `/api/saude`: deve responder `{"ok":true}`.
 
-Se você trocar uma variável `VITE_*`, é preciso publicar de novo (ela entra na compilação). Os segredos de execução valem na hora.
+Se você trocar uma variável `VITE_*`, é preciso publicar de novo (ela entra na compilação). Depois de mudar uma variável de execução, reinicie o site no painel (ou publique de novo).
 
 ## 2. Ligar o domínio
 
-1. No Worker `onstyle`: **Settings** > **Domains & Routes** > **Add** > **Custom domain** e digite o domínio.
-2. Se o domínio não estiver na Cloudflare, ela pede para trocar os servidores de nome (nameservers) no Registro.br. É o caminho mais simples e dá HTTPS automático.
+O domínio da barbearia já está na Hostinger, então os servidores de nome não precisam mudar.
+
+1. No hPanel, aponte o domínio para o site Node.js. Siga as instruções de DNS que o painel mostrar.
+2. Confirme que o HTTPS está ativo. O painel da Hostinger emite o certificado.
 3. Atualize `VITE_SITE_URL` para o domínio e publique de novo.
 
 ## 3. Ajustar o Supabase para o endereço novo
@@ -49,7 +58,7 @@ Sem isso, o link do e-mail de confirmação e o de recuperar a senha levam ao en
 
 O e-mail padrão do Supabase é limitado a poucos envios por hora e sai de um endereço genérico: serve para testar, não para uma barbearia com clientes se cadastrando. Em produção, use o Resend para tudo.
 
-1. No Resend: **Domains** > **Add Domain**, com o domínio da barbearia. Ele mostra registros DNS (SPF e DKIM) para você criar na Cloudflare. Espere ficar **Verified**.
+1. No Resend: **Domains** > **Add Domain**, com o domínio da barbearia. Ele mostra registros DNS (SPF e DKIM) para você criar no painel DNS do domínio (na Hostinger, se o domínio estiver lá). Espere ficar **Verified**.
 2. Troque `EMAIL_REMETENTE` por algo como `ON-STYLE <agenda@onstyle.com.br>`.
 3. Para os e-mails de **login** (confirmar conta, recuperar senha), no Supabase: **Authentication** > **Emails** > **SMTP Settings** > **Enable custom SMTP**:
    - Host `smtp.resend.com`, porta `465`, usuário `resend`, senha: a chave de API do Resend.
@@ -62,8 +71,8 @@ Com o site no ar, ligue o agendador descrito em `docs/07-emails.md` ("Agendador 
 
 ## 6. Monitoramento
 
-- **Disponibilidade**: crie um monitor gratuito no [UptimeRobot](https://uptimerobot.com) (ou nos Health Checks da Cloudflare) para `https://onstyle.com.br/api/saude`, a cada 5 minutos, com aviso por e-mail. A rota responde 200 quando o site e o banco funcionam e 503 quando não.
-- **Erros**: os registros do servidor (incluindo erros de página) ficam em **Workers & Pages** > `onstyle` > **Logs**. Já está ligado em `wrangler.jsonc`.
+- **Disponibilidade**: crie um monitor gratuito no [UptimeRobot](https://uptimerobot.com) para `https://onstyle.com.br/api/saude`, a cada 5 minutos, com aviso por e-mail. A rota responde 200 quando o site e o banco funcionam e 503 quando não.
+- **Erros**: os registros do servidor (incluindo erros de página) aparecem no painel da Hostinger, no site Node.js. Confira o caminho exato no seu painel.
 - **E-mails que falham**: aparecem no sino do painel (veja `docs/07-emails.md`).
 
 ## 7. Cópia de segurança semanal
@@ -104,20 +113,20 @@ No projeto de desenvolvimento, a segunda-feira tem um horário solto (das 23h à
 4. Como dono: confirme, inicie e conclua um atendimento; registre uma venda e estorne; bloqueie uma folga.
 5. Abra o site no celular (4G, não só no Wi-Fi) e agende de novo.
 6. Mande o endereço do site por WhatsApp: a imagem de compartilhamento deve aparecer.
-7. Derrube o monitor de propósito (por exemplo, pausando o Worker) e veja se o aviso chega.
+7. Derrube o monitor de propósito (por exemplo, parando o site no painel) e veja se o aviso chega.
 
 Quando tudo passar, divulgue o endereço.
 
 ## O que está provado
 
-- A compilação roda no ambiente da Cloudflare (workerd, em máquina local): páginas, dados reais do Supabase, `/api/saude`, `/robots.txt`, `/sitemap.xml`, imagem de compartilhamento, cabeçalhos de segurança, redirecionamento de `/admin` para o login e leitura dos segredos de execução pela rota de e-mails.
-- Em Chrome de verdade, as páginas públicas em 360 e 1280 pixels: sem erro no console, sem rolagem horizontal, textos de 14 pixels ou mais, alvos de toque de 44 pixels ou mais, sem achados no verificador de acessibilidade (axe, regras WCAG 2.1 AA) e sem violação da política de conteúdo.
+- O build com o preset `node-server` gera `.output/server/index.mjs`, e esse servidor roda com `node` em máquina local (Node 24). Testado com as rotas: `/api/saude` responde `{"ok":true}`; `/`, `/servicos`, `/robots.txt` e `/sitemap.xml` respondem 200; `/admin` redireciona para o login; os cabeçalhos de segurança estão presentes; a rota de e-mails recusa chamadas com segredo errado (401).
+- Antes da troca de hospedagem, o mesmo código foi conferido em Chrome de verdade, nas páginas públicas em 360 e 1280 pixels: sem erro no console, sem rolagem horizontal, textos de 14 pixels ou mais, alvos de toque de 44 pixels ou mais, sem achados no verificador de acessibilidade (axe, WCAG 2.1 AA). Essa conferência foi feita na compilação da Cloudflare; **não foi repetida** no servidor Node.
 - Nenhum segredo nos arquivos enviados ao navegador, nenhuma vulnerabilidade conhecida nas dependências de produção (`npm audit`).
 - A cifra e a decifra da cópia de segurança (`gpg`), e a sintaxe da rotina.
 
 ## O que não está provado
 
-- A publicação de verdade (precisa da sua conta) e o certificado do domínio.
+- A publicação de verdade na Hostinger (precisa da sua conta, do site Node e das variáveis) e o certificado do domínio.
 - O envio real de e-mails, o agendador, o monitor e a rotina de cópia (precisam das suas contas e segredos).
 - As áreas do dono e do cliente em navegador (precisam de login real): foram conferidas por testes automáticos e pelo redirecionamento, não vistas em tela.
 - Desempenho medido no celular (a página é leve e estática, mas não foi medida com ferramenta).

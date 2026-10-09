@@ -65,7 +65,7 @@ select cron.schedule(
 );
 ```
 
-Guarde o segredo no Vault do Supabase em vez de escrevê-lo na consulta. No Cloudflare, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `EMAIL_REMETENTE` e `CRON_SECRET` entram como segredos do Worker, não como variáveis `VITE_*`. Detalhes em `docs/08-publicacao.md`.
+Guarde o segredo no Vault do Supabase em vez de escrevê-lo na consulta. Na Hostinger, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `EMAIL_REMETENTE` e `CRON_SECRET` entram como variáveis de execução do site Node, não como variáveis `VITE_*`. Detalhes em `docs/08-publicacao.md`.
 
 ## O que está provado e o que não está
 

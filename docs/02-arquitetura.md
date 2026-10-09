@@ -14,7 +14,7 @@
 Navegador (cliente ou dono)
         │
         ▼
-Aplicação TanStack Start ── publicada na Cloudflare
+Aplicação TanStack Start ── publicada na Hostinger (Node.js)
   ├─ páginas renderizadas no servidor
   └─ funções de servidor (validam a entrada, leem a sessão)
         │
@@ -73,10 +73,10 @@ Cada pasta de `features/` tem a mesma forma: esquemas de validação, funções 
 
 ### Ambientes
 
-| Ambiente        | Aplicação                           | Banco                           |
-| --------------- | ----------------------------------- | ------------------------------- |
-| Desenvolvimento | Seu computador                      | Projeto Supabase `onstyle-dev`  |
-| Produção        | Cloudflare, no domínio da barbearia | Projeto Supabase `onstyle-prod` |
+| Ambiente        | Aplicação                                    | Banco                           |
+| --------------- | -------------------------------------------- | ------------------------------- |
+| Desenvolvimento | Seu computador                               | Projeto Supabase `onstyle-dev`  |
+| Produção        | Hostinger (Node.js), no domínio da barbearia | Projeto Supabase `onstyle-prod` |
 
 O plano gratuito do Supabase permite dois projetos. As mudanças de banco são sempre escritas como migrações, testadas em desenvolvimento e só então aplicadas em produção.
 
@@ -267,13 +267,13 @@ Todas as tabelas têm regras de acesso por linha ativas e começam fechadas: sem
 
 ## Integrações
 
-| Serviço      | Uso                                     | Custo esperado                       |
-| ------------ | --------------------------------------- | ------------------------------------ |
-| Supabase     | Banco, login, arquivos, tempo real      | Gratuito no porte de uma barbearia   |
-| Google Cloud | Apenas para o botão "Entrar com Google" | Gratuito                             |
-| Resend       | E-mails do sistema e do login           | Gratuito no volume esperado          |
-| Cloudflare   | Hospedagem e domínio                    | Gratuito, fora o registro do domínio |
-| GitHub       | Código e verificação automática         | Gratuito                             |
+| Serviço      | Uso                                     | Custo esperado                     |
+| ------------ | --------------------------------------- | ---------------------------------- |
+| Supabase     | Banco, login, arquivos, tempo real      | Gratuito no porte de uma barbearia |
+| Google Cloud | Apenas para o botão "Entrar com Google" | Gratuito                           |
+| Resend       | E-mails do sistema e do login           | Gratuito no volume esperado        |
+| Hostinger    | Hospedagem Node.js e domínio            | Plano atual do dono                |
+| GitHub       | Código e verificação automática         | Gratuito                           |
 
 Os valores dos planos mudam; confirmo cada um no momento da criação das contas.
 

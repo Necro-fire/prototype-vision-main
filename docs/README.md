@@ -51,7 +51,7 @@ Se for ler só uma coisa, leia a seção "O que preciso de você" abaixo e o [ro
 1. **Direção visual**: escolher entre Letreiro, Azulejo e Poste, descritas no [documento de design](03-design-system.md#três-direções-de-identidade). Minha recomendação é Letreiro. Se preferir decidir vendo, a primeira tarefa após a aprovação pode ser uma página comparando as três lado a lado.
 2. **Atendimento sem agendamento**: você não incluiu "dono agenda pelo cliente". Proponho que o cliente que chega sem hora marcada seja tratado com um bloqueio manual de horário na primeira versão, e com um "atendimento avulso" na fase do caixa, para a receita dele entrar no fechamento. Confirma?
 3. **Proteção contra abuso da agenda**: você não quis controle de faltas, e respeitei. Ainda assim recomendo um limite técnico de três agendamentos futuros por conta, só para impedir que alguém lote a agenda de propósito. Pode ser ajustado ou desligado nas configurações.
-4. **Hospedagem**: aprovada a Cloudflare, para onde o projeto já é compilado hoje, no plano gratuito. O domínio já existe na Hostinger e pode continuar lá, apontado para a Cloudflare; os passos ficam para a Fase 5.
+4. **Hospedagem**: aprovada a Hostinger, com o site rodando como aplicativo Node.js no plano que você já tem. O domínio já existe na Hostinger e fica lá, apontado para o site; os passos ficam para a Fase 5. (Antes a proposta era a Cloudflare; a troca foi decidida pelo dono em outubro de 2026.)
 
 ### Para a primeira versão ir ao ar
 
@@ -60,7 +60,7 @@ Nada disto bloqueia o início do trabalho, mas tudo é necessário antes da publ
 - Dados reais da barbearia: endereço, telefone ou WhatsApp, Instagram, horário de funcionamento, serviços com preço e duração.
 - O e-mail que será a conta do dono.
 - Um domínio (por exemplo `onstyle.com.br`), se já existir ou quando for registrado.
-- Contas gratuitas em GitHub, Supabase, Resend, Cloudflare e Google Cloud. Eu indico o passo a passo de cada uma quando chegar a hora; as senhas e chaves ficam com você.
+- Contas gratuitas em GitHub, Supabase, Resend e Google Cloud, além da hospedagem Hostinger que você já tem. Eu indico o passo a passo de cada uma quando chegar a hora; as senhas e chaves ficam com você.
 - Se quiser manter as três fotos atuais, baixe-as pelo editor do Lovable antes de desconectar o projeto. Elas estão hospedadas lá e não vieram no ZIP.
 
 ## Como aprovar

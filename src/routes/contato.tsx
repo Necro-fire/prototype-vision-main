@@ -7,19 +7,17 @@ import { ShopLayout } from "@/components/shop-layout";
 import { Button } from "@/components/ui/button";
 import { descreverExpediente } from "@/features/agenda/expediente";
 import { useFuncionamento } from "@/features/agenda/use-funcionamento";
-import { lerContato } from "@/features/contato/banco";
 import {
   linkDoInstagram,
   linkDoMapa,
   linkDoTelefone,
   linkDoWhatsapp,
 } from "@/features/contato/links";
+import { useContato } from "@/features/contato/use-contato";
 import { metasDaPagina } from "@/lib/marca";
-import { ouNulo } from "@/lib/supabase";
 
 export const Route = createFileRoute("/contato")({
   component: Contact,
-  loader: async () => ({ contato: await ouNulo(lerContato()) }),
   head: () => ({
     meta: metasDaPagina("Contato", "Horário de atendimento e como chegar à ON-STYLE."),
   }),
@@ -28,7 +26,7 @@ export const Route = createFileRoute("/contato")({
 const linkClasse = "font-semibold text-info underline underline-offset-4 hover:no-underline";
 
 function Contact() {
-  const { contato } = Route.useLoaderData();
+  const contato = useContato();
   const { funcionamento, expediente } = useFuncionamento();
   const atendimento = expediente ? descreverExpediente(expediente) : [];
   return (

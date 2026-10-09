@@ -2,10 +2,12 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { Menu } from "lucide-react";
 
+import { ContatoDoRodape } from "@/components/contato-do-rodape";
 import { MarcaLink } from "@/components/marca";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useFuncionamento } from "@/features/agenda/use-funcionamento";
+import { useContato } from "@/features/contato/use-contato";
 
 const links = [
   { to: "/", label: "Início" },
@@ -19,6 +21,7 @@ const linkDoMenu =
 
 export function ShopLayout({ children }: { children: ReactNode }) {
   const { funcionamento } = useFuncionamento();
+  const contato = useContato();
   return (
     <div className="flex min-h-dvh flex-col">
       <a
@@ -90,14 +93,15 @@ export function ShopLayout({ children }: { children: ReactNode }) {
       </main>
 
       <footer className="on-dark bg-header text-header-foreground">
-        <div className="mx-auto grid max-w-6xl gap-6 px-5 py-10 md:grid-cols-[1fr_auto] md:items-end">
-          <div className="grid gap-3">
+        <div className="mx-auto grid max-w-6xl gap-6 px-5 py-10 md:grid-cols-[1fr_auto] md:items-start">
+          <div className="grid gap-4">
             <MarcaLink ligado={funcionamento?.aberto ?? false} />
             <p className="max-w-[40ch] text-base text-header-muted">
               Corte, barba e sobrancelha com hora marcada.
             </p>
+            <ContatoDoRodape contato={contato} />
           </div>
-          <nav aria-label="Rodapé" className="flex flex-wrap gap-x-1 gap-y-0">
+          <nav aria-label="Rodapé" className="-mx-3 flex flex-wrap gap-x-1 gap-y-0">
             {links.map((link) => (
               <Link key={link.to} to={link.to} className={linkDoMenu}>
                 {link.label}

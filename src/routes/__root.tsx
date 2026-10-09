@@ -12,6 +12,7 @@ import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { lerExpediente } from "@/features/agenda/banco";
+import { lerContato } from "@/features/contato/banco";
 import { NOME } from "@/lib/marca";
 import { ouNulo } from "@/lib/supabase";
 
@@ -73,8 +74,12 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  // O funcionamento aparece em todas as páginas (o "ON" aceso da marca), então vem da raiz.
-  loader: async () => ({ expediente: await ouNulo(lerExpediente()) }),
+  // O funcionamento (o "ON" aceso da marca) e o contato (o rodapé) aparecem em todas as páginas,
+  // então vêm da raiz.
+  loader: async () => ({
+    expediente: await ouNulo(lerExpediente()),
+    contato: await ouNulo(lerContato()),
+  }),
   staleTime: 60_000,
   head: () => ({
     meta: [

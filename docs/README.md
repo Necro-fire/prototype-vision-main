@@ -11,6 +11,8 @@ Este é o planejamento para levar o protótipo da barbearia a um sistema real. N
 | [03 — Identidade e Design System](03-design-system.md) | Três direções de identidade para escolher, fundamentos visuais e UX de cada área  |
 | [04 — Estrutura para o Claude Code](04-claude-code.md) | `CLAUDE.md`, Skills e configurações que serão criados                             |
 | [05 — Roadmap](05-roadmap.md)                          | Fases, entregas, critérios de aceite e prioridades                                |
+| [06 — Supabase](06-supabase.md)                        | Como criar e ligar o projeto do banco                                             |
+| [07 — E-mails](07-emails.md)                           | Como os e-mails saem e o que falta ligar                                          |
 
 Se for ler só uma coisa, leia a seção "O que preciso de você" abaixo e o [roadmap](05-roadmap.md).
 

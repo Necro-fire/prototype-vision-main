@@ -25,6 +25,7 @@ import { Route as AdminModuleRouteImport } from './routes/admin.$module'
 import { Route as AuthConfirmarRouteImport } from './routes/auth.confirmar'
 import { Route as ClienteIndexRouteImport } from './routes/cliente.index'
 import { Route as ClientePerfilRouteImport } from './routes/cliente.perfil'
+import { Route as ApiEmailsProcessarRouteImport } from './routes/api.emails.processar'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -106,6 +107,11 @@ const ClientePerfilRoute = ClientePerfilRouteImport.update({
   path: '/perfil',
   getParentRoute: () => ClienteRoute,
 } as any)
+const ApiEmailsProcessarRoute = ApiEmailsProcessarRouteImport.update({
+  id: '/api/emails/processar',
+  path: '/api/emails/processar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/cliente/perfil': typeof ClientePerfilRoute
   '/admin/': typeof AdminIndexRoute
   '/cliente/': typeof ClienteIndexRoute
+  '/api/emails/processar': typeof ApiEmailsProcessarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -140,6 +147,7 @@ export interface FileRoutesByTo {
   '/cliente/perfil': typeof ClientePerfilRoute
   '/admin': typeof AdminIndexRoute
   '/cliente': typeof ClienteIndexRoute
+  '/api/emails/processar': typeof ApiEmailsProcessarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -159,6 +167,7 @@ export interface FileRoutesById {
   '/cliente/perfil': typeof ClientePerfilRoute
   '/admin/': typeof AdminIndexRoute
   '/cliente/': typeof ClienteIndexRoute
+  '/api/emails/processar': typeof ApiEmailsProcessarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -179,6 +188,7 @@ export interface FileRouteTypes {
     | '/cliente/perfil'
     | '/admin/'
     | '/cliente/'
+    | '/api/emails/processar'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -195,6 +205,7 @@ export interface FileRouteTypes {
     | '/cliente/perfil'
     | '/admin'
     | '/cliente'
+    | '/api/emails/processar'
   id:
     | '__root__'
     | '/'
@@ -213,6 +224,7 @@ export interface FileRouteTypes {
     | '/cliente/perfil'
     | '/admin/'
     | '/cliente/'
+    | '/api/emails/processar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -228,6 +240,7 @@ export interface RootRouteChildren {
   RedefinirSenhaRoute: typeof RedefinirSenhaRoute
   ServicosRoute: typeof ServicosRoute
   AuthConfirmarRoute: typeof AuthConfirmarRoute
+  ApiEmailsProcessarRoute: typeof ApiEmailsProcessarRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -344,6 +357,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientePerfilRouteImport
       parentRoute: typeof ClienteRoute
     }
+    '/api/emails/processar': {
+      id: '/api/emails/processar'
+      path: '/api/emails/processar'
+      fullPath: '/api/emails/processar'
+      preLoaderRoute: typeof ApiEmailsProcessarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -385,6 +405,7 @@ const rootRouteChildren: RootRouteChildren = {
   RedefinirSenhaRoute: RedefinirSenhaRoute,
   ServicosRoute: ServicosRoute,
   AuthConfirmarRoute: AuthConfirmarRoute,
+  ApiEmailsProcessarRoute: ApiEmailsProcessarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

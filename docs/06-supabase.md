@@ -23,6 +23,7 @@ Caminho mais simples, sem instalar nada:
    2. `20261008000002_funcoes_e_gatilhos.sql`
    3. `20261008000003_acesso.sql`
    4. `20261009000001_salvar_funcionamento.sql` (a tela de configurações usa esta função para salvar os horários de uma vez só; se você já rodou as três primeiras, rode só esta)
+   5. `20261009000002_emails.sql` (fila de e-mails ao cliente e aviso de falha para o dono; passo a passo em `docs/07-emails.md`)
 3. Depois cole e rode [supabase/seed.sql](../supabase/seed.sql). Ele cria os 6 serviços, os 3 produtos e o horário de segunda a sábado, das 9h às 19h. Troque pelos dados reais antes de publicar.
 
 Cada um deve terminar com **Success**. Se algum der erro, copie a mensagem inteira e me envie: a primeira aplicação num projeto real é também um teste do que foi feito no computador.

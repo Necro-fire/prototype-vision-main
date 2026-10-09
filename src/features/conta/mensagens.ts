@@ -54,6 +54,7 @@ const doBanco: Record<string, string> = {
   ja_estornada: "Essa venda já foi estornada.",
   intervalos_sobrepostos: "Há horários que se sobrepõem no mesmo dia. Ajuste e salve de novo.",
   intervalo_invalido: "Cada horário precisa fechar depois de abrir.",
+  email_inexistente: "Esse e-mail já saiu ou não está mais na fila.",
   intervalos_invalidos: "Não foi possível ler os horários. Recarregue a página e tente de novo.",
 };
 

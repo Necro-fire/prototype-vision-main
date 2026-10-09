@@ -55,6 +55,7 @@ const banco = vi.hoisted(() => {
         atual.id = valor;
         return consulta;
       },
+      gte: () => consulta,
       is: (coluna: string) => {
         atual.filtro = `${coluna} is null`;
         return consulta;
@@ -63,11 +64,26 @@ const banco = vi.hoisted(() => {
     };
     return consulta;
   };
-  return { tabelas, escritas, estado, canal, channel, removeChannel, quandoChegarAlerta, from };
+  const rpc = vi.fn(async (nome: string, argumentos: Linha) => {
+    escritas.push({ op: `rpc:${nome}`, linha: argumentos });
+    return { data: null, error: null };
+  });
+  return {
+    tabelas,
+    escritas,
+    estado,
+    canal,
+    channel,
+    removeChannel,
+    quandoChegarAlerta,
+    from,
+    rpc,
+  };
 });
 vi.mock("@/lib/supabase-navegador", () => ({
   supabaseNavegador: () => ({
     from: banco.from,
+    rpc: banco.rpc,
     channel: banco.channel,
     removeChannel: banco.removeChannel,
   }),
@@ -148,6 +164,45 @@ describe("Alertas", () => {
     abrir(<Alertas />);
     await screen.findByRole("list", { name: "Alertas" });
     expect(screen.getByRole("button", { name: "Marcar todos como lidos" })).toBeDisabled();
+  });
+
+  it("o alerta de e-mail que não saiu aparece com o nome do tipo", async () => {
+    banco.tabelas["alertas"] = [
+      alerta(
+        "a9",
+        "email_falhou",
+        "Não conseguimos enviar o e-mail de lembrete para ana@exemplo.com.",
+        false,
+      ),
+    ];
+    abrir(<Alertas />);
+    const lista = await screen.findByRole("list", { name: "Alertas" });
+    expect(lista).toHaveTextContent("E-mail não enviado");
+    expect(lista).toHaveTextContent("ana@exemplo.com");
+  });
+
+  it("sem e-mail com problema, a seção nem aparece", async () => {
+    abrir(<Alertas />);
+    await screen.findByRole("list", { name: "Alertas" });
+    expect(screen.queryByText("E-mails que não saíram")).not.toBeInTheDocument();
+  });
+
+  it("lista os e-mails que desistiram, com o motivo, e deixa tentar de novo", async () => {
+    banco.tabelas["emails_fila"] = [
+      {
+        id: "e1",
+        destinatario: "ana@exemplo.com",
+        modelo: "lembrete",
+        erro: "Resend 403: The domain is not verified",
+      },
+    ];
+    abrir(<Alertas />);
+    const lista = await screen.findByRole("list", { name: "E-mails que não saíram" });
+    expect(lista).toHaveTextContent("Lembrete para ana@exemplo.com");
+    expect(lista).toHaveTextContent("Motivo: Resend 403: The domain is not verified");
+    fireEvent.click(screen.getByRole("button", { name: /Tentar de novo.*ana@exemplo.com/ }));
+    await waitFor(() => expect(banco.escritas).toHaveLength(1));
+    expect(banco.escritas[0]).toEqual({ op: "rpc:reenviar_email", linha: { p_id: "e1" } });
   });
 
   it("sem alertas, explica quando eles aparecem", async () => {

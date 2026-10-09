@@ -8,10 +8,10 @@ import { falhou } from "@/lib/erro-do-banco";
 import { supabaseNavegador } from "@/lib/supabase-navegador";
 import { chavesDoDono } from "./agenda-do-dono";
 
-export const chavesDeAlertas = { alertas: ["admin", "alertas"] };
+export const chavesDeAlertas = { alertas: ["admin", "alertas"], emails: ["admin", "emails"] };
 
 export type TipoDeAlerta =
-  "novo_agendamento" | "cancelamento" | "remarcacao" | "falta_sem_registro";
+  "novo_agendamento" | "cancelamento" | "remarcacao" | "falta_sem_registro" | "email_falhou";
 
 export type AlertaDoDono = {
   id: string;
@@ -23,7 +23,13 @@ export type AlertaDoDono = {
 
 const linhaDeAlerta = z.object({
   id: z.string(),
-  tipo: z.enum(["novo_agendamento", "cancelamento", "remarcacao", "falta_sem_registro"]),
+  tipo: z.enum([
+    "novo_agendamento",
+    "cancelamento",
+    "remarcacao",
+    "falta_sem_registro",
+    "email_falhou",
+  ]),
   texto: z.string(),
   criado_em: z.string(),
   lido_em: z.string().nullable(),
@@ -60,6 +66,46 @@ export async function marcarTodosComoLidos(): Promise<void> {
   if (error) falhou(error);
 }
 
+// E-mail que esgotou as tentativas de envio. O sino já avisou; aqui o dono vê qual e por quê.
+export type EmailComProblema = {
+  id: string;
+  destinatario: string;
+  modelo: string;
+  erro: string | null;
+};
+
+const linhaDeEmail = z.object({
+  id: z.string(),
+  destinatario: z.string(),
+  modelo: z.string(),
+  erro: z.string().nullable(),
+});
+
+export async function lerEmailsComProblema(): Promise<EmailComProblema[]> {
+  const { data, error } = await supabaseNavegador()
+    .from("emails_fila")
+    .select("id, destinatario, modelo, erro")
+    .is("enviado_em", null)
+    .gte("tentativas", 5)
+    .order("criado_em", { ascending: false })
+    .limit(50);
+  if (error) falhou(error);
+  return (data ?? []).map((linha) => linhaDeEmail.parse(linha));
+}
+
+export async function reenviarEmail(id: string): Promise<void> {
+  const { error } = await supabaseNavegador().rpc("reenviar_email", { p_id: id });
+  if (error) falhou(error);
+}
+
+export function useEmailsComProblema() {
+  return useQuery({
+    queryKey: chavesDeAlertas.emails,
+    queryFn: lerEmailsComProblema,
+    refetchInterval: 60_000,
+  });
+}
+
 export function useAlertas() {
   return useQuery({
     queryKey: chavesDeAlertas.alertas,
@@ -82,6 +128,7 @@ export function useAlertasEmTempoReal() {
       .channel("alertas-do-dono")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "alertas" }, () => {
         void queryClient.invalidateQueries({ queryKey: chavesDeAlertas.alertas });
+        void queryClient.invalidateQueries({ queryKey: chavesDeAlertas.emails });
         void queryClient.invalidateQueries({ queryKey: chavesDoDono.agendamentos });
       })
       .subscribe();

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Bell, CalendarClock, CalendarPlus, CalendarX, Clock } from "lucide-react";
+import { Bell, CalendarClock, CalendarPlus, CalendarX, Clock, Mail } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,9 @@ import {
   chavesDeAlertas,
   marcarComoLido,
   marcarTodosComoLidos,
+  reenviarEmail,
   useAlertas,
+  useEmailsComProblema,
   type TipoDeAlerta,
 } from "./alertas-do-dono";
 import { EstadoVazio } from "./componentes";
@@ -23,6 +25,14 @@ const tipos: Record<TipoDeAlerta, { rotulo: string; icone: typeof Bell }> = {
   cancelamento: { rotulo: "Cancelamento", icone: CalendarX },
   remarcacao: { rotulo: "Remarcação", icone: CalendarClock },
   falta_sem_registro: { rotulo: "Sem registro", icone: Clock },
+  email_falhou: { rotulo: "E-mail não enviado", icone: Mail },
+};
+
+const modelosDeEmail: Record<string, string> = {
+  confirmacao: "Confirmação",
+  lembrete: "Lembrete",
+  remarcacao: "Remarcação",
+  cancelamento: "Cancelamento",
 };
 
 // O histórico do sino: o que aconteceu, quando, e o que ainda não foi lido.
@@ -30,10 +40,16 @@ export function Alertas() {
   const queryClient = useQueryClient();
   const fuso = useExpediente()?.fuso ?? FUSO_PADRAO;
   const consulta = useAlertas();
+  const emailsComProblema = useEmailsComProblema();
   const [erro, setErro] = useState<string | null>(null);
 
   const recarregar = () =>
     void queryClient.invalidateQueries({ queryKey: chavesDeAlertas.alertas });
+  const tentarDeNovo = useMutation({
+    mutationFn: reenviarEmail,
+    onError: (e) => setErro(e.message),
+    onSettled: () => void queryClient.invalidateQueries({ queryKey: chavesDeAlertas.emails }),
+  });
   const ler = useMutation({
     mutationFn: marcarComoLido,
     onError: (e) => setErro(e.message),
@@ -89,6 +105,48 @@ export function Alertas() {
         <p role="alert" className="text-base font-semibold text-destructive">
           {erro}
         </p>
+      )}
+      {(emailsComProblema.data?.length ?? 0) > 0 && (
+        <section
+          aria-labelledby="emails-com-problema"
+          className="grid gap-3 rounded-md border-2 border-destructive p-4"
+        >
+          <h3 id="emails-com-problema" className="font-display text-xl font-bold">
+            E-mails que não saíram
+          </h3>
+          <p className="text-base text-muted-foreground">
+            O envio falhou várias vezes. O cliente não recebeu o aviso.
+          </p>
+          <ul aria-label="E-mails que não saíram" className="grid gap-3">
+            {emailsComProblema.data?.map((e) => (
+              <li
+                key={e.id}
+                className="grid gap-2 border-t border-border pt-3 sm:grid-cols-[1fr_auto] sm:items-center"
+              >
+                <div className="grid gap-0.5">
+                  <p className="text-base font-semibold">
+                    {modelosDeEmail[e.modelo] ?? e.modelo} para {e.destinatario}
+                  </p>
+                  {e.erro && <p className="text-sm text-muted-foreground">Motivo: {e.erro}</p>}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={tentarDeNovo.isPending}
+                  onClick={() => {
+                    setErro(null);
+                    tentarDeNovo.mutate(e.id);
+                  }}
+                >
+                  Tentar de novo
+                  <span className="sr-only">
+                    : {modelosDeEmail[e.modelo] ?? e.modelo} para {e.destinatario}
+                  </span>
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
       {consulta.data.length === 0 ? (
         <EstadoVazio

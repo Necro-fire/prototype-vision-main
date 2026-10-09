@@ -111,7 +111,7 @@ Falta, e depende do projeto no Supabase (guia 06):
 
 ## Fase 4 — Painel do dono, sino e e-mails
 
-**Situação: o painel está no banco e provado com o banco simulado; faltam os e-mails (dependem da conta Resend) e as fotos do catálogo.** Ramificação `fase-4-painel`.
+**Situação: o painel e os e-mails estão prontos e provados por teste; falta o envio real (depende da conta Resend do dono) e as fotos do catálogo.** Ramificação `fase-4-painel`.
 
 - [x] Tela "Hoje": próximo cliente, marcados, atendidos, previsto, linha do tempo e avanço de situação em um toque. Agenda da semana e histórico de mudanças de cada horário.
 - [x] Bloqueios e folgas (dia inteiro, vários dias ou parte do dia), em Configurações.
@@ -121,11 +121,11 @@ Falta, e depende do projeto no Supabase (guia 06):
 - [x] Vendas e faturamento bruto com dados reais, com filtro por período, serviço e produto e resumo por dia. Estorno em vez de apagar.
 - [x] Configurações: dados da barbearia (aparecem em Contato), funcionamento com almoço, regras da agenda.
 - [x] Sino em tempo real e histórico de alertas.
-- [ ] E-mails ao cliente (confirmação, lembrete na véspera, remarcação, cancelamento) e erro de envio visível ao dono: a fila `emails_fila` existe, mas nada a preenche nem a processa. Depende da conta Resend do dono e de um agendador.
+- [x] E-mails ao cliente (confirmação, lembrete na véspera, remarcação, cancelamento) e erro de envio visível ao dono: o banco enche a fila, a rota `/api/emails/processar` envia pelo Resend, tenta de novo e, ao desistir, acende o sino. Passo a passo em `docs/07-emails.md`. Falta ligar à conta Resend e ao agendador.
 
 **Pronto quando**: cada funcionalidade listada em "O que funciona e será preservado" do diagnóstico existe com dados reais; um agendamento feito num celular acende o sino no painel em segundos; o lembrete chega no dia anterior; um e-mail que falha aparece para o dono.
 
-**Verificado:** testes de tela com o banco simulado, a migração nova (`salvar_funcionamento`) no Postgres de teste e a paridade das situações com o banco. **Não verificado:** o painel com a conta do dono num projeto real, o tempo real do sino (o PGlite não tem), e os e-mails.
+**Verificado:** testes de tela com o banco simulado, a migração nova (`salvar_funcionamento`) no Postgres de teste e a paridade das situações com o banco. **Não verificado:** o painel com a conta do dono num projeto real, o tempo real do sino (o PGlite não tem), e os e-mails (migração, texto, fila, tentativas e rota, com o Resend simulado). **Não verificado dos e-mails:** um envio de verdade pelo Resend e o agendador.
 
 ## Fase 5 — Publicação (versão 1.0)
 

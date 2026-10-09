@@ -21,6 +21,7 @@ Gerenciador de pacotes: npm (não há Bun nesta máquina). Não reintroduza `bun
 - TanStack Start + React 19 + Tailwind 4, publicado na Cloudflare (build em `.output/`).
 - `src/routes/`: só páginas. Carregam dados, definem título e descrição e montam a tela.
 - `src/features/<área>/`: regras de negócio, tipos e componentes de cada área (agenda, catalogo, clientes, vendas, financeiro, conta, admin).
+- E-mails: o banco enche `emails_fila` por gatilho; `src/features/emails/` monta o texto e esvazia a fila; `src/lib/server/emails.ts` fala com o Resend e com o banco (chave `service_role`, só no servidor). Detalhes em `docs/07-emails.md`.
 - Dados e sessão: `src/lib/supabase.ts` (visitante), `src/lib/supabase-navegador.ts` (sessão no cookie) e `src/lib/server/supabase.ts` (servidor, nunca vai para o navegador). Cada área tem um módulo `banco.ts` ou `*-do-dono.ts` que lê e grava, e as telas usam esses módulos (leituras com React Query, gravações por função do banco). Não existe mais estado em memória.
 - `src/lib/`: utilidades sem regra de negócio (dinheiro, telefone, datas, contraste).
 - `supabase/`: migrações, seed e testes do banco. O banco é a barreira de segurança: regras de acesso e de reserva vivem lá (`docs/06-supabase.md`).
@@ -59,4 +60,4 @@ Design System "Letreiro" (laranja, preto e um pouco de azul): tokens em `src/sty
 
 ## Ainda não existe
 
-Falta o envio de e-mails (conta Resend do dono): a fila `emails_fila` existe no banco, mas nada a processa ainda, e a Skill `email-transacional` e os testes de ponta a ponta com conta real entram quando houver essa conta e um navegador de teste. Foto de serviço e de produto (Storage do Supabase), cupons, caixa e fidelidade ficam para as Fases 6 e 7.
+Falta ligar os e-mails à conta Resend do dono e a um agendador (`docs/07-emails.md`): o banco já enche a fila e a rota `/api/emails/processar` já envia, mas nenhum envio real foi feito. A Skill `email-transacional` e os testes de ponta a ponta com conta real entram quando houver essa conta e um navegador de teste. Foto de serviço e de produto (Storage do Supabase), cupons, caixa e fidelidade ficam para as Fases 6 e 7.

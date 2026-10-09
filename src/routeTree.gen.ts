@@ -27,6 +27,7 @@ import { Route as AdminModuleRouteImport } from './routes/admin.$module'
 import { Route as ApiSaudeRouteImport } from './routes/api.saude'
 import { Route as AuthConfirmarRouteImport } from './routes/auth.confirmar'
 import { Route as ClienteIndexRouteImport } from './routes/cliente.index'
+import { Route as ClienteFidelidadeRouteImport } from './routes/cliente.fidelidade'
 import { Route as ClientePerfilRouteImport } from './routes/cliente.perfil'
 import { Route as ApiEmailsProcessarRouteImport } from './routes/api.emails.processar'
 
@@ -120,6 +121,11 @@ const ClienteIndexRoute = ClienteIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ClienteRoute,
 } as any)
+const ClienteFidelidadeRoute = ClienteFidelidadeRouteImport.update({
+  id: '/fidelidade',
+  path: '/fidelidade',
+  getParentRoute: () => ClienteRoute,
+} as any)
 const ClientePerfilRoute = ClientePerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/admin/$module': typeof AdminModuleRoute
   '/api/saude': typeof ApiSaudeRoute
   '/auth/confirmar': typeof AuthConfirmarRoute
+  '/cliente/fidelidade': typeof ClienteFidelidadeRoute
   '/cliente/perfil': typeof ClientePerfilRoute
   '/admin/': typeof AdminIndexRoute
   '/cliente/': typeof ClienteIndexRoute
@@ -168,6 +175,7 @@ export interface FileRoutesByTo {
   '/admin/$module': typeof AdminModuleRoute
   '/api/saude': typeof ApiSaudeRoute
   '/auth/confirmar': typeof AuthConfirmarRoute
+  '/cliente/fidelidade': typeof ClienteFidelidadeRoute
   '/cliente/perfil': typeof ClientePerfilRoute
   '/admin': typeof AdminIndexRoute
   '/cliente': typeof ClienteIndexRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/admin/$module': typeof AdminModuleRoute
   '/api/saude': typeof ApiSaudeRoute
   '/auth/confirmar': typeof AuthConfirmarRoute
+  '/cliente/fidelidade': typeof ClienteFidelidadeRoute
   '/cliente/perfil': typeof ClientePerfilRoute
   '/admin/': typeof AdminIndexRoute
   '/cliente/': typeof ClienteIndexRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
     | '/admin/$module'
     | '/api/saude'
     | '/auth/confirmar'
+    | '/cliente/fidelidade'
     | '/cliente/perfil'
     | '/admin/'
     | '/cliente/'
@@ -235,6 +245,7 @@ export interface FileRouteTypes {
     | '/admin/$module'
     | '/api/saude'
     | '/auth/confirmar'
+    | '/cliente/fidelidade'
     | '/cliente/perfil'
     | '/admin'
     | '/cliente'
@@ -257,6 +268,7 @@ export interface FileRouteTypes {
     | '/admin/$module'
     | '/api/saude'
     | '/auth/confirmar'
+    | '/cliente/fidelidade'
     | '/cliente/perfil'
     | '/admin/'
     | '/cliente/'
@@ -410,6 +422,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClienteIndexRouteImport
       parentRoute: typeof ClienteRoute
     }
+    '/cliente/fidelidade': {
+      id: '/cliente/fidelidade'
+      path: '/fidelidade'
+      fullPath: '/cliente/fidelidade'
+      preLoaderRoute: typeof ClienteFidelidadeRouteImport
+      parentRoute: typeof ClienteRoute
+    }
     '/cliente/perfil': {
       id: '/cliente/perfil'
       path: '/perfil'
@@ -440,11 +459,13 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface ClienteRouteChildren {
+  ClienteFidelidadeRoute: typeof ClienteFidelidadeRoute
   ClientePerfilRoute: typeof ClientePerfilRoute
   ClienteIndexRoute: typeof ClienteIndexRoute
 }
 
 const ClienteRouteChildren: ClienteRouteChildren = {
+  ClienteFidelidadeRoute: ClienteFidelidadeRoute,
   ClientePerfilRoute: ClientePerfilRoute,
   ClienteIndexRoute: ClienteIndexRoute,
 }

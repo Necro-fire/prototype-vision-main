@@ -14,18 +14,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { rotuloDaSituacao, type Situacao } from "@/features/agenda/agendamentos";
-import type { FormaPagamento } from "@/features/financeiro/formas-de-pagamento";
-import { SeletorDeForma } from "@/features/financeiro/seletor-de-forma";
 import { dataHoraCurta } from "@/lib/datas";
-import { dinheiroDeCentavos } from "@/lib/dinheiro";
-import { chavesDoDono, lerEventos, mudarSituacao } from "./agenda-do-dono";
+import { chavesDoDono, lerEventos, mudarSituacao, type OpcoesDeConclusao } from "./agenda-do-dono";
 import { chavesDoCaixa } from "./caixa-do-dono";
+import { DialogoDeConclusao } from "./dialogo-de-conclusao";
 import type { AgendamentoDoDono } from "./hoje";
 import { acaoPrincipal, proximasSituacoes, rotuloDaAcao } from "./situacoes";
 
 // Os botões que levam o agendamento ao próximo passo: o principal em um toque, os demais ao lado.
 // Cancelar pede confirmação, porque libera o horário para outras pessoas. Concluir pede a forma
-// de pagamento (regra F4), porque é aí que o dinheiro entra no caixa.
+// de pagamento (regra F4), porque é aí que o dinheiro entra no caixa, e aceita cupom ou o serviço
+// grátis da fidelidade.
 export function AcoesDoAgendamento({
   agendamento,
   agora,
@@ -39,13 +38,11 @@ export function AcoesDoAgendamento({
   const [erro, setErro] = useState<string | null>(null);
   const [cancelando, setCancelando] = useState(false);
   const [concluindo, setConcluindo] = useState(false);
-  const [forma, setForma] = useState<FormaPagamento | null>(null);
-  const [erroDaForma, setErroDaForma] = useState<string | undefined>();
   const [historico, setHistorico] = useState(false);
 
   const mudanca = useMutation({
-    mutationFn: ({ para, forma }: { para: Situacao; forma?: FormaPagamento }) =>
-      mudarSituacao(agendamento.id, para, forma),
+    mutationFn: ({ para, opcoes }: { para: Situacao; opcoes?: OpcoesDeConclusao }) =>
+      mudarSituacao(agendamento.id, para, opcoes),
     onMutate: () => setErro(null),
     onError: (falha) => setErro(falha.message),
     onSettled: () => {
@@ -64,19 +61,8 @@ export function AcoesDoAgendamento({
 
   function pedir(para: Situacao) {
     if (para === "cancelado") setCancelando(true);
-    else if (para === "concluido") {
-      setForma(null);
-      setErroDaForma(undefined);
-      setConcluindo(true);
-    } else mudanca.mutate({ para });
-  }
-
-  function concluir() {
-    if (!forma) {
-      setErroDaForma("Escolha como o cliente pagou.");
-      return;
-    }
-    mudanca.mutate({ para: "concluido", forma });
+    else if (para === "concluido") setConcluindo(true);
+    else mudanca.mutate({ para });
   }
 
   return (
@@ -138,35 +124,14 @@ export function AcoesDoAgendamento({
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={concluindo} onOpenChange={setConcluindo}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Como foi o pagamento?</AlertDialogTitle>
-            <AlertDialogDescription>
-              {nome}, {agendamento.servicoNome}, {dinheiroDeCentavos(agendamento.precoCentavos)}.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <SeletorDeForma
-            valor={forma}
-            aoMudar={(escolhida) => {
-              setForma(escolhida);
-              setErroDaForma(undefined);
-            }}
-            {...(erroDaForma ? { erro: erroDaForma } : {})}
-          />
-          <AlertDialogFooter>
-            <AlertDialogCancel>Voltar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={(evento) => {
-                evento.preventDefault();
-                concluir();
-              }}
-            >
-              {mudanca.isPending ? "Concluindo" : "Concluir atendimento"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {concluindo && (
+        <DialogoDeConclusao
+          agendamento={agendamento}
+          pendente={mudanca.isPending}
+          aoConfirmar={(opcoes) => mudanca.mutate({ para: "concluido", opcoes })}
+          aoFechar={() => setConcluindo(false)}
+        />
+      )}
 
       {historico && (
         <HistoricoDoAgendamento

@@ -11,12 +11,18 @@ import {
   ehErroDeHorario,
   reservar,
   salvarPerfil,
+  valorCobradoCentavos,
   type Agendamento,
 } from "@/features/agenda/agendamentos";
 import { descreverQuando, type Expediente } from "@/features/agenda/expediente";
 import { SeletorDeHorario } from "@/features/agenda/seletor-de-horario";
 import { useAgora } from "@/features/agenda/use-funcionamento";
 import type { Catalogo } from "@/features/catalogo/banco";
+import {
+  CampoDeCupom,
+  cupomVigente,
+  type CupomAplicado,
+} from "@/features/descontos/campo-de-cupom";
 import type { Sessao } from "@/features/conta/sessao";
 import { validarCelular, validarNome } from "@/features/conta/validacao";
 import { precoCurtoDeCentavos } from "@/lib/dinheiro";
@@ -61,6 +67,7 @@ export function FluxoDeAgendamento({
     servicoValido && inicioValido ? (inicioInicial ?? null) : null,
   );
   const [observacao, setObservacao] = useState("");
+  const [cupomAplicado, setCupomAplicado] = useState<CupomAplicado | null>(null);
   const [nome, setNome] = useState(sessao?.nome ?? "");
   const [celular, setCelular] = useState(sessao?.celular ?? "");
   const [erros, setErros] = useState<Erros>({});
@@ -76,6 +83,10 @@ export function FluxoDeAgendamento({
   }, [passo, reserva]);
 
   const servico = servicos.find((s) => s.id === servicoId);
+  const cupom = cupomVigente(cupomAplicado, servico?.precoCentavos ?? -1);
+  const totalCentavos = servico
+    ? servico.precoCentavos - (cupom?.descontoCentavos ?? 0)
+    : undefined;
   const perfilCompleto = Boolean(sessao?.nome.trim() && sessao.celular);
   const nomeFinal = (perfilCompleto ? sessao?.nome : nome)?.trim() ?? "";
   const celularFinal = perfilCompleto ? (sessao?.celular ?? "") : celular;
@@ -108,7 +119,14 @@ export function FluxoDeAgendamento({
       if (!perfilCompleto) {
         await salvarPerfil(sessao.id, { nome: nome.trim(), celular: normalizePhone(celular) });
       }
-      setReserva(await reservar({ servicoId: servico.id, inicio, observacao: observacao.trim() }));
+      setReserva(
+        await reservar({
+          servicoId: servico.id,
+          inicio,
+          observacao: observacao.trim(),
+          ...(cupom ? { cupom: cupom.codigo } : {}),
+        }),
+      );
     } catch (erro) {
       const mensagem = erro instanceof Error ? erro.message : "Não foi possível agendar.";
       setErros({ geral: mensagem });
@@ -129,6 +147,7 @@ export function FluxoDeAgendamento({
     setServicoId("");
     setInicio(null);
     setObservacao("");
+    setCupomAplicado(null);
     setErros({});
   }
 
@@ -186,7 +205,8 @@ export function FluxoDeAgendamento({
               servico={servico?.nome}
               duracao={servico?.duracaoMinutos}
               quando={quando}
-              precoCentavos={servico?.precoCentavos}
+              precoCentavos={totalCentavos}
+              descontoCentavos={cupom?.descontoCentavos ?? 0}
             />
 
             <section aria-labelledby="titulo-do-passo" className="grid gap-6 lg:order-first">
@@ -321,6 +341,20 @@ export function FluxoDeAgendamento({
                       ["Serviço", servico?.nome ?? ""],
                       ["Quando", quando ?? ""],
                       ["Valor", servico ? precoCurtoDeCentavos(servico.precoCentavos) : ""],
+                      ...(cupom
+                        ? [
+                            [
+                              `Cupom ${cupom.codigo}`,
+                              `-${precoCurtoDeCentavos(cupom.descontoCentavos)}`,
+                            ],
+                            [
+                              "Total",
+                              totalCentavos !== undefined
+                                ? precoCurtoDeCentavos(totalCentavos)
+                                : "",
+                            ],
+                          ]
+                        : []),
                     ].map(([rotulo, valor]) => (
                       <div key={rotulo} className="flex justify-between gap-4 px-4 py-3">
                         <dt className="text-muted-foreground">{rotulo}</dt>
@@ -328,6 +362,16 @@ export function FluxoDeAgendamento({
                       </div>
                     ))}
                   </dl>
+
+                  {sessao && servico && (
+                    <CampoDeCupom
+                      id="cupom"
+                      totalCentavos={servico.precoCentavos}
+                      aplicado={cupom}
+                      aoAplicar={setCupomAplicado}
+                      aoRemover={() => setCupomAplicado(null)}
+                    />
+                  )}
 
                   {sessao ? (
                     <Campo id="observacao" rotulo="Observação" opcional>
@@ -413,11 +457,13 @@ function Resumo({
   duracao,
   quando,
   precoCentavos,
+  descontoCentavos,
 }: {
   servico: string | undefined;
   duracao: number | undefined;
   quando: string | undefined;
   precoCentavos: number | undefined;
+  descontoCentavos: number;
 }) {
   return (
     <aside
@@ -430,6 +476,11 @@ function Resumo({
       </p>
       {duracao !== undefined && <p className="text-base">{duracao} minutos</p>}
       {quando && <p className="text-base font-semibold">{quando}</p>}
+      {descontoCentavos > 0 && (
+        <p className="text-base font-semibold text-success">
+          Desconto do cupom: {precoCurtoDeCentavos(descontoCentavos)}
+        </p>
+      )}
       <div className="mt-2 flex items-baseline justify-between border-t border-border pt-3">
         <span className="text-base">Total</span>
         <span className="font-display text-2xl font-extrabold tabular-nums">
@@ -472,7 +523,12 @@ function Confirmacao({
         {[
           ["Serviço", reserva.servicoNome],
           ["Quando", descreverQuando(reserva.inicio, fuso)],
-          ["Valor", `${precoCurtoDeCentavos(reserva.precoCentavos)}, pagos na barbearia`],
+          [
+            "Valor",
+            reserva.descontoCentavos > 0
+              ? `${precoCurtoDeCentavos(valorCobradoCentavos(reserva))} com cupom, pagos na barbearia`
+              : `${precoCurtoDeCentavos(reserva.precoCentavos)}, pagos na barbearia`,
+          ],
           ["Duração", `${reserva.duracaoMinutos} minutos`],
         ].map(([rotulo, valor]) => (
           <div key={rotulo} className="flex justify-between gap-4 px-4 py-3">

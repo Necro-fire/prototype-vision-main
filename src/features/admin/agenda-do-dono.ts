@@ -43,7 +43,7 @@ export function agendamentoDoDonoDeLinha(linha: unknown): AgendamentoDoDono {
 }
 
 const COLUNAS =
-  "id, servico_id, servico_nome, preco_centavos, duracao_minutos, inicio, fim, situacao, observacao, cliente_id, cliente_nome, cliente_celular, forma_pagamento, avulso";
+  "id, servico_id, servico_nome, preco_centavos, desconto_centavos, duracao_minutos, inicio, fim, situacao, observacao, cliente_id, cliente_nome, cliente_celular, forma_pagamento, avulso";
 
 export async function lerAgendamentosDoDono(): Promise<AgendamentoDoDono[]> {
   const { data, error } = await supabaseNavegador()
@@ -55,16 +55,25 @@ export async function lerAgendamentosDoDono(): Promise<AgendamentoDoDono[]> {
   return (data ?? []).map(agendamentoDoDonoDeLinha);
 }
 
-// Concluir pede a forma de pagamento; as outras mudanças não.
+// Concluir pede a forma de pagamento (se houver valor a cobrar) e aceita um cupom ou o serviço
+// grátis da fidelidade; as outras mudanças não levam nada.
+export type OpcoesDeConclusao = {
+  formaPagamento?: FormaPagamento;
+  cupom?: string;
+  resgatarFidelidade?: boolean;
+};
+
 export async function mudarSituacao(
   id: string,
   para: Situacao,
-  formaPagamento?: FormaPagamento,
+  opcoes: OpcoesDeConclusao = {},
 ): Promise<Agendamento> {
   const { data, error } = await supabaseNavegador().rpc("mudar_situacao", {
     p_id: id,
     p_para: para,
-    ...(formaPagamento ? { p_forma_pagamento: formaPagamento } : {}),
+    ...(opcoes.formaPagamento ? { p_forma_pagamento: opcoes.formaPagamento } : {}),
+    ...(opcoes.cupom ? { p_cupom: opcoes.cupom } : {}),
+    ...(opcoes.resgatarFidelidade ? { p_resgatar_fidelidade: true } : {}),
   });
   if (error) falhou(error);
   return agendamentoDeLinha(data);

@@ -6,6 +6,7 @@ import { CaixaDoDia } from "./caixa";
 import { Catalogo } from "./catalogo";
 import { Clientes } from "./clientes";
 import { Configuracoes } from "./configuracoes";
+import { Descontos } from "./descontos";
 import { Financeiro } from "./financeiro";
 import { PaginaAdmin } from "./pagina-admin";
 import { Vendas } from "./vendas";
@@ -26,6 +27,8 @@ export function AdminPanel({ module = "dashboard" }: { module?: string }) {
       return <Vendas />;
     case "caixa":
       return <CaixaDoDia />;
+    case "descontos":
+      return <Descontos />;
     case "financeiro":
       return <Financeiro />;
     case "alertas":

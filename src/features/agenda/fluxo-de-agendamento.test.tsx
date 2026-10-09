@@ -13,6 +13,7 @@ import type { Expediente } from "@/features/agenda/expediente";
 import type { Catalogo } from "@/features/catalogo/banco";
 import type { Sessao } from "@/features/conta/sessao";
 import { ErroDoBanco, reservar, salvarPerfil, type Agendamento } from "./agendamentos";
+import { preverDesconto } from "@/features/descontos/cupons";
 import { lerOcupados } from "./banco";
 import { FluxoDeAgendamento } from "./fluxo-de-agendamento";
 
@@ -21,6 +22,10 @@ import { FluxoDeAgendamento } from "./fluxo-de-agendamento";
 vi.mock("./banco", async (importar) => ({
   ...(await importar<typeof import("./banco")>()),
   lerOcupados: vi.fn(),
+}));
+vi.mock("@/features/descontos/cupons", async (importar) => ({
+  ...(await importar<typeof import("@/features/descontos/cupons")>()),
+  preverDesconto: vi.fn(),
 }));
 vi.mock("./agendamentos", async (importar) => ({
   ...(await importar<typeof import("./agendamentos")>()),
@@ -88,6 +93,7 @@ function reservaDe(inicio: string): Agendamento {
     servicoId: "s1",
     servicoNome: "Corte clássico",
     precoCentavos: 4500,
+    descontoCentavos: 0,
     duracaoMinutos: 30,
     inicio,
     fim: new Date(new Date(inicio).getTime() + 30 * 60_000).toISOString(),
@@ -140,6 +146,7 @@ beforeEach(() => {
   vi.mocked(lerOcupados).mockReset().mockResolvedValue([]);
   vi.mocked(reservar).mockReset();
   vi.mocked(salvarPerfil).mockReset();
+  vi.mocked(preverDesconto).mockReset();
 });
 afterEach(cleanup);
 
@@ -252,6 +259,71 @@ describe("Fluxo de agendamento", () => {
     expect(chamada?.inicio).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
     expect(chamada?.observacao).toBe("Degradê");
     expect(screen.getByRole("link", { name: "Ver meus agendamentos" })).toBeInTheDocument();
+  });
+
+  it("aplica um cupom: mostra o desconto e o total, e o código vai junto na reserva", async () => {
+    vi.mocked(preverDesconto).mockResolvedValue(450);
+    vi.mocked(reservar).mockImplementation(async ({ inicio }) => ({
+      ...reservaDe(inicio),
+      descontoCentavos: 450,
+    }));
+    abrir({ servicoInicial: "s1" });
+    await escolherPrimeiroHorario();
+    fireEvent.click(botao(/Revisar agendamento/));
+    await screen.findByRole("heading", { name: "Confira e confirme" });
+
+    fireEvent.change(screen.getByLabelText(/Cupom/), { target: { value: " verao10 " } });
+    fireEvent.click(botao("Aplicar"));
+    expect(await screen.findByText(/Cupom VERAO10: desconto de/)).toHaveTextContent("R$ 4,50");
+    expect(preverDesconto).toHaveBeenCalledWith("VERAO10", 4500);
+    const resumo = screen.getByRole("complementary", { name: "Resumo do agendamento" });
+    expect(resumo).toHaveTextContent("R$ 40,50");
+
+    fireEvent.click(botao("Confirmar agendamento"));
+    expect(
+      await screen.findByRole("heading", { name: "Agendamento confirmado" }),
+    ).toBeInTheDocument();
+    expect(vi.mocked(reservar).mock.calls[0]?.[0].cupom).toBe("VERAO10");
+    expect(screen.getByText(/com cupom, pagos na barbearia/)).toHaveTextContent("R$ 40,50");
+  });
+
+  it("cupom recusado mostra o motivo e não muda o total", async () => {
+    vi.mocked(preverDesconto).mockRejectedValue(
+      new ErroDoBanco("cupom_vencido", "Esse cupom já venceu."),
+    );
+    abrir({ servicoInicial: "s1" });
+    await escolherPrimeiroHorario();
+    fireEvent.click(botao(/Revisar agendamento/));
+    await screen.findByRole("heading", { name: "Confira e confirme" });
+    fireEvent.change(screen.getByLabelText(/Cupom/), { target: { value: "VELHO" } });
+    fireEvent.click(botao("Aplicar"));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Esse cupom já venceu.");
+    expect(screen.getByRole("complementary", { name: "Resumo do agendamento" })).toHaveTextContent(
+      "R$ 45",
+    );
+  });
+
+  it("remover o cupom volta ao preço cheio, e sem cupom a reserva não leva código", async () => {
+    vi.mocked(preverDesconto).mockResolvedValue(450);
+    vi.mocked(reservar).mockImplementation(async ({ inicio }) => reservaDe(inicio));
+    abrir({ servicoInicial: "s1" });
+    await escolherPrimeiroHorario();
+    fireEvent.click(botao(/Revisar agendamento/));
+    await screen.findByRole("heading", { name: "Confira e confirme" });
+    fireEvent.change(screen.getByLabelText(/Cupom/), { target: { value: "DEZ" } });
+    fireEvent.click(botao("Aplicar"));
+    fireEvent.click(await screen.findByRole("button", { name: "Remover o cupom DEZ" }));
+    fireEvent.click(botao("Confirmar agendamento"));
+    await screen.findByRole("heading", { name: "Agendamento confirmado" });
+    expect(vi.mocked(reservar).mock.calls[0]?.[0]).not.toHaveProperty("cupom");
+  });
+
+  it("visitante não vê o campo de cupom", async () => {
+    abrir({ servicoInicial: "s1", sessao: null });
+    await escolherPrimeiroHorario();
+    fireEvent.click(botao(/Revisar agendamento/));
+    await screen.findByRole("heading", { name: "Entre para confirmar o horário" });
+    expect(screen.queryByLabelText(/Cupom/)).not.toBeInTheDocument();
   });
 
   it("quando o horário acabou de ser reservado por outra pessoa, volta a escolher e busca de novo", async () => {

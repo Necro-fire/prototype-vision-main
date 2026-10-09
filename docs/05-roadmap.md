@@ -159,11 +159,19 @@ Falta, e depende do projeto no Supabase (guia 06):
 
 ## Fase 7 — Descontos e fidelidade
 
-- Cupons: criação pelo dono, uso pelo cliente no agendamento ou aplicação pelo dono no caixa.
-- Cartão fidelidade: regra definida pelo dono, saldo visível para o cliente, resgate no atendimento.
-- Pacotes de serviços, se o uso real mostrar necessidade.
+**Situação: feita no computador; a migração nova espera o seu projeto no Supabase.** Ramificação `fase-7-descontos`. Migração `20261011000001_descontos.sql`.
+
+- [x] Cupons (`/admin/descontos`): o dono cria com código, percentual ou valor fixo, validade (o dia inteiro) e limite de usos; liga e desliga, sem apagar. O cliente digita o código ao confirmar o agendamento e vê o desconto na hora; o dono aplica na hora de cobrar um atendimento ou uma venda. Cancelar um horário, marcar falta ou estornar uma venda devolve o uso.
+- [x] Cartão fidelidade: o dono define quantos atendimentos concluídos valem um serviço grátis e qual é o serviço. O cliente vê os pontos, o que falta e o histórico em `/cliente/fidelidade`. Na hora de cobrar, o dono marca o uso do cartão e o atendimento sai de graça, sem passar pelo caixa.
+- [x] O desconto é calculado no banco, nunca passa do valor (nem escrevendo direto na tabela), e cupom e cartão não se somam. O atendimento guarda o preço do serviço e o desconto à parte, então o histórico continua fiel.
+- [x] Financeiro, "Hoje" e caixa passam a usar o valor cobrado de fato; o financeiro mostra o total de descontos concedidos.
+- [ ] Pacotes de serviços: ficam para quando o uso real mostrar necessidade.
+
+**Regras que o banco garante** (todas provadas por teste): um ponto por atendimento concluído de quem tem conta e só com o programa ligado; cancelado, falta e atendimento avulso não geram ponto; o atendimento pago com pontos não gera ponto; um atendimento rende no máximo um ponto; dois resgates ao mesmo tempo não gastam o mesmo saldo duas vezes; o cliente vê só os próprios pontos; excluir a conta apaga os pontos.
 
 **Pronto quando**: nenhum desconto ultrapassa o valor do serviço; atendimentos cancelados e faltas não geram ponto; o financeiro mostra o total de descontos concedidos.
+
+**Verificado:** 39 testes novos do banco e 17 quebras de propósito, todas acusadas pelo teste; testes de tela do módulo Descontos, do cupom no agendamento, na conclusão e na venda, do cartão fidelidade na hora de cobrar e do cartão do cliente. **Não verificado:** as telas novas com contas reais num projeto do Supabase (e em 360px), e o envio do e-mail de confirmação com cupom (o texto do e-mail não menciona o desconto).
 
 ## Fase 8 — Refinos
 

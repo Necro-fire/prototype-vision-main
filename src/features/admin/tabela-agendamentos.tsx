@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { CalendarDays } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { rotuloDaSituacao } from "@/features/agenda/agendamentos";
+import { rotuloDaSituacao, valorCobradoCentavos } from "@/features/agenda/agendamentos";
 import { SituacaoBadge } from "@/features/agenda/situacao";
 import { dataCurta } from "@/lib/datas";
 import { precoCurtoDeCentavos } from "@/lib/dinheiro";
@@ -63,7 +63,7 @@ export function TabelaAgendamentos({
         {
           rotulo: "Valor",
           alinharADireita: true,
-          render: (a) => precoCurtoDeCentavos(a.precoCentavos),
+          render: (a) => precoCurtoDeCentavos(valorCobradoCentavos(a)),
         },
         {
           rotulo: "Situação",

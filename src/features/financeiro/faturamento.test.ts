@@ -22,6 +22,7 @@ function atendimento(
     servicoId,
     servicoNome: servicoId,
     precoCentavos,
+    descontoCentavos: 0,
     duracaoMinutos: 30,
     inicio,
     fim: inicio,
@@ -68,6 +69,7 @@ describe("faturamentoBruto", () => {
       servicosCentavos: 9000,
       produtosCentavos: 23900,
       totalCentavos: 32900,
+      descontosCentavos: 0,
       atendimentos: 2,
       vendas: 2,
     });
@@ -129,6 +131,7 @@ describe("faturamentoBruto", () => {
       servicosCentavos: 0,
       produtosCentavos: 0,
       totalCentavos: 0,
+      descontosCentavos: 0,
       atendimentos: 0,
       vendas: 0,
     });
@@ -139,6 +142,69 @@ describe("faturamentoBruto", () => {
       atendimento("x", 10, "concluido", local(8, 9, i)),
     );
     expect(faturamentoBruto(muitos, [], FUSO).totalCentavos).toBe(100);
+  });
+});
+
+describe("descontos no faturamento", () => {
+  const comDesconto = (a: Agendamento, descontoCentavos: number): Agendamento => ({
+    ...a,
+    descontoCentavos,
+  });
+  const servicos = [
+    comDesconto(atendimento("corte", 4500, "concluido", local(8, 10)), 450), // paga 40,50
+    atendimento("barba", 3500, "concluido", local(8, 11)), // sem desconto
+    comDesconto(atendimento("corte", 4500, "concluido", local(9, 10)), 4500), // grátis
+    comDesconto(atendimento("corte", 4500, "cancelado", local(9, 12)), 450), // não conta
+  ];
+  const vendasComCupom = [
+    venda("v1", [{ produtoId: "pente", precoCentavos: 2500, quantidade: 2 }], local(8, 15), {
+      totalCentavos: 4500,
+      descontoCentavos: 500,
+    }),
+    venda("v2", [{ produtoId: "pente", precoCentavos: 2500, quantidade: 1 }], local(8, 16), {
+      totalCentavos: 2000,
+      descontoCentavos: 500,
+      estornadaEm: local(8, 17), // estornada: o desconto também sai da conta
+    }),
+  ];
+
+  it("soma o que foi cobrado de fato e o total de descontos concedidos", () => {
+    expect(faturamentoBruto(servicos, vendasComCupom, FUSO)).toEqual({
+      servicosCentavos: 4050 + 3500 + 0,
+      produtosCentavos: 4500,
+      totalCentavos: 4050 + 3500 + 4500,
+      descontosCentavos: 450 + 4500 + 500,
+      atendimentos: 3,
+      vendas: 1,
+    });
+  });
+
+  it("o desconto respeita o período escolhido", () => {
+    const r = faturamentoBruto(servicos, vendasComCupom, FUSO, { de: "2026-10-09" });
+    expect(r.descontosCentavos).toBe(4500);
+    expect(r.totalCentavos).toBe(0);
+  });
+
+  it("nunca desconta mais que o valor: o total fica zerado, não negativo", () => {
+    const gratis = [comDesconto(atendimento("corte", 4500, "concluido", local(9, 10)), 4500)];
+    const r = faturamentoBruto(gratis, [], FUSO);
+    expect(r.totalCentavos).toBe(0);
+    expect(r.descontosCentavos).toBe(4500);
+  });
+
+  it("o resumo por dia e por forma usa o valor cobrado", () => {
+    const dias = faturamentoPorDia(servicos, vendasComCupom, FUSO);
+    expect(dias.find((d) => d.dia === "2026-10-08")?.servicosCentavos).toBe(4050 + 3500);
+    const formas = faturamentoPorForma(servicos, vendasComCupom, FUSO);
+    expect(formas.reduce((t, l) => t + l.totalCentavos, 0)).toBe(
+      faturamentoBruto(servicos, vendasComCupom, FUSO).totalCentavos,
+    );
+  });
+
+  it("com um produto escolhido, os descontos de serviço e de venda ficam de fora", () => {
+    expect(
+      faturamentoBruto(servicos, vendasComCupom, FUSO, { produtoId: "pente" }).descontosCentavos,
+    ).toBe(0);
   });
 });
 

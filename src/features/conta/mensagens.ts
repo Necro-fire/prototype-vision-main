@@ -56,6 +56,27 @@ const doBanco: Record<string, string> = {
   caixa_ja_aberto: "Já existe um caixa aberto. Feche o atual antes de abrir outro.",
   caixa_fechado: "Não há caixa aberto para fechar.",
   caixa_inexistente: "Não encontramos esse caixa.",
+  cupom_invalido: "Esse cupom não existe ou não está valendo.",
+  cupom_vencido: "Esse cupom já venceu.",
+  cupom_esgotado: "Esse cupom já foi usado todas as vezes permitidas.",
+  cupom_ja_aplicado: "Esse atendimento já tem um cupom aplicado.",
+  cupom_inexistente: "Não encontramos esse cupom.",
+  cupom_codigo_invalido:
+    "O código do cupom precisa ter de 3 a 20 letras, números, hífen ou sublinhado.",
+  cupom_codigo_repetido: "Já existe um cupom com esse código.",
+  cupom_valor_invalido:
+    "O valor do cupom não é válido. Percentual vai de 1 a 100; valor fixo precisa ser maior que zero.",
+  cupom_validade_invalida: "A validade do cupom precisa ser uma data futura.",
+  cupom_limite_invalido: "O limite de usos precisa ser de pelo menos 1.",
+  desconto_duplicado:
+    "Cupom e cartão fidelidade não se somam, e a venda não aceita cupom junto com desconto manual.",
+  fidelidade_inativa: "O cartão fidelidade está desligado.",
+  fidelidade_invalida: "Informe de 2 a 100 atendimentos para ganhar o serviço grátis.",
+  fidelidade_incompleta: "Escolha o serviço que sai de graça para ligar o cartão.",
+  fidelidade_sem_cliente: "Só quem tem conta acumula pontos.",
+  servico_do_resgate_invalido:
+    "O serviço grátis do cartão é outro. Esse atendimento não pode usar os pontos.",
+  saldo_insuficiente: "O cliente ainda não tem pontos suficientes para o serviço grátis.",
   ja_estornada: "Essa venda já foi estornada.",
   intervalos_sobrepostos: "Há horários que se sobrepõem no mesmo dia. Ajuste e salve de novo.",
   intervalo_invalido: "Cada horário precisa fechar depois de abrir.",

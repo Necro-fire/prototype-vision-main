@@ -1,4 +1,4 @@
-import { rotuloDaSituacao } from "@/features/agenda/agendamentos";
+import { rotuloDaSituacao, valorCobradoCentavos } from "@/features/agenda/agendamentos";
 import { horaNoFuso } from "@/features/agenda/horarios-livres";
 import { SituacaoBadge } from "@/features/agenda/situacao";
 import { precoCurtoDeCentavos } from "@/lib/dinheiro";
@@ -29,7 +29,7 @@ export function LinhaDoDia({
           <SituacaoBadge situacao={rotuloDaSituacao(a.situacao)} />
         </div>
         <p className="text-base">
-          {a.servicoNome}, {a.duracaoMinutos} min, {precoCurtoDeCentavos(a.precoCentavos)}
+          {a.servicoNome}, {a.duracaoMinutos} min, {precoCurtoDeCentavos(valorCobradoCentavos(a))}
         </p>
         <p className="text-sm text-muted-foreground">{a.clienteCelular}</p>
         {a.observacao && <p className="text-sm">Obs.: {a.observacao}</p>}

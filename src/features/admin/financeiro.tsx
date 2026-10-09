@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Package, Scissors, TrendingUp } from "lucide-react";
+import { Package, Scissors, Ticket, TrendingUp } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -128,7 +128,7 @@ export function Financeiro() {
         </Button>
       </BarraDeFiltros>
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Indicador
           rotulo="Faturamento bruto"
           icone={TrendingUp}
@@ -146,6 +146,12 @@ export function Financeiro() {
           icone={Package}
           valor={dinheiroDeCentavos(r.produtosCentavos)}
           nota={`${r.vendas} vendas, sem as estornadas`}
+        />
+        <Indicador
+          rotulo="Descontos concedidos"
+          icone={Ticket}
+          valor={dinheiroDeCentavos(r.descontosCentavos)}
+          nota="Cupons e serviços grátis, já fora do total"
         />
       </div>
 

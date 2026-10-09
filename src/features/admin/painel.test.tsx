@@ -40,6 +40,7 @@ describe("Painel administrativo", () => {
         "clientes",
         "configuracoes",
         "dashboard",
+        "descontos",
         "financeiro",
         "produtos",
         "servicos",

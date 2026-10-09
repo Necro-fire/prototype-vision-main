@@ -77,6 +77,7 @@ function ag(
     servicoId: "s1",
     servicoNome: servico,
     precoCentavos,
+    descontoCentavos: 0,
     duracaoMinutos,
     inicio,
     fim: new Date(new Date(inicio).getTime() + duracaoMinutos * 60_000).toISOString(),
@@ -239,6 +240,146 @@ describe("Hoje", () => {
         p_forma_pagamento: "debito",
       }),
     );
+  });
+
+  it("aplica um cupom na hora de cobrar: o total cai e o código vai ao banco", async () => {
+    banco.tabelas["agendamentos"] = [
+      ag("x2", "Carla", local(12, 11, 30), "em_atendimento", "Corte clássico", 4500),
+    ].map(linhaDe);
+    banco.rpc.mockImplementation(async (nome: string) =>
+      nome === "prever_desconto"
+        ? { data: 450, error: null }
+        : { data: linhaDe(ag("x2", "Carla", local(12, 11, 30), "concluido")), error: null },
+    );
+    abrir(<VisaoGeral />);
+    fireEvent.click(await screen.findByRole("button", { name: "Concluir atendimento: Carla" }));
+    const dialogo = await screen.findByRole("alertdialog");
+    expect(dialogo).toHaveTextContent("Total a cobrar");
+    fireEvent.change(within(dialogo).getByLabelText(/Cupom/), { target: { value: "dez" } });
+    fireEvent.click(within(dialogo).getByRole("button", { name: "Aplicar" }));
+    expect(await within(dialogo).findByText(/Cupom DEZ: desconto de/)).toBeInTheDocument();
+    expect(banco.rpc).toHaveBeenCalledWith("prever_desconto", {
+      p_codigo: "DEZ",
+      p_total_centavos: 4500,
+    });
+    expect(dialogo).toHaveTextContent("R$ 40,50");
+
+    fireEvent.click(within(dialogo).getByRole("radio", { name: "Pix" }));
+    fireEvent.click(within(dialogo).getByRole("button", { name: "Concluir atendimento" }));
+    await waitFor(() =>
+      expect(banco.rpc).toHaveBeenCalledWith("mudar_situacao", {
+        p_id: "x2",
+        p_para: "concluido",
+        p_forma_pagamento: "pix",
+        p_cupom: "DEZ",
+      }),
+    );
+  });
+
+  it("cupom que cobre o valor todo dispensa a forma de pagamento", async () => {
+    banco.tabelas["agendamentos"] = [
+      ag("x2", "Carla", local(12, 11, 30), "em_atendimento", "Corte clássico", 4500),
+    ].map(linhaDe);
+    banco.rpc.mockImplementation(async (nome: string) =>
+      nome === "prever_desconto"
+        ? { data: 4500, error: null }
+        : { data: linhaDe(ag("x2", "Carla", local(12, 11, 30), "concluido")), error: null },
+    );
+    abrir(<VisaoGeral />);
+    fireEvent.click(await screen.findByRole("button", { name: "Concluir atendimento: Carla" }));
+    const dialogo = await screen.findByRole("alertdialog");
+    fireEvent.change(within(dialogo).getByLabelText(/Cupom/), { target: { value: "GRATIS" } });
+    fireEvent.click(within(dialogo).getByRole("button", { name: "Aplicar" }));
+    await within(dialogo).findByText(/Cupom GRATIS/);
+    expect(within(dialogo).queryByRole("radio")).not.toBeInTheDocument();
+    expect(dialogo).toHaveTextContent("Sem valor a cobrar");
+    fireEvent.click(within(dialogo).getByRole("button", { name: "Concluir atendimento" }));
+    await waitFor(() =>
+      expect(banco.rpc).toHaveBeenCalledWith("mudar_situacao", {
+        p_id: "x2",
+        p_para: "concluido",
+        p_cupom: "GRATIS",
+      }),
+    );
+  });
+
+  it("atendimento reservado com cupom mostra o desconto da reserva e não pede outro", async () => {
+    banco.tabelas["agendamentos"] = [
+      {
+        ...linhaDe(ag("x2", "Carla", local(12, 11, 30), "em_atendimento", "Corte clássico", 4500)),
+        desconto_centavos: 500,
+      },
+    ];
+    abrir(<VisaoGeral />);
+    fireEvent.click(await screen.findByRole("button", { name: "Concluir atendimento: Carla" }));
+    const dialogo = await screen.findByRole("alertdialog");
+    expect(dialogo).toHaveTextContent("Desconto da reserva (cupom): R$ 5,00");
+    expect(dialogo).toHaveTextContent("R$ 40,00");
+    expect(within(dialogo).queryByLabelText(/Cupom/)).not.toBeInTheDocument();
+  });
+
+  describe("cartão fidelidade na hora de cobrar", () => {
+    const regraAtiva = {
+      fidelidade_ativa: true,
+      fidelidade_atendimentos: 5,
+      fidelidade_servico_id: "s1",
+      servicos: { nome: "Corte clássico" },
+    };
+
+    function prepararFidelidade(saldo: number) {
+      banco.tabelas["empresa"] = [regraAtiva];
+      banco.tabelas["agendamentos"] = [
+        ag("x2", "Carla", local(12, 11, 30), "em_atendimento", "Corte clássico", 4500),
+      ].map(linhaDe);
+      banco.rpc.mockImplementation(async (nome: string) =>
+        nome === "saldo_de_fidelidade"
+          ? { data: saldo, error: null }
+          : { data: linhaDe(ag("x2", "Carla", local(12, 11, 30), "concluido")), error: null },
+      );
+    }
+
+    it("com pontos suficientes oferece o serviço grátis, que zera o total e gasta o cartão", async () => {
+      prepararFidelidade(6);
+      abrir(<VisaoGeral />);
+      fireEvent.click(await screen.findByRole("button", { name: "Concluir atendimento: Carla" }));
+      const dialogo = await screen.findByRole("alertdialog");
+      const uso = await within(dialogo).findByRole("checkbox", {
+        name: /Serviço grátis pelo cartão fidelidade/,
+      });
+      expect(banco.rpc).toHaveBeenCalledWith("saldo_de_fidelidade", { p_cliente_id: "c-x2" });
+      fireEvent.click(uso);
+      expect(dialogo).toHaveTextContent("Sem valor a cobrar");
+      expect(within(dialogo).getByLabelText(/Cupom/)).toBeDisabled();
+      fireEvent.click(within(dialogo).getByRole("button", { name: "Concluir atendimento" }));
+      await waitFor(() =>
+        expect(banco.rpc).toHaveBeenCalledWith("mudar_situacao", {
+          p_id: "x2",
+          p_para: "concluido",
+          p_resgatar_fidelidade: true,
+        }),
+      );
+    });
+
+    it("sem pontos suficientes, não oferece", async () => {
+      prepararFidelidade(4);
+      abrir(<VisaoGeral />);
+      fireEvent.click(await screen.findByRole("button", { name: "Concluir atendimento: Carla" }));
+      const dialogo = await screen.findByRole("alertdialog");
+      await waitFor(() =>
+        expect(banco.rpc).toHaveBeenCalledWith("saldo_de_fidelidade", { p_cliente_id: "c-x2" }),
+      );
+      expect(within(dialogo).queryByRole("checkbox")).not.toBeInTheDocument();
+    });
+
+    it("só para o serviço escolhido pelo dono", async () => {
+      prepararFidelidade(9);
+      banco.tabelas["empresa"] = [{ ...regraAtiva, fidelidade_servico_id: "outro" }];
+      abrir(<VisaoGeral />);
+      fireEvent.click(await screen.findByRole("button", { name: "Concluir atendimento: Carla" }));
+      const dialogo = await screen.findByRole("alertdialog");
+      expect(within(dialogo).queryByRole("checkbox")).not.toBeInTheDocument();
+      expect(banco.rpc).not.toHaveBeenCalledWith("saldo_de_fidelidade", expect.anything());
+    });
   });
 
   it("voltar do diálogo de pagamento não conclui nada", async () => {

@@ -127,7 +127,7 @@ Os endereços atuais são mantidos. Itens marcados com a fase em que entram; sem
 | --------------------- | ------------------------------------------------------------------ |
 | `/cliente`            | Próximos horários e histórico; remarcar, cancelar, agendar de novo |
 | `/cliente/perfil`     | Nome, celular, preferências de e-mail, excluir conta               |
-| `/cliente/fidelidade` | Cartão fidelidade (fase 7)                                         |
+| `/cliente/fidelidade` | Cartão fidelidade: pontos, o que falta e histórico                 |
 
 **Painel do dono** (exige login com perfil de dono)
 
@@ -140,7 +140,7 @@ Os endereços atuais são mantidos. Itens marcados com a fase em que entram; sem
 | `/admin/vendas`                          | Registro e histórico de vendas                              |
 | `/admin/financeiro`                      | Faturamento por período                                     |
 | `/admin/caixa`                           | Abertura, fechamento, conferência e atendimento avulso      |
-| `/admin/descontos`                       | Cupons e regra de fidelidade (fase 7)                       |
+| `/admin/descontos`                       | Cupons e regra do cartão fidelidade                         |
 | `/admin/alertas`                         | Histórico do sino                                           |
 | `/admin/configuracoes`                   | Empresa, horários, e-mails, regras da agenda                |
 
@@ -241,8 +241,8 @@ Todas as tabelas têm regras de acesso por linha ativas e começam fechadas: sem
 | Tabela                  | Fase | Guarda                                                                |
 | ----------------------- | ---- | --------------------------------------------------------------------- |
 | `caixas`                | 6 ✓  | Abertura, valor inicial, fechamento, valor contado, diferença         |
-| `cupons`                | 7    | Código, tipo e valor do desconto, validade, limite e contagem de usos |
-| `fidelidade_movimentos` | 7    | Pontos ganhos e resgatados por cliente; o saldo é a soma              |
+| `cupons`                | 7 ✓  | Código, tipo e valor do desconto, validade, limite e contagem de usos |
+| `fidelidade_movimentos` | 7 ✓  | Pontos ganhos e resgatados por cliente; o saldo é a soma              |
 
 ### Três mecanismos que resolvem as falhas mais graves
 

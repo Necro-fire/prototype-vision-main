@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { rotuloDaSituacao } from "@/features/agenda/agendamentos";
+import { rotuloDaSituacao, valorCobradoCentavos } from "@/features/agenda/agendamentos";
 import { horaNoFuso } from "@/features/agenda/horarios-livres";
 import { SituacaoBadge } from "@/features/agenda/situacao";
 import { useExpediente } from "@/features/agenda/use-funcionamento";
@@ -166,7 +166,7 @@ function HistoricoDoCliente({
                   {dataCurta(diaDoAgendamento(a, fuso))}, {horaNoFuso(a.inicio, fuso)}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {precoCurtoDeCentavos(a.precoCentavos)}
+                  {precoCurtoDeCentavos(valorCobradoCentavos(a))}
                 </p>
               </li>
             ))}

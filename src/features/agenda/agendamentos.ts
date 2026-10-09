@@ -13,6 +13,7 @@ export type Agendamento = {
   servicoId: string;
   servicoNome: string;
   precoCentavos: number;
+  descontoCentavos: number; // cupom ou serviço grátis da fidelidade; nunca passa do preço
   duracaoMinutos: number;
   inicio: string; // instante ISO
   fim: string;
@@ -25,6 +26,7 @@ const linhaDeAgendamento = z.object({
   servico_id: z.string(),
   servico_nome: z.string(),
   preco_centavos: z.number().int(),
+  desconto_centavos: z.number().int().nullish(),
   duracao_minutos: z.number().int(),
   inicio: z.string(),
   fim: z.string(),
@@ -46,6 +48,7 @@ export function agendamentoDeLinha(linha: unknown): Agendamento {
     servicoId: l.servico_id,
     servicoNome: l.servico_nome,
     precoCentavos: l.preco_centavos,
+    descontoCentavos: l.desconto_centavos ?? 0,
     duracaoMinutos: l.duracao_minutos,
     inicio: l.inicio,
     fim: l.fim,
@@ -53,6 +56,10 @@ export function agendamentoDeLinha(linha: unknown): Agendamento {
     observacao: l.observacao,
   };
 }
+
+// O que será cobrado de fato: o preço do serviço menos o desconto.
+export const valorCobradoCentavos = (a: Pick<Agendamento, "precoCentavos" | "descontoCentavos">) =>
+  a.precoCentavos - a.descontoCentavos;
 
 // Nomes que a tela mostra (o SituacaoBadge usa estes).
 const rotulos: Record<Situacao, string> = {
@@ -107,7 +114,7 @@ export async function lerMeusAgendamentos(): Promise<Agendamento[]> {
   const { data, error } = await supabaseNavegador()
     .from("agendamentos")
     .select(
-      "id, servico_id, servico_nome, preco_centavos, duracao_minutos, inicio, fim, situacao, observacao",
+      "id, servico_id, servico_nome, preco_centavos, desconto_centavos, duracao_minutos, inicio, fim, situacao, observacao",
     )
     .order("inicio", { ascending: false });
   if (error) falhou(error);
@@ -118,11 +125,13 @@ export async function reservar(entrada: {
   servicoId: string;
   inicio: string;
   observacao: string;
+  cupom?: string;
 }): Promise<Agendamento> {
   const { data, error } = await supabaseNavegador().rpc("reservar", {
     p_servico_id: entrada.servicoId,
     p_inicio: entrada.inicio,
     p_observacao: entrada.observacao,
+    ...(entrada.cupom ? { p_cupom: entrada.cupom } : {}),
   });
   if (error) falhou(error);
   return agendamentoDeLinha(data);

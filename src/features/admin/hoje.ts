@@ -1,6 +1,6 @@
 // Contas da tela "Hoje" e da agenda da semana. Funções puras: `agora` e o fuso entram como
 // parâmetro, nunca se lê o relógio do aparelho.
-import type { Agendamento } from "@/features/agenda/agendamentos";
+import { valorCobradoCentavos, type Agendamento } from "@/features/agenda/agendamentos";
 import { momentoNoFuso, somarDias } from "@/features/agenda/expediente";
 import { diaDaSemanaDe } from "@/features/agenda/horarios-livres";
 import type { FormaPagamento } from "@/features/financeiro/formas-de-pagamento";
@@ -43,10 +43,10 @@ export function resumoDoDia(doDia: Agendamento[]) {
     concluidos: doDia.filter((a) => a.situacao === "concluido").length,
     faltas: doDia.filter((a) => a.situacao === "nao_compareceu").length,
     cancelados: doDia.filter((a) => a.situacao === "cancelado").length,
-    previstoCentavos: contam.reduce((total, a) => total + a.precoCentavos, 0),
+    previstoCentavos: contam.reduce((total, a) => total + valorCobradoCentavos(a), 0),
     recebidoCentavos: doDia
       .filter((a) => a.situacao === "concluido")
-      .reduce((total, a) => total + a.precoCentavos, 0),
+      .reduce((total, a) => total + valorCobradoCentavos(a), 0),
   };
 }
 

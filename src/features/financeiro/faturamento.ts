@@ -1,6 +1,6 @@
-// Faturamento bruto (regra F2): atendimentos concluídos + vendas de produtos, em centavos.
-// Venda estornada não conta (F3). Os dias são os da barbearia, no fuso dela. Funções puras.
-import type { Agendamento } from "@/features/agenda/agendamentos";
+// Faturamento bruto (regra F2): atendimentos concluídos + vendas de produtos, em centavos, pelo
+// que foi cobrado de fato (já sem o desconto de cupom ou fidelidade). Venda estornada não conta (F3). Os dias são os da barbearia, no fuso dela. Funções puras.
+import { valorCobradoCentavos, type Agendamento } from "@/features/agenda/agendamentos";
 import { momentoNoFuso } from "@/features/agenda/expediente";
 import type { VendaDoDono } from "@/features/admin/vendas-do-dono";
 import type { FormaPagamento } from "./formas-de-pagamento";
@@ -60,12 +60,18 @@ export function faturamentoBruto(
 ) {
   const servicos = servicosDoPeriodo(agendamentos, fuso, filtro);
   const produtos = vendasDoPeriodo(vendas, fuso, filtro);
-  const servicosCentavos = servicos.reduce((t, a) => t + a.precoCentavos, 0);
+  const servicosCentavos = servicos.reduce((t, a) => t + valorCobradoCentavos(a), 0);
+  // Com um produto escolhido o valor é o do item, sem desconto: não há como saber a parte dele.
+  const descontosCentavos = filtro.produtoId
+    ? 0
+    : servicos.reduce((t, a) => t + a.descontoCentavos, 0) +
+      produtos.reduce((t, v) => t + v.descontoCentavos, 0);
   const produtosCentavos = produtos.reduce((t, v) => t + valorDaVenda(v, filtro.produtoId), 0);
   return {
     servicosCentavos,
     produtosCentavos,
     totalCentavos: servicosCentavos + produtosCentavos,
+    descontosCentavos,
     atendimentos: servicos.length,
     vendas: produtos.length,
   };
@@ -97,7 +103,7 @@ export function faturamentoPorDia(
     return atual;
   };
   for (const a of servicosDoPeriodo(agendamentos, fuso, filtro)) {
-    dia(diaDe(a.inicio, fuso)).servicosCentavos += a.precoCentavos;
+    dia(diaDe(a.inicio, fuso)).servicosCentavos += valorCobradoCentavos(a);
   }
   for (const v of vendasDoPeriodo(vendas, fuso, filtro)) {
     dia(diaDe(v.ocorridaEm, fuso)).produtosCentavos += valorDaVenda(v, filtro.produtoId);
@@ -131,7 +137,7 @@ export function faturamentoPorForma(
     formas.set(forma, atual);
   };
   for (const a of servicosDoPeriodo(agendamentos, fuso, filtro)) {
-    somar(a.formaPagamento ?? null, a.precoCentavos);
+    somar(a.formaPagamento ?? null, valorCobradoCentavos(a));
   }
   for (const v of vendasDoPeriodo(vendas, fuso, filtro)) {
     somar(v.formaPagamento, valorDaVenda(v, filtro.produtoId));

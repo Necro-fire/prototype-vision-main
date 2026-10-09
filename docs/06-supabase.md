@@ -26,6 +26,7 @@ Caminho mais simples, sem instalar nada:
    5. `20261009000002_emails.sql` (fila de e-mails ao cliente e aviso de falha para o dono; passo a passo em `docs/07-emails.md`)
    6. `20261009000003_fotos_do_catalogo.sql` (cria o bucket público `catalogo`, onde ficam as fotos de serviços e produtos, e deixa só o dono enviar e apagar)
    7. `20261010000001_caixa.sql` (Fase 6: forma de pagamento obrigatória ao concluir e vender, atendimento avulso, caixa com abertura e fechamento, estorno com motivo)
+   8. `20261011000001_descontos.sql` (Fase 7: cupons, desconto limitado ao valor, cartão fidelidade com pontos e resgate)
 3. Depois cole e rode [supabase/seed.sql](../supabase/seed.sql). Ele cria os 6 serviços, os 3 produtos e o horário de segunda a sábado, das 9h às 19h. Troque pelos dados reais antes de publicar.
 
 Cada um deve terminar com **Success**. Se algum der erro, copie a mensagem inteira e me envie: a primeira aplicação num projeto real é também um teste do que foi feito no computador.

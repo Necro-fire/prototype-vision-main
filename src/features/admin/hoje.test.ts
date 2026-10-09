@@ -27,6 +27,7 @@ function ag(
     servicoId: "s",
     servicoNome: "Corte",
     precoCentavos,
+    descontoCentavos: 0,
     duracaoMinutos,
     inicio,
     fim: new Date(new Date(inicio).getTime() + duracaoMinutos * 60_000).toISOString(),
@@ -81,6 +82,18 @@ describe("proximoCliente", () => {
 
   it("agendado cujo horário já terminou não é o próximo", () => {
     expect(proximoCliente([ag("atrasado", local(9))], new Date(local(12)))).toBeNull();
+  });
+});
+
+describe("resumoDoDia com desconto", () => {
+  it("previsto e recebido contam o valor cobrado, não o preço de tabela", () => {
+    const doDia = [
+      { ...ag("a", "2026-10-12T13:00:00Z", "concluido", 4500), descontoCentavos: 450 },
+      { ...ag("b", "2026-10-12T14:00:00Z", "agendado", 7000), descontoCentavos: 1000 },
+    ];
+    const r = resumoDoDia(doDia);
+    expect(r.recebidoCentavos).toBe(4050);
+    expect(r.previstoCentavos).toBe(4050 + 6000);
   });
 });
 

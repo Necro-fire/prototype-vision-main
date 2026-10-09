@@ -29,6 +29,7 @@ import {
   remarcar,
   rotuloDaSituacao,
   separarAgendamentos,
+  valorCobradoCentavos,
   type Agendamento,
 } from "@/features/agenda/agendamentos";
 import { descreverQuando, type Expediente } from "@/features/agenda/expediente";
@@ -86,6 +87,9 @@ export function MeusHorarios({
             Olá, <strong>{sessao.nome || sessao.email}</strong>.
           </p>
           <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline" size="sm">
+              <Link to="/cliente/fidelidade">Cartão fidelidade</Link>
+            </Button>
             <Button asChild variant="outline" size="sm">
               <Link to="/cliente/perfil">Meu perfil</Link>
             </Button>
@@ -310,7 +314,9 @@ function Cartao({
         </div>
         <p className="text-base">{descreverQuando(agendamento.inicio, fuso)}</p>
         <p className="text-sm text-muted-foreground">
-          {precoCurtoDeCentavos(agendamento.precoCentavos)}, pagos na barbearia
+          {agendamento.descontoCentavos > 0
+            ? `${precoCurtoDeCentavos(valorCobradoCentavos(agendamento))} com desconto, pagos na barbearia`
+            : `${precoCurtoDeCentavos(agendamento.precoCentavos)}, pagos na barbearia`}
         </p>
       </div>
       <div>{children}</div>

@@ -19,7 +19,13 @@ import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
 import { momentoNoFuso } from "@/features/agenda/expediente";
 import { instanteNoFuso } from "@/features/agenda/horarios-livres";
+import { valorCobradoCentavos } from "@/features/agenda/agendamentos";
 import { useAgora, useExpediente } from "@/features/agenda/use-funcionamento";
+import {
+  CampoDeCupom,
+  cupomVigente,
+  type CupomAplicado,
+} from "@/features/descontos/campo-de-cupom";
 import { rotuloDaForma, type FormaPagamento } from "@/features/financeiro/formas-de-pagamento";
 import { SeletorDeForma } from "@/features/financeiro/seletor-de-forma";
 import { dataCurta } from "@/lib/datas";
@@ -56,6 +62,7 @@ export function Vendas() {
   const [forma, setForma] = useState<FormaPagamento | null>(null);
   const [erroDaForma, setErroDaForma] = useState<string | undefined>();
   const [motivo, setMotivo] = useState("");
+  const [cupomAplicado, setCupomAplicado] = useState<CupomAplicado | null>(null);
   const [mensagem, setMensagem] = useState<{ texto: string; erro: boolean } | null>(null);
   const [estornando, setEstornando] = useState<VendaDoDono | null>(null);
 
@@ -64,6 +71,7 @@ export function Vendas() {
     onSuccess: () => {
       setQuantidade("1");
       setForma(null);
+      setCupomAplicado(null);
       setMensagem({ texto: "Venda registrada.", erro: false });
       void queryClient.invalidateQueries({ queryKey: chavesDeVendas.vendas });
       void queryClient.invalidateQueries({ queryKey: chavesDoCaixa.todos });
@@ -116,6 +124,13 @@ export function Vendas() {
   const ativos = produtos.data.filter((p) => p.ativo);
   const produtoAtual = ativos.find((p) => p.id === produtoId) ?? ativos[0];
   const dia = data || hoje;
+  // O cupom abate do total da venda; se o produto ou a quantidade mudar, é preciso aplicar de novo.
+  const qtdDigitada = Number(quantidade);
+  const bruto =
+    produtoAtual && Number.isInteger(qtdDigitada) && qtdDigitada >= 1
+      ? produtoAtual.precoCentavos * qtdDigitada
+      : 0;
+  const cupom = cupomVigente(cupomAplicado, bruto);
 
   function enviar() {
     const qtd = Number(quantidade);
@@ -138,6 +153,7 @@ export function Vendas() {
       itens: [{ produtoId: produtoAtual.id, quantidade: qtd }],
       formaPagamento: forma,
       ocorridaEm,
+      ...(cupom ? { cupom: cupom.codigo } : {}),
     });
   }
 
@@ -202,6 +218,21 @@ export function Vendas() {
                 />
               )}
             </Campo>
+            <div className="grid gap-2 sm:col-span-3">
+              <CampoDeCupom
+                id="venda-cupom"
+                totalCentavos={bruto}
+                aplicado={cupom}
+                aoAplicar={setCupomAplicado}
+                aoRemover={() => setCupomAplicado(null)}
+              />
+              <p className="text-base">
+                Total da venda:{" "}
+                <strong className="tabular-nums">
+                  {dinheiroDeCentavos(bruto - (cupom?.descontoCentavos ?? 0))}
+                </strong>
+              </p>
+            </div>
             <div className="sm:col-span-3">
               <SeletorDeForma
                 valor={forma}
@@ -308,7 +339,7 @@ export function Vendas() {
             {
               rotulo: "Valor",
               alinharADireita: true,
-              render: (a) => dinheiroDeCentavos(a.precoCentavos),
+              render: (a) => dinheiroDeCentavos(valorCobradoCentavos(a)),
             },
           ]}
         />

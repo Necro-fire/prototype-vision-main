@@ -5,6 +5,7 @@ import {
   podeAlterar,
   rotuloDaSituacao,
   separarAgendamentos,
+  valorCobradoCentavos,
   type Agendamento,
   type Situacao,
 } from "./agendamentos";
@@ -23,6 +24,7 @@ function agendamento(
     servicoId: "s1",
     servicoNome: "Corte clássico",
     precoCentavos: 4500,
+    descontoCentavos: 0,
     duracaoMinutos,
     inicio,
     fim,
@@ -51,12 +53,19 @@ describe("agendamentoDeLinha", () => {
       servicoId: "s1",
       servicoNome: "Corte clássico",
       precoCentavos: 4500,
+      descontoCentavos: 0,
       duracaoMinutos: 30,
       inicio: "2026-10-13T12:00:00+00:00",
       fim: "2026-10-13T12:30:00+00:00",
       situacao: "agendado",
       observacao: "",
     });
+  });
+
+  it("lê o desconto, e o valor cobrado é o preço menos o desconto", () => {
+    const a = agendamentoDeLinha({ ...linha, desconto_centavos: 450 });
+    expect(a.descontoCentavos).toBe(450);
+    expect(valorCobradoCentavos(a)).toBe(4050);
   });
 
   it("recusa situação que o banco não conhece", () => {

@@ -66,6 +66,7 @@ function agendamento(
     servicoId: `serv-${id}`,
     servicoNome,
     precoCentavos: 4500,
+    descontoCentavos: 0,
     duracaoMinutos: 30,
     inicio: inicio.toISOString(),
     fim: new Date(inicio.getTime() + 30 * 60_000).toISOString(),

@@ -216,6 +216,51 @@ describe("Vendas", () => {
     expect(banco.rpc).not.toHaveBeenCalled();
   });
 
+  it("aplica um cupom ao total da venda e envia só o código; o banco calcula o desconto", async () => {
+    banco.rpc.mockImplementation(async (nome: string) =>
+      nome === "prever_desconto" ? { data: 500, error: null } : { data: {}, error: null },
+    );
+    abrir(<Vendas />);
+    await screen.findByLabelText("Produto");
+    fireEvent.change(screen.getByLabelText("Produto"), { target: { value: "pente" } });
+    fireEvent.change(screen.getByLabelText("Quantidade"), { target: { value: "2" } });
+    expect(screen.getByText(/Total da venda/)).toHaveTextContent("R$ 50,00");
+    fireEvent.change(screen.getByLabelText(/Cupom/), { target: { value: "natal" } });
+    fireEvent.click(screen.getByRole("button", { name: "Aplicar" }));
+    expect(await screen.findByText(/Cupom NATAL: desconto de/)).toBeInTheDocument();
+    expect(banco.rpc).toHaveBeenCalledWith("prever_desconto", {
+      p_codigo: "NATAL",
+      p_total_centavos: 5000,
+    });
+    expect(screen.getByText(/Total da venda/)).toHaveTextContent("R$ 45,00");
+
+    fireEvent.click(screen.getByRole("radio", { name: "Pix" }));
+    fireEvent.click(screen.getByRole("button", { name: /Registrar venda/ }));
+    await screen.findByText("Venda registrada.");
+    expect(banco.rpc).toHaveBeenCalledWith("registrar_venda", {
+      p_itens: [{ produto_id: "pente", quantidade: 2 }],
+      p_forma_pagamento: "pix",
+      p_desconto_centavos: 0,
+      p_ocorrida_em: "2026-10-12T15:00:00.000Z",
+      p_cupom: "NATAL",
+    });
+  });
+
+  it("mudar a quantidade depois de aplicar o cupom pede para aplicar de novo", async () => {
+    banco.rpc.mockImplementation(async (nome: string) =>
+      nome === "prever_desconto" ? { data: 250, error: null } : { data: {}, error: null },
+    );
+    abrir(<Vendas />);
+    await screen.findByLabelText("Produto");
+    fireEvent.change(screen.getByLabelText("Produto"), { target: { value: "pente" } });
+    fireEvent.change(screen.getByLabelText(/Cupom/), { target: { value: "DEZ" } });
+    fireEvent.click(screen.getByRole("button", { name: "Aplicar" }));
+    await screen.findByText(/Cupom DEZ/);
+    fireEvent.change(screen.getByLabelText("Quantidade"), { target: { value: "3" } });
+    expect(screen.queryByText(/Cupom DEZ/)).not.toBeInTheDocument();
+    expect(screen.getByText(/Total da venda/)).toHaveTextContent("R$ 75,00");
+  });
+
   it("não registra sem a forma de pagamento, e diz o que falta", async () => {
     abrir(<Vendas />);
     await screen.findByLabelText("Produto");
@@ -346,6 +391,26 @@ describe("Financeiro", () => {
     expect(linhas[1]).toHaveTextContent("R$ 70,00");
     expect(linhas[2]).toHaveTextContent("R$ 189,00");
     expect(linhas[3]).toHaveTextContent("R$ 45,00");
+  });
+
+  it("mostra o total de descontos concedidos no período, e o faturamento já sem eles", async () => {
+    banco.tabelas["agendamentos"] = [
+      { ...atendimento("a1", "Ana", 9, "concluido"), desconto_centavos: 450 },
+      { ...atendimento("a2", "Bruno", 12, "concluido", 7000), desconto_centavos: 0 },
+    ];
+    banco.tabelas["vendas"] = [
+      venda("v1", "pente", "Pente profissional", 2500, 2, 12, {
+        total_centavos: 4500,
+        desconto_centavos: 500,
+      }),
+    ];
+    abrir(<Financeiro />);
+    await screen.findByRole("group", { name: "Faturamento bruto" });
+    // Serviços: 40,50 + 70 = 110,50. Produtos: 45. Descontos: 4,50 + 5.
+    expect(indicador("Serviços")).toHaveTextContent("R$ 110,50");
+    expect(indicador("Produtos")).toHaveTextContent("R$ 45,00");
+    expect(indicador("Faturamento bruto")).toHaveTextContent("R$ 155,50");
+    expect(indicador("Descontos concedidos")).toHaveTextContent("R$ 9,50");
   });
 
   it("limpa os filtros", async () => {

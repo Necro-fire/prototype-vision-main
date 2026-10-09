@@ -83,12 +83,14 @@ export async function registrarVenda(entrada: {
   itens: { produtoId: string; quantidade: number }[];
   formaPagamento: FormaPagamento;
   ocorridaEm: string;
+  cupom?: string;
 }): Promise<void> {
   const { error } = await supabaseNavegador().rpc("registrar_venda", {
     p_itens: entrada.itens.map((i) => ({ produto_id: i.produtoId, quantidade: i.quantidade })),
     p_forma_pagamento: entrada.formaPagamento,
     p_desconto_centavos: 0,
     p_ocorrida_em: entrada.ocorridaEm,
+    ...(entrada.cupom ? { p_cupom: entrada.cupom } : {}),
   });
   if (error) falhou(error);
 }

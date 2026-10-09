@@ -34,7 +34,7 @@ Gerenciador de pacotes: npm (não há Bun nesta máquina). Não reintroduza `bun
 - **Nunca confie na tela para proteger dados.** Toda tabela do banco nasce com RLS ativa e fechada, e agendamento e venda só mudam por função do banco. Quando houver login, `/admin` e `/cliente` verificam a sessão no servidor. Mudou o banco? Skill `migracao-banco`.
 - **Nunca coloque chaves ou senhas no código.** Segredos vão em `.env` (ignorado pelo git); `.env.example` lista os nomes. Variáveis `VITE_*` vão para o navegador: só o que pode ser público.
 - **Dinheiro em centavos inteiros e datas como instante com fuso**, com exibição em `America/Sao_Paulo`, nas áreas novas. O código antigo ainda usa decimais e texto; não copie esse padrão.
-- **Fotos reais e licenciadas**, com crédito em `docs/creditos-imagens.md`. Nenhuma imagem gerada por IA. O site não usa fotos hoje: não adicione nenhuma sem a licença registrada.
+- **Fotos reais e licenciadas**, com crédito em `docs/creditos-imagens.md`. Nenhuma imagem gerada por IA. Não adicione nenhuma sem a licença registrada: o teste `creditos-das-fotos` acusa.
 - **Toda rota de conteúdo define o próprio título e descrição** (`head`).
 
 ## Interface

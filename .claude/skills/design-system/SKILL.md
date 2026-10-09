@@ -52,7 +52,9 @@ Cores e tamanhos vêm de variáveis (`var(--primary)` ou classes do Tailwind lig
 
 ## Fotografias
 
-O site não usa fotos hoje. Quando houver, só reais e licenciadas, com crédito em `docs/creditos-imagens.md`, em `public/fotos/` e sempre com texto alternativo que descreva a cena. Nenhuma imagem gerada por IA.
+Só reais e licenciadas, com crédito em `docs/creditos-imagens.md`, em `public/fotos/` e sempre com texto alternativo que descreva a cena. Nenhuma imagem gerada por IA. Evite pessoas reconhecíveis e marcas de terceiros legíveis.
+
+Use o componente `Foto` (`src/components/foto.tsx`): ele reserva o espaço em 3:2 e escolhe a largura certa do arquivo. Hoje há duas fotos de banco, provisórias: em Contato e em Serviços.
 
 ## Conferência antes de entregar
 

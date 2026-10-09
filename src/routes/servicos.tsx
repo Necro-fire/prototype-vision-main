@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { Foto } from "@/components/foto";
 import { ServiceList } from "@/components/service-list";
 import { ShopLayout } from "@/components/shop-layout";
 import { metasDaPagina } from "@/lib/marca";
@@ -26,6 +27,11 @@ function Services() {
             Toque no serviço para escolher o dia e o horário.
           </p>
         </header>
+        <Foto
+          arquivo="cadeira-em-sala-clara"
+          alt="Cadeira de barbeiro preta, vista de costas, em uma sala clara."
+          prioridade
+        />
         <ServiceList filters />
       </div>
     </ShopLayout>

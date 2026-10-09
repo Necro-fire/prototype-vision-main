@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, MapPin } from "lucide-react";
 
+import { Foto } from "@/components/foto";
 import { EstadoDeFuncionamento } from "@/components/marca";
 import { ShopLayout } from "@/components/shop-layout";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,11 @@ function Contact() {
             texto={funcionamento?.texto}
           />
         </header>
+
+        <Foto
+          arquivo="cadeira-junto-a-porta"
+          alt="Cadeira de barbeiro antiga ao lado de uma porta aberta, com o sol entrando pelo piso de madeira."
+        />
 
         <dl className="grid gap-4">
           <div className="flex gap-4 rounded-md border-2 border-foreground bg-card p-5">

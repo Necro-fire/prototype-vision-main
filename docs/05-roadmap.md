@@ -56,7 +56,7 @@ Deixar o projeto independente, legível e seguro para evoluir, sem mudar nada do
 - [x] Painel: menu lateral no computador, barra inferior no celular, listas que viram cartões no celular.
 - [x] 43 componentes shadcn e 29 bibliotecas sem uso removidos; CSS antigo apagado.
 - [ ] Ícone do site e imagem de compartilhamento (precisam de arte final da marca).
-- [ ] Fotografias: o site não usa nenhuma. Entram quando houver foto própria ou de banco com licença registrada.
+- [x] Fotografias: duas fotos de banco com licença registrada, em Contato e em Serviços. Entraram em 08/10/2026, por decisão do dono, e são provisórias até haver fotos próprias (Fase 8).
 
 **Pronto quando**: nenhuma tela usa texto abaixo de 14px ou alvo de toque abaixo de 44px; o contraste passa em todas as telas; o fluxo de agendamento funciona em 360px de largura; não resta CSS do visual antigo.
 

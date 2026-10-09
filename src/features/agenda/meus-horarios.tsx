@@ -1,6 +1,7 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
 import { CalendarDays } from "lucide-react";
+import { useState, type ReactNode } from "react";
 
 import {
   AlertDialog,
@@ -13,29 +14,65 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Campo } from "@/components/ui/campo";
-import { Input } from "@/components/ui/input";
-import type { Booking } from "@/features/agenda/tipos";
-import { SituacaoBadge, situacoesAtivas } from "@/features/agenda/situacao";
-import { useShop } from "@/features/demo/shop-provider";
-import { dataLonga } from "@/lib/datas";
-import { precoCurto } from "@/lib/dinheiro";
-import { normalizePhone } from "@/lib/telefone";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  cancelar,
+  ehErroDeHorario,
+  lerMeusAgendamentos,
+  podeAlterar,
+  remarcar,
+  rotuloDaSituacao,
+  separarAgendamentos,
+  type Agendamento,
+} from "@/features/agenda/agendamentos";
+import { descreverQuando, type Expediente } from "@/features/agenda/expediente";
+import { SituacaoBadge } from "@/features/agenda/situacao";
+import { SeletorDeHorario } from "@/features/agenda/seletor-de-horario";
+import { useAgora } from "@/features/agenda/use-funcionamento";
+import type { Sessao } from "@/features/conta/sessao";
+import { useSair } from "@/features/conta/sair";
+import { precoCurtoDeCentavos } from "@/lib/dinheiro";
 
-export function MeusHorarios() {
-  const shop = useShop();
-  const [celular, setCelular] = useState("");
-  const [erro, setErro] = useState("");
-  const [cancelando, setCancelando] = useState<Booking | null>(null);
+const CHAVE = ["meus-agendamentos"];
+const FUSO_PADRAO = "America/Sao_Paulo";
 
-  const cliente = shop.clients.find((c) => c.phone === shop.currentPhone);
-  const meus = shop.bookings.filter((b) => b.phone === shop.currentPhone);
-  const proximos = meus
-    .filter((b) => situacoesAtivas.includes(b.status))
-    .sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`));
-  const historico = meus
-    .filter((b) => !situacoesAtivas.includes(b.status))
-    .sort((a, b) => `${b.date}${b.time}`.localeCompare(`${a.date}${a.time}`));
+type Aviso = { tipo: "ok" | "erro"; texto: string };
+
+export function MeusHorarios({
+  sessao,
+  expediente,
+}: {
+  sessao: Sessao;
+  expediente: Expediente | null;
+}) {
+  const queryClient = useQueryClient();
+  const agora = useAgora();
+  const sair = useSair();
+  const fuso = expediente?.fuso ?? FUSO_PADRAO;
+  const [cancelando, setCancelando] = useState<Agendamento | null>(null);
+  const [remarcando, setRemarcando] = useState<Agendamento | null>(null);
+  const [aviso, setAviso] = useState<Aviso | null>(null);
+
+  const consulta = useQuery({ queryKey: CHAVE, queryFn: lerMeusAgendamentos });
+  const { proximos, historico } = separarAgendamentos(consulta.data ?? [], agora ?? new Date());
+
+  const cancelamento = useMutation({
+    mutationFn: cancelar,
+    onSuccess: () =>
+      setAviso({ tipo: "ok", texto: "Agendamento cancelado. O horário ficou livre." }),
+    onError: (erro) => setAviso({ tipo: "erro", texto: erro.message }),
+    onSettled: () => {
+      setCancelando(null);
+      void queryClient.invalidateQueries({ queryKey: CHAVE });
+      void queryClient.invalidateQueries({ queryKey: ["ocupados"] });
+    },
+  });
 
   return (
     <>
@@ -44,97 +81,90 @@ export function MeusHorarios() {
           Meus horários
         </h1>
 
-        {!shop.currentPhone ? (
-          <form
-            className="grid max-w-md gap-5"
-            noValidate
-            onSubmit={(e) => {
-              e.preventDefault();
-              const normalizado = normalizePhone(celular);
-              if (!/^\d{10,11}$/.test(normalizado)) {
-                setErro("Digite o celular com DDD, por exemplo (11) 99999-9999.");
-                return;
-              }
-              setErro("");
-              shop.setCurrentPhone(normalizado);
-            }}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-lg">
+            Olá, <strong>{sessao.nome || sessao.email}</strong>.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline" size="sm">
+              <Link to="/cliente/perfil">Meu perfil</Link>
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => void sair()}>
+              Sair
+            </Button>
+          </div>
+        </div>
+
+        {aviso && (
+          <p
+            role={aviso.tipo === "erro" ? "alert" : "status"}
+            className={
+              aviso.tipo === "erro"
+                ? "rounded-md bg-destructive-soft px-4 py-3 text-base font-semibold text-destructive"
+                : "rounded-md bg-success-soft px-4 py-3 text-base font-semibold text-success"
+            }
           >
-            <Campo id="celular-cliente" rotulo="Celular com DDD" {...(erro ? { erro } : {})}>
-              {(props) => (
-                <Input
-                  {...props}
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  placeholder="(11) 99999-9999"
-                  value={celular}
-                  onChange={(e) => setCelular(e.target.value)}
-                />
-              )}
-            </Campo>
-            <div>
-              <Button type="submit" size="lg">
-                Ver meus horários
-              </Button>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Acesso de demonstração, sem verificação de identidade: qualquer pessoa que digite o
-              número vê os agendamentos dele. Não use dados pessoais reais. O login com e-mail e
-              senha chega com o banco de dados.
+            {aviso.texto}
+          </p>
+        )}
+
+        {consulta.isPending ? (
+          <p className="text-base text-muted-foreground">Carregando seus horários.</p>
+        ) : consulta.isError ? (
+          <div className="grid justify-items-start gap-3 rounded-md border-2 border-dashed border-input p-5">
+            <p role="alert" className="text-base font-semibold">
+              Não conseguimos carregar seus horários agora.
             </p>
-          </form>
+            <Button variant="outline" onClick={() => void consulta.refetch()}>
+              Tentar de novo
+            </Button>
+          </div>
+        ) : proximos.length + historico.length === 0 ? (
+          <div className="grid justify-items-start gap-4 rounded-md border-2 border-dashed border-input p-6">
+            <CalendarDays aria-hidden="true" className="size-8" />
+            <p className="text-lg">Você ainda não tem agendamentos.</p>
+            <Button asChild>
+              <Link to="/agendamento" search={{ service: undefined }}>
+                Agendar horário
+              </Link>
+            </Button>
+          </div>
         ) : (
           <>
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className="text-lg">
-                Olá, <strong>{cliente?.name ?? "bem-vindo"}</strong>.
-              </p>
-              <Button variant="outline" size="sm" onClick={() => shop.setCurrentPhone("")}>
-                Sair
-              </Button>
-            </div>
-
-            {meus.length === 0 ? (
-              <div className="grid justify-items-start gap-4 rounded-md border-2 border-dashed border-input p-6">
-                <CalendarDays aria-hidden="true" className="size-8" />
-                <p className="text-lg">Você ainda não tem agendamentos nesta sessão.</p>
-                <Button asChild>
-                  <Link to="/agendamento" search={{ service: undefined }}>
-                    Agendar horário
-                  </Link>
-                </Button>
-              </div>
-            ) : (
-              <>
-                <Secao titulo="Próximos">
-                  {proximos.length === 0 ? (
-                    <p className="text-base text-muted-foreground">Nenhum horário reservado.</p>
-                  ) : (
-                    proximos.map((b) => (
-                      <Cartao key={b.id} reserva={b}>
-                        {["Agendado", "Confirmado"].includes(b.status) && (
-                          <Button variant="outline" size="sm" onClick={() => setCancelando(b)}>
-                            Cancelar agendamento
+            <Secao titulo="Próximos">
+              {proximos.length === 0 ? (
+                <p className="text-base text-muted-foreground">Nenhum horário reservado.</p>
+              ) : (
+                proximos.map((a) => (
+                  <Cartao key={a.id} agendamento={a} fuso={fuso}>
+                    {agora && podeAlterar(a, agora) && (
+                      <div className="flex flex-wrap gap-2">
+                        {expediente && (
+                          <Button variant="outline" size="sm" onClick={() => setRemarcando(a)}>
+                            Remarcar
                           </Button>
                         )}
-                      </Cartao>
-                    ))
-                  )}
-                </Secao>
-                {historico.length > 0 && (
-                  <Secao titulo="Histórico">
-                    {historico.map((b) => (
-                      <Cartao key={b.id} reserva={b}>
-                        <Button asChild variant="outline" size="sm">
-                          <Link to="/agendamento" search={{ service: b.serviceId }}>
-                            Agendar de novo
-                          </Link>
+                        <Button variant="outline" size="sm" onClick={() => setCancelando(a)}>
+                          Cancelar agendamento
                         </Button>
-                      </Cartao>
-                    ))}
-                  </Secao>
-                )}
-              </>
+                      </div>
+                    )}
+                  </Cartao>
+                ))
+              )}
+            </Secao>
+            {historico.length > 0 && (
+              <Secao titulo="Histórico">
+                {historico.map((a) => (
+                  <Cartao key={a.id} agendamento={a} fuso={fuso}>
+                    <Button asChild variant="outline" size="sm">
+                      <Link to="/agendamento" search={{ service: a.servicoId }}>
+                        Agendar de novo
+                      </Link>
+                    </Button>
+                  </Cartao>
+                ))}
+              </Secao>
             )}
           </>
         )}
@@ -146,33 +176,112 @@ export function MeusHorarios() {
             <AlertDialogTitle>Cancelar este agendamento?</AlertDialogTitle>
             <AlertDialogDescription>
               {cancelando
-                ? `${cancelando.serviceName}, ${dataLonga(cancelando.date)}, às ${cancelando.time}. O horário volta a ficar livre para outras pessoas.`
+                ? `${cancelando.servicoNome}, ${descreverQuando(cancelando.inicio, fuso)}. O horário volta a ficar livre para outras pessoas.`
                 : ""}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Manter agendamento</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => {
-                if (cancelando)
-                  shop.setBookings((old) =>
-                    old.map((item) =>
-                      item.id === cancelando.id ? { ...item, status: "Cancelado" } : item,
-                    ),
-                  );
-                setCancelando(null);
+              onClick={(evento) => {
+                evento.preventDefault();
+                if (cancelando) cancelamento.mutate(cancelando.id);
               }}
             >
-              Cancelar agendamento
+              {cancelamento.isPending ? "Cancelando" : "Cancelar agendamento"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {remarcando && expediente && agora && (
+        <DialogoDeRemarcacao
+          agendamento={remarcando}
+          expediente={expediente}
+          agora={agora}
+          aoFechar={() => setRemarcando(null)}
+          aoConcluir={() => {
+            setRemarcando(null);
+            setAviso({ tipo: "ok", texto: "Horário remarcado." });
+            void queryClient.invalidateQueries({ queryKey: CHAVE });
+            void queryClient.invalidateQueries({ queryKey: ["ocupados"] });
+          }}
+        />
+      )}
     </>
   );
 }
 
-function Secao({ titulo, children }: { titulo: string; children: React.ReactNode }) {
+function DialogoDeRemarcacao({
+  agendamento,
+  expediente,
+  agora,
+  aoFechar,
+  aoConcluir,
+}: {
+  agendamento: Agendamento;
+  expediente: Expediente;
+  agora: Date;
+  aoFechar: () => void;
+  aoConcluir: () => void;
+}) {
+  const queryClient = useQueryClient();
+  const [inicio, setInicio] = useState<string | null>(null);
+  const [erro, setErro] = useState<string | undefined>();
+  const troca = useMutation({
+    mutationFn: (novoInicio: string) => remarcar(agendamento.id, novoInicio),
+    onSuccess: aoConcluir,
+    onError: (falha) => {
+      setErro(falha.message);
+      if (ehErroDeHorario(falha)) {
+        void queryClient.invalidateQueries({ queryKey: ["ocupados"] });
+        setInicio(null);
+      }
+    },
+  });
+
+  return (
+    <Dialog open onOpenChange={(aberto) => !aberto && aoFechar()}>
+      <DialogContent className="max-h-dvh overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Remarcar horário</DialogTitle>
+          <DialogDescription>
+            {agendamento.servicoNome}, hoje marcado para{" "}
+            {descreverQuando(agendamento.inicio, expediente.fuso)}.
+          </DialogDescription>
+        </DialogHeader>
+        <SeletorDeHorario
+          expediente={expediente}
+          agora={agora}
+          duracaoMinutos={agendamento.duracaoMinutos}
+          valor={inicio}
+          aoEscolher={(valor) => {
+            setInicio(valor);
+            setErro(undefined);
+          }}
+        />
+        {erro && (
+          <p role="alert" className="text-base font-semibold text-destructive">
+            {erro}
+          </p>
+        )}
+        <div className="flex flex-wrap justify-end gap-3">
+          <Button variant="ghost" onClick={aoFechar}>
+            Manter o horário atual
+          </Button>
+          <Button
+            disabled={!inicio || troca.isPending}
+            onClick={() => inicio && troca.mutate(inicio)}
+          >
+            {troca.isPending ? "Remarcando" : "Confirmar novo horário"}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function Secao({ titulo, children }: { titulo: string; children: ReactNode }) {
   return (
     <section aria-label={titulo} className="grid gap-3">
       <h2 className="font-display text-2xl font-extrabold">{titulo}</h2>
@@ -181,19 +290,27 @@ function Secao({ titulo, children }: { titulo: string; children: React.ReactNode
   );
 }
 
-function Cartao({ reserva, children }: { reserva: Booking; children: React.ReactNode }) {
+function Cartao({
+  agendamento,
+  fuso,
+  children,
+}: {
+  agendamento: Agendamento;
+  fuso: string;
+  children: ReactNode;
+}) {
   return (
     <li className="grid gap-3 rounded-md border-2 border-foreground bg-card p-4 sm:grid-cols-[1fr_auto] sm:items-center">
       <div className="grid gap-1">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <h3 className="font-display text-xl font-bold leading-tight">{reserva.serviceName}</h3>
-          <SituacaoBadge situacao={reserva.status} />
+          <h3 className="font-display text-xl font-bold leading-tight">
+            {agendamento.servicoNome}
+          </h3>
+          <SituacaoBadge situacao={rotuloDaSituacao(agendamento.situacao)} />
         </div>
-        <p className="text-base">
-          {dataLonga(reserva.date)}, às {reserva.time}
-        </p>
+        <p className="text-base">{descreverQuando(agendamento.inicio, fuso)}</p>
         <p className="text-sm text-muted-foreground">
-          {precoCurto(reserva.price)}, pagos na barbearia
+          {precoCurtoDeCentavos(agendamento.precoCentavos)}, pagos na barbearia
         </p>
       </div>
       <div>{children}</div>

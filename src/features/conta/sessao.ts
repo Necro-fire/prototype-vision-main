@@ -8,6 +8,7 @@ export type Sessao = {
   nome: string;
   celular: string | null;
   papel: Papel;
+  lembretesPorEmail: boolean;
 };
 
 // Quem está logado, conferido no servidor: o Supabase valida o token a cada chamada (getUser),
@@ -20,7 +21,7 @@ export const obterSessao = createServerFn({ method: "GET" }).handler(
     if (error || !data.user) return null;
     const { data: perfil } = await banco
       .from("perfis")
-      .select("nome, celular, papel")
+      .select("nome, celular, papel, lembretes_por_email")
       .eq("id", data.user.id)
       .maybeSingle();
     return {
@@ -29,6 +30,7 @@ export const obterSessao = createServerFn({ method: "GET" }).handler(
       nome: typeof perfil?.nome === "string" ? perfil.nome : "",
       celular: typeof perfil?.celular === "string" ? perfil.celular : null,
       papel: perfil?.papel === "dono" ? "dono" : "cliente",
+      lembretesPorEmail: perfil?.lembretes_por_email !== false,
     };
   },
 );

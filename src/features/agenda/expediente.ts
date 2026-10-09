@@ -3,7 +3,8 @@
 import { z } from "zod";
 
 import { descreverDias } from "./funcionamento";
-import { diaDaSemanaDe, type Intervalo } from "./horarios-livres";
+import { dataLonga } from "@/lib/datas";
+import { diaDaSemanaDe, horaNoFuso, type Intervalo } from "./horarios-livres";
 
 export type Expediente = {
   fuso: string;
@@ -135,4 +136,10 @@ export function rotuloDoDia(data: string, hoje: string) {
   if (diferenca === 1) return "amanhã";
   const [, mes = "0", dia = "0"] = data.split("-");
   return `${diasDaSemana[diaDaSemanaDe(data)] ?? ""}, ${Number(dia)}/${Number(mes)}`;
+}
+
+// "quinta-feira, 8 de outubro, às 09:30", no fuso da barbearia.
+export function descreverQuando(inicio: string, fuso: string) {
+  const { data } = momentoNoFuso(new Date(inicio), fuso);
+  return `${dataLonga(data)}, às ${horaNoFuso(inicio, fuso)}`;
 }

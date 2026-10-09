@@ -103,8 +103,8 @@ Feito, no computador:
 
 Falta, e depende do projeto no Supabase (guia 06):
 
-- [ ] Catálogo, horários e agendamentos lidos do banco no site e no agendamento.
-- [ ] Conta do cliente: próximos horários, histórico, cancelar, remarcar, agendar de novo, perfil, excluir conta.
+- [x] Catálogo, horários e agendamentos lidos do banco no site e no agendamento (reserva por `reservar`, no servidor do banco; quem não entrou escolhe o horário e entra para confirmar, e volta com a escolha guardada).
+- [x] Conta do cliente: próximos horários, histórico, cancelar, remarcar, agendar de novo, perfil, excluir conta (`/cliente` e `/cliente/perfil`).
 - [ ] Teste de ponta a ponta do fluxo completo.
 
 **Pronto quando**: o agendamento continua lá depois de recarregar a página e aparece em outro aparelho; dois pedidos simultâneos para o mesmo horário resultam em um aceito e um recusado com mensagem clara; todos os testes de agenda do protótipo passam.

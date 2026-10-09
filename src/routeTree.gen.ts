@@ -23,6 +23,8 @@ import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminModuleRouteImport } from './routes/admin.$module'
 import { Route as AuthConfirmarRouteImport } from './routes/auth.confirmar'
+import { Route as ClienteIndexRouteImport } from './routes/cliente.index'
+import { Route as ClientePerfilRouteImport } from './routes/cliente.perfil'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -94,12 +96,22 @@ const AuthConfirmarRoute = AuthConfirmarRouteImport.update({
   path: '/auth/confirmar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClienteIndexRoute = ClienteIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ClienteRoute,
+} as any)
+const ClientePerfilRoute = ClientePerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => ClienteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/agendamento': typeof AgendamentoRoute
-  '/cliente': typeof ClienteRoute
+  '/cliente': typeof ClienteRouteWithChildren
   '/contato': typeof ContatoRoute
   '/criar-conta': typeof CriarContaRoute
   '/entrar': typeof EntrarRoute
@@ -109,12 +121,13 @@ export interface FileRoutesByFullPath {
   '/servicos': typeof ServicosRoute
   '/admin/$module': typeof AdminModuleRoute
   '/auth/confirmar': typeof AuthConfirmarRoute
+  '/cliente/perfil': typeof ClientePerfilRoute
   '/admin/': typeof AdminIndexRoute
+  '/cliente/': typeof ClienteIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/agendamento': typeof AgendamentoRoute
-  '/cliente': typeof ClienteRoute
   '/contato': typeof ContatoRoute
   '/criar-conta': typeof CriarContaRoute
   '/entrar': typeof EntrarRoute
@@ -124,14 +137,16 @@ export interface FileRoutesByTo {
   '/servicos': typeof ServicosRoute
   '/admin/$module': typeof AdminModuleRoute
   '/auth/confirmar': typeof AuthConfirmarRoute
+  '/cliente/perfil': typeof ClientePerfilRoute
   '/admin': typeof AdminIndexRoute
+  '/cliente': typeof ClienteIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/agendamento': typeof AgendamentoRoute
-  '/cliente': typeof ClienteRoute
+  '/cliente': typeof ClienteRouteWithChildren
   '/contato': typeof ContatoRoute
   '/criar-conta': typeof CriarContaRoute
   '/entrar': typeof EntrarRoute
@@ -141,7 +156,9 @@ export interface FileRoutesById {
   '/servicos': typeof ServicosRoute
   '/admin/$module': typeof AdminModuleRoute
   '/auth/confirmar': typeof AuthConfirmarRoute
+  '/cliente/perfil': typeof ClientePerfilRoute
   '/admin/': typeof AdminIndexRoute
+  '/cliente/': typeof ClienteIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -159,12 +176,13 @@ export interface FileRouteTypes {
     | '/servicos'
     | '/admin/$module'
     | '/auth/confirmar'
+    | '/cliente/perfil'
     | '/admin/'
+    | '/cliente/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/agendamento'
-    | '/cliente'
     | '/contato'
     | '/criar-conta'
     | '/entrar'
@@ -174,7 +192,9 @@ export interface FileRouteTypes {
     | '/servicos'
     | '/admin/$module'
     | '/auth/confirmar'
+    | '/cliente/perfil'
     | '/admin'
+    | '/cliente'
   id:
     | '__root__'
     | '/'
@@ -190,14 +210,16 @@ export interface FileRouteTypes {
     | '/servicos'
     | '/admin/$module'
     | '/auth/confirmar'
+    | '/cliente/perfil'
     | '/admin/'
+    | '/cliente/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   AgendamentoRoute: typeof AgendamentoRoute
-  ClienteRoute: typeof ClienteRoute
+  ClienteRoute: typeof ClienteRouteWithChildren
   ContatoRoute: typeof ContatoRoute
   CriarContaRoute: typeof CriarContaRoute
   EntrarRoute: typeof EntrarRoute
@@ -308,6 +330,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthConfirmarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cliente/': {
+      id: '/cliente/'
+      path: '/'
+      fullPath: '/cliente/'
+      preLoaderRoute: typeof ClienteIndexRouteImport
+      parentRoute: typeof ClienteRoute
+    }
+    '/cliente/perfil': {
+      id: '/cliente/perfil'
+      path: '/perfil'
+      fullPath: '/cliente/perfil'
+      preLoaderRoute: typeof ClientePerfilRouteImport
+      parentRoute: typeof ClienteRoute
+    }
   }
 }
 
@@ -323,11 +359,24 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface ClienteRouteChildren {
+  ClientePerfilRoute: typeof ClientePerfilRoute
+  ClienteIndexRoute: typeof ClienteIndexRoute
+}
+
+const ClienteRouteChildren: ClienteRouteChildren = {
+  ClientePerfilRoute: ClientePerfilRoute,
+  ClienteIndexRoute: ClienteIndexRoute,
+}
+
+const ClienteRouteWithChildren =
+  ClienteRoute._addFileChildren(ClienteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   AgendamentoRoute: AgendamentoRoute,
-  ClienteRoute: ClienteRoute,
+  ClienteRoute: ClienteRouteWithChildren,
   ContatoRoute: ContatoRoute,
   CriarContaRoute: CriarContaRoute,
   EntrarRoute: EntrarRoute,

@@ -113,8 +113,7 @@ export function ShopLayout({ children }: { children: ReactNode }) {
         </div>
         <div className="border-t border-white/15">
           <p className="mx-auto max-w-6xl px-5 py-4 text-sm text-header-muted">
-            © {new Date().getFullYear()} ON-STYLE. Versão de demonstração: os dados não ficam salvos
-            ao recarregar a página.
+            © {new Date().getFullYear()} ON-STYLE.
           </p>
         </div>
       </footer>

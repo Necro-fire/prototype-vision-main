@@ -12,6 +12,7 @@ A fase atual e o que cada fase entrega estão em `docs/05-roadmap.md`.
 - `npm run verificar`: formatação, ESLint, tipos, testes e compilação. Rode antes de dizer que terminou.
 - `npm test`: só os testes. `npm run test:watch` para acompanhar.
 - `npm run format`: aplica o Prettier.
+- `npx vitest run supabase`: só os testes do banco (Postgres em memória, sem conta nem Docker).
 
 Gerenciador de pacotes: npm (não há Bun nesta máquina). Não reintroduza `bun.lock`.
 
@@ -21,7 +22,8 @@ Gerenciador de pacotes: npm (não há Bun nesta máquina). Não reintroduza `bun
 - `src/routes/`: só páginas. Carregam dados, definem título e descrição e montam a tela.
 - `src/features/<área>/`: regras de negócio, tipos e componentes de cada área (agenda, catalogo, clientes, vendas, financeiro, conta, admin).
 - `src/features/demo/shop-provider.tsx`: estado provisório em memória. É a única fonte de dados hoje e **sai** quando o banco entrar (Fases 2 e 3). Não construa nada novo apoiado nele sem avisar.
-- `src/lib/`: utilidades sem regra de negócio (dinheiro, telefone, erros).
+- `src/lib/`: utilidades sem regra de negócio (dinheiro, telefone, datas, contraste).
+- `supabase/`: migrações, seed e testes do banco. O banco é a barreira de segurança: regras de acesso e de reserva vivem lá (`docs/06-supabase.md`).
 - `src/components/ui/`: componentes base do Design System (Button, Input, Campo, NativeSelect, Dialog...). Só ficam os que têm uso.
 - Detalhes em `docs/02-arquitetura.md`.
 
@@ -29,7 +31,7 @@ Gerenciador de pacotes: npm (não há Bun nesta máquina). Não reintroduza `bun
 
 - **Regras de negócio são funções puras com teste.** O cálculo de horários livres vive em `src/features/agenda/disponibilidade.ts` e seus testes (`*.test.ts` ao lado) precisam continuar passando.
 - **Preservar o que funciona.** Cada fase termina com tudo o que existia ainda funcionando. A lista está em `docs/01-diagnostico.md`.
-- **Nunca confie na tela para proteger dados.** Quando houver login, páginas de `/admin` e `/cliente` verificam a sessão no servidor e toda tabela do banco nasce com RLS ativa e fechada.
+- **Nunca confie na tela para proteger dados.** Toda tabela do banco nasce com RLS ativa e fechada, e agendamento e venda só mudam por função do banco. Quando houver login, `/admin` e `/cliente` verificam a sessão no servidor. Mudou o banco? Skill `migracao-banco`.
 - **Nunca coloque chaves ou senhas no código.** Segredos vão em `.env` (ignorado pelo git); `.env.example` lista os nomes. Variáveis `VITE_*` vão para o navegador: só o que pode ser público.
 - **Dinheiro em centavos inteiros e datas como instante com fuso**, com exibição em `America/Sao_Paulo`, nas áreas novas. O código antigo ainda usa decimais e texto; não copie esse padrão.
 - **Fotos reais e licenciadas**, com crédito em `docs/creditos-imagens.md`. Nenhuma imagem gerada por IA. O site não usa fotos hoje: não adicione nenhuma sem a licença registrada.
@@ -57,4 +59,4 @@ Design System "Letreiro" (laranja, preto e um pouco de azul): tokens em `src/sty
 
 ## Ainda não existe
 
-Banco, login real, e-mails, testes de ponta a ponta e `npm run db:*`. Entram nas Fases 2 a 4. As Skills `migracao-banco` e `email-transacional` são criadas junto com eles.
+A ligação do site com o Supabase (login, dados reais) espera o projeto `onstyle-dev`, que é do dono do projeto. Até lá o site usa o estado em memória de `features/demo`. E-mails, testes de ponta a ponta e a Skill `email-transacional` entram nas Fases 3 e 4.

@@ -214,6 +214,8 @@ Concluído, Cancelado e Não compareceu são finais. O dono pode corrigir um eng
 
 ## Banco de dados
 
+> **Implementado** em `supabase/migrations` e provado em `supabase/testes`. Diferenças em relação ao rascunho abaixo: situações em texto sem acento (`em_atendimento`, `nao_compareceu`), e escrita de agendamentos, vendas e alertas somente por funções (`reservar`, `cancelar_agendamento`, `mudar_situacao`, `remarcar`, `registrar_venda`, `estornar_venda`), nunca por `insert`/`update` direto.
+
 Todas as tabelas têm regras de acesso por linha ativas e começam fechadas: sem uma regra explícita, ninguém lê nem grava.
 
 ### Primeira versão

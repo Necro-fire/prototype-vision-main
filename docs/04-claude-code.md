@@ -47,10 +47,10 @@ Cada Skill é um roteiro que o Claude carrega sozinho quando a tarefa pede, ou q
 
 Criar agora descreveria comandos que ainda não existem.
 
-| Skill                | Entra na | O que garante                                                                                                             |
-| -------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `migracao-banco`     | Fase 2   | Nome e ordem da migração; RLS na mesma migração; teste de permissão; tipos regenerados; desenvolvimento antes de produção |
-| `email-transacional` | Fase 4   | Padrão de fila; modelo com versão em texto simples; respeito às preferências do cliente; teste de envio                   |
+| Skill                | Entra na        | O que garante                                                                                                             |
+| -------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `migracao-banco`     | Fase 2 (criada) | Nome e ordem da migração; RLS na mesma migração; teste de permissão; tipos regenerados; desenvolvimento antes de produção |
+| `email-transacional` | Fase 4          | Padrão de fila; modelo com versão em texto simples; respeito às preferências do cliente; teste de envio                   |
 
 A Skill `design-system` é atualizada na Fase 1, quando a direção visual for fechada.
 

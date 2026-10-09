@@ -66,15 +66,30 @@ Deixar o projeto independente, legível e seguro para evoluir, sem mudar nada do
 
 ## Fase 2 — Banco e contas
 
-- Projetos Supabase de desenvolvimento e produção.
-- Tabelas da primeira versão, com regras de acesso e testes de permissão para cada linha da tabela de perfis.
-- Dados iniciais: os seis serviços e três produtos atuais, ou os reais, se você já os tiver enviado.
-- Criar conta, entrar, sair, confirmar e-mail, recuperar senha, entrar com Google.
-- Páginas de `/admin` e `/cliente` protegidas no servidor; conta do dono atribuída.
-- Remoção do login demonstrativo e da senha escrita no código.
-- Política de privacidade, termos e aceite no cadastro.
+**Situação: o banco está pronto e provado; a ligação com o site espera o seu projeto no Supabase.** Ramificação `fase-2-banco`.
 
-**Pronto quando**: um cliente não consegue ler nem alterar dados de outro, comprovado por teste; ninguém sem perfil de dono abre o painel; a revisão de segurança não aponta pendência.
+Feito, no computador:
+
+- [x] Três migrações em `supabase/migrations`: 13 tabelas, funções que validam as regras no banco e regras de acesso por linha (RLS) com tudo fechado por padrão.
+- [x] Reserva atômica: a restrição de exclusão barra dois agendamentos sobrepostos mesmo que cheguem juntos; cancelado e falta liberam o horário.
+- [x] Fuso, grade, funcionamento, bloqueios, antecedência máxima e limite de 3 agendamentos futuros por conta, tudo validado no banco.
+- [x] Seed com os 6 serviços, os 3 produtos e o horário atuais, em centavos.
+- [x] 70 testes que rodam num Postgres de verdade (PGlite), cada um agindo como visitante, cliente ou dono. Teste de mutação: quebrar a restrição, o privilégio ou o RLS faz a suíte falhar.
+- [x] Skill `migracao-banco` e guia [06-supabase.md](06-supabase.md).
+
+Falta, e depende de você:
+
+- [ ] Criar o projeto `onstyle-dev` e aplicar as migrações (guia 06, passos 1 a 3). **É a primeira prova no Supabase de verdade.**
+- [ ] Me passar a URL e a chave `anon` (guia 06, passo 5).
+
+Depois disso, eu faço:
+
+- [ ] Criar conta, entrar, sair, confirmar e-mail, recuperar senha. Google, na sequência.
+- [ ] Páginas de `/admin` e `/cliente` protegidas no servidor.
+- [ ] Remover o login demonstrativo e a senha escrita no código.
+- [ ] Política de privacidade, termos e aceite no cadastro (precisam do nome e do documento da barbearia).
+
+**Pronto quando**: um cliente não consegue ler nem alterar dados de outro, comprovado por teste (feito, no banco); ninguém sem perfil de dono abre o painel (falta o login); a revisão de segurança não aponta pendência.
 
 ## Fase 3 — Agendamento real e conta do cliente
 

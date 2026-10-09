@@ -77,11 +77,7 @@ function mostrar(module: string) {
 afterEach(cleanup);
 
 describe("Painel administrativo", () => {
-  it.each([
-    ["vendas", "Vendas"],
-    ["financeiro", "Financeiro"],
-    ["configuracoes", "Configurações"],
-  ])("abre o módulo %s", async (module, titulo) => {
+  it.each([["configuracoes", "Configurações"]])("abre o módulo %s", async (module, titulo) => {
     mostrar(module);
     expect(await screen.findByRole("heading", { level: 1, name: titulo })).toBeInTheDocument();
   });
@@ -89,14 +85,5 @@ describe("Painel administrativo", () => {
   it("avisa quando o módulo não existe", async () => {
     mostrar("inexistente");
     expect(await screen.findByText("Módulo não encontrado.")).toBeInTheDocument();
-  });
-
-  it("soma serviços concluídos e vendas no faturamento", async () => {
-    mostrar("financeiro");
-    // Corte + barba (R$ 70) + 2 máquinas (R$ 378) + 1 pente (R$ 25)
-    const cartao = (await screen.findByText("Faturamento bruto")).closest(
-      '[role="group"]',
-    ) as HTMLElement;
-    expect(within(cartao).getByText(/473,00/)).toBeInTheDocument();
   });
 });

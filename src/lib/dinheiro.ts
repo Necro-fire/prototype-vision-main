@@ -29,3 +29,6 @@ export function reaisParaCentavos(texto: string): number | null {
 // 4500 → "45,00", para preencher um campo de edição.
 export const centavosParaCampo = (centavos: number) =>
   `${Math.floor(centavos / 100)},${String(centavos % 100).padStart(2, "0")}`;
+
+// "R$ 1.234,56", sempre com os centavos, para totais e relatórios.
+export const dinheiroDeCentavos = (centavos: number) => money(centavos / 100);

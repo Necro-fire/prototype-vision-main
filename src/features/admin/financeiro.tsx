@@ -1,67 +1,124 @@
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Package, Scissors, TrendingUp } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
-import { useShop } from "@/features/demo/shop-provider";
-import { grossRevenue } from "@/features/financeiro/faturamento";
-import { money } from "@/lib/dinheiro";
-import { BarraDeFiltros, Indicador } from "./componentes";
+import { useExpediente } from "@/features/agenda/use-funcionamento";
+import {
+  faturamentoBruto,
+  faturamentoPorDia,
+  type FiltroFinanceiro,
+} from "@/features/financeiro/faturamento";
+import { dataCurta } from "@/lib/datas";
+import { dinheiroDeCentavos } from "@/lib/dinheiro";
+import { useAgendamentosDoDono } from "./agenda-do-dono";
+import { chavesDoCatalogo, lerProdutosDoDono, lerServicosDoDono } from "./catalogo-do-dono";
+import { BarraDeFiltros, EstadoVazio, Indicador, SecaoAdmin } from "./componentes";
+import { ListaAdaptavel } from "./lista-adaptavel";
 import { PaginaAdmin } from "./pagina-admin";
+import { chavesDeVendas, lerVendas } from "./vendas-do-dono";
+
+const FUSO_PADRAO = "America/Sao_Paulo";
 
 export function Financeiro() {
-  const shop = useShop();
-  const [date, setDate] = useState("");
-  const [serviceId, setServiceId] = useState("");
-  const [productId, setProductId] = useState("");
-  const r = grossRevenue(shop.bookings, shop.sales, { date, serviceId, productId });
+  const fuso = useExpediente()?.fuso ?? FUSO_PADRAO;
+  const agendamentos = useAgendamentosDoDono();
+  const vendas = useQuery({ queryKey: chavesDeVendas.vendas, queryFn: lerVendas });
+  const servicos = useQuery({ queryKey: chavesDoCatalogo.servicos, queryFn: lerServicosDoDono });
+  const produtos = useQuery({ queryKey: chavesDoCatalogo.produtos, queryFn: lerProdutosDoDono });
+  const [de, setDe] = useState("");
+  const [ate, setAte] = useState("");
+  const [servicoId, setServicoId] = useState("");
+  const [produtoId, setProdutoId] = useState("");
+
+  const consultas = [agendamentos, vendas, servicos, produtos];
+  if (agendamentos.isError || vendas.isError || servicos.isError || produtos.isError) {
+    return (
+      <PaginaAdmin module="financeiro">
+        <div className="grid justify-items-start gap-3 rounded-md border-2 border-dashed border-input p-5">
+          <p role="alert" className="text-base font-semibold">
+            Não conseguimos carregar o financeiro agora.
+          </p>
+          <Button variant="outline" onClick={() => consultas.forEach((c) => void c.refetch())}>
+            Tentar de novo
+          </Button>
+        </div>
+      </PaginaAdmin>
+    );
+  }
+  if (agendamentos.isPending || vendas.isPending || servicos.isPending || produtos.isPending) {
+    return (
+      <PaginaAdmin module="financeiro">
+        <p className="text-base text-muted-foreground">Carregando.</p>
+      </PaginaAdmin>
+    );
+  }
+
+  const filtro: FiltroFinanceiro = {
+    ...(de ? { de } : {}),
+    ...(ate ? { ate } : {}),
+    ...(servicoId ? { servicoId } : {}),
+    ...(produtoId ? { produtoId } : {}),
+  };
+  const r = faturamentoBruto(agendamentos.data, vendas.data, fuso, filtro);
+  const porDia = faturamentoPorDia(agendamentos.data, vendas.data, fuso, filtro);
+
   return (
     <PaginaAdmin module="financeiro">
       <BarraDeFiltros>
         <Input
           type="date"
           className="sm:w-auto"
-          aria-label="Filtrar por data"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+          aria-label="Data inicial"
+          value={de}
+          onChange={(e) => setDe(e.target.value)}
+        />
+        <Input
+          type="date"
+          className="sm:w-auto"
+          aria-label="Data final"
+          value={ate}
+          onChange={(e) => setAte(e.target.value)}
         />
         <NativeSelect
           aria-label="Filtrar serviço"
-          value={serviceId}
+          value={servicoId}
           onChange={(e) => {
-            setServiceId(e.target.value);
-            setProductId("");
+            setServicoId(e.target.value);
+            setProdutoId("");
           }}
         >
           <option value="">Todos os serviços</option>
-          {shop.services.map((s) => (
+          {servicos.data.map((s) => (
             <option key={s.id} value={s.id}>
-              {s.name}
+              {s.nome}
             </option>
           ))}
         </NativeSelect>
         <NativeSelect
           aria-label="Filtrar produto"
-          value={productId}
+          value={produtoId}
           onChange={(e) => {
-            setProductId(e.target.value);
-            setServiceId("");
+            setProdutoId(e.target.value);
+            setServicoId("");
           }}
         >
           <option value="">Todos os produtos</option>
-          {shop.products.map((p) => (
+          {produtos.data.map((p) => (
             <option key={p.id} value={p.id}>
-              {p.name}
+              {p.nome}
             </option>
           ))}
         </NativeSelect>
         <Button
           variant="outline"
           onClick={() => {
-            setDate("");
-            setServiceId("");
-            setProductId("");
+            setDe("");
+            setAte("");
+            setServicoId("");
+            setProdutoId("");
           }}
         >
           Limpar filtros
@@ -72,24 +129,56 @@ export function Financeiro() {
         <Indicador
           rotulo="Faturamento bruto"
           icone={TrendingUp}
-          valor={money(r.total)}
+          valor={dinheiroDeCentavos(r.totalCentavos)}
           nota="Serviços concluídos mais vendas"
         />
         <Indicador
           rotulo="Serviços"
           icone={Scissors}
-          valor={money(r.services)}
-          nota="Atendimentos concluídos"
+          valor={dinheiroDeCentavos(r.servicosCentavos)}
+          nota={`${r.atendimentos} atendimentos concluídos`}
         />
         <Indicador
           rotulo="Produtos"
           icone={Package}
-          valor={money(r.products)}
-          nota="Vendas registradas"
+          valor={dinheiroDeCentavos(r.produtosCentavos)}
+          nota={`${r.vendas} vendas, sem as estornadas`}
         />
       </div>
+
+      <SecaoAdmin titulo="Por dia">
+        <ListaAdaptavel
+          descricao="Faturamento por dia"
+          linhas={porDia}
+          chave={(d) => d.dia}
+          vazio={
+            <EstadoVazio
+              titulo="Nada no período."
+              texto="Atendimentos concluídos e vendas aparecem aqui, dia a dia."
+            />
+          }
+          colunas={[
+            { rotulo: "Dia", principal: true, render: (d) => dataCurta(d.dia) },
+            {
+              rotulo: "Serviços",
+              alinharADireita: true,
+              render: (d) => dinheiroDeCentavos(d.servicosCentavos),
+            },
+            {
+              rotulo: "Produtos",
+              alinharADireita: true,
+              render: (d) => dinheiroDeCentavos(d.produtosCentavos),
+            },
+            {
+              rotulo: "Total",
+              alinharADireita: true,
+              render: (d) => <strong>{dinheiroDeCentavos(d.totalCentavos)}</strong>,
+            },
+          ]}
+        />
+      </SecaoAdmin>
       <p className="text-sm text-muted-foreground">
-        Formas de pagamento, descontos e fechamento de caixa entram na Fase 6 do roadmap.
+        Formas de pagamento, descontos e fechamento de caixa entram nas Fases 6 e 7 do roadmap.
       </p>
     </PaginaAdmin>
   );

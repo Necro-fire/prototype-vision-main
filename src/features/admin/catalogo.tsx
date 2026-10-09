@@ -2,12 +2,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Plus, Search } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
+import { Miniatura } from "@/components/miniatura";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Campo } from "@/components/ui/campo";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
+import { CampoDeFoto } from "./campo-de-foto";
+import { semMudancaDeFoto, type MudancaDeFoto } from "./fotos-do-catalogo";
 import { centavosParaCampo, precoCurtoDeCentavos } from "@/lib/dinheiro";
 import {
   chavesDoCatalogo,
@@ -182,9 +185,12 @@ function CatalogoDeServicos() {
     queryFn: lerCategoriasDoDono,
   });
   const [busca, setBusca] = useState("");
-  const [editando, setEditando] = useState<{ id: string | null; form: FormularioDeServico } | null>(
-    null,
-  );
+  const [editando, setEditando] = useState<{
+    id: string | null;
+    form: FormularioDeServico;
+    fotoAtual: string | null;
+    foto: MudancaDeFoto;
+  } | null>(null);
   const [erros, setErros] = useState<ErrosDoCadastro>({});
   const [erroGeral, setErroGeral] = useState<string | null>(null);
   const [mensagem, setMensagem] = useState("");
@@ -195,10 +201,15 @@ function CatalogoDeServicos() {
   };
 
   const salvar = useMutation({
-    mutationFn: (alvo: { id: string | null; form: FormularioDeServico }) => {
+    mutationFn: (alvo: {
+      id: string | null;
+      form: FormularioDeServico;
+      fotoAtual: string | null;
+      foto: MudancaDeFoto;
+    }) => {
       const { dados } = validarServico(alvo.form);
       if (!dados) throw new Error("Confira os campos.");
-      return salvarServico(alvo.id, dados);
+      return salvarServico(alvo.id, dados, { mudanca: alvo.foto, atual: alvo.fotoAtual });
     },
     onSuccess: () => {
       setEditando(null);
@@ -248,14 +259,17 @@ function CatalogoDeServicos() {
       rotulo: "Nome",
       principal: true,
       render: (s) => (
-        <>
-          {s.nome}
-          {s.destaque && (
-            <Badge variant="info" className="ml-2">
-              Mais pedido
-            </Badge>
-          )}
-        </>
+        <span className="inline-flex items-center gap-3">
+          {s.fotoUrl && <Miniatura url={s.fotoUrl} />}
+          <span>
+            {s.nome}
+            {s.destaque && (
+              <Badge variant="info" className="ml-2">
+                Mais pedido
+              </Badge>
+            )}
+          </span>
+        </span>
       ),
     },
     { rotulo: "Categoria", render: (s) => s.categoria ?? "Sem categoria" },
@@ -303,7 +317,12 @@ function CatalogoDeServicos() {
             setMensagem("");
             setErros({});
             setErroGeral(null);
-            setEditando({ id: s.id, form: deServico(s) });
+            setEditando({
+              id: s.id,
+              form: deServico(s),
+              fotoAtual: s.fotoUrl,
+              foto: semMudancaDeFoto,
+            });
           }}
         >
           <Pencil />
@@ -327,7 +346,12 @@ function CatalogoDeServicos() {
             setMensagem("");
             setErros({});
             setErroGeral(null);
-            setEditando({ id: null, form: servicoEmBranco });
+            setEditando({
+              id: null,
+              form: servicoEmBranco,
+              fotoAtual: null,
+              foto: semMudancaDeFoto,
+            });
           }}
         >
           <Plus />
@@ -468,6 +492,13 @@ function CatalogoDeServicos() {
                 />
               )}
             </Campo>
+            <CampoDeFoto
+              id="cad-foto"
+              nomeDoItem={form.nome}
+              urlAtual={editando?.fotoAtual ?? null}
+              mudanca={editando?.foto ?? semMudancaDeFoto}
+              aoMudar={(foto) => editando && setEditando({ ...editando, foto })}
+            />
             <label className="flex min-h-11 cursor-pointer items-center gap-3 text-base font-semibold">
               <input
                 type="checkbox"
@@ -507,9 +538,12 @@ function CatalogoDeProdutos() {
   const queryClient = useQueryClient();
   const produtos = useQuery({ queryKey: chavesDoCatalogo.produtos, queryFn: lerProdutosDoDono });
   const [busca, setBusca] = useState("");
-  const [editando, setEditando] = useState<{ id: string | null; form: FormularioDeProduto } | null>(
-    null,
-  );
+  const [editando, setEditando] = useState<{
+    id: string | null;
+    form: FormularioDeProduto;
+    fotoAtual: string | null;
+    foto: MudancaDeFoto;
+  } | null>(null);
   const [erros, setErros] = useState<ErrosDoCadastro>({});
   const [erroGeral, setErroGeral] = useState<string | null>(null);
   const [mensagem, setMensagem] = useState("");
@@ -518,10 +552,15 @@ function CatalogoDeProdutos() {
     void queryClient.invalidateQueries({ queryKey: chavesDoCatalogo.produtos });
 
   const salvar = useMutation({
-    mutationFn: (alvo: { id: string | null; form: FormularioDeProduto }) => {
+    mutationFn: (alvo: {
+      id: string | null;
+      form: FormularioDeProduto;
+      fotoAtual: string | null;
+      foto: MudancaDeFoto;
+    }) => {
       const { dados } = validarProduto(alvo.form);
       if (!dados) throw new Error("Confira os campos.");
-      return salvarProduto(alvo.id, dados);
+      return salvarProduto(alvo.id, dados, { mudanca: alvo.foto, atual: alvo.fotoAtual });
     },
     onSuccess: () => {
       setEditando(null);
@@ -577,7 +616,12 @@ function CatalogoDeProdutos() {
             setMensagem("");
             setErros({});
             setErroGeral(null);
-            setEditando({ id: null, form: produtoEmBranco });
+            setEditando({
+              id: null,
+              form: produtoEmBranco,
+              fotoAtual: null,
+              foto: semMudancaDeFoto,
+            });
           }}
         >
           <Plus />
@@ -608,7 +652,16 @@ function CatalogoDeProdutos() {
           />
         }
         colunas={[
-          { rotulo: "Nome", principal: true, render: (p) => p.nome },
+          {
+            rotulo: "Nome",
+            principal: true,
+            render: (p) => (
+              <span className="inline-flex items-center gap-3">
+                {p.fotoUrl && <Miniatura url={p.fotoUrl} />}
+                {p.nome}
+              </span>
+            ),
+          },
           { rotulo: "Especificações", render: (p) => p.descricao || "—" },
           {
             rotulo: "Preço",
@@ -640,7 +693,12 @@ function CatalogoDeProdutos() {
                   setMensagem("");
                   setErros({});
                   setErroGeral(null);
-                  setEditando({ id: p.id, form: deProduto(p) });
+                  setEditando({
+                    id: p.id,
+                    form: deProduto(p),
+                    fotoAtual: p.fotoUrl,
+                    foto: semMudancaDeFoto,
+                  });
                 }}
               >
                 <Pencil />
@@ -713,6 +771,13 @@ function CatalogoDeProdutos() {
                 )}
               </Campo>
             </div>
+            <CampoDeFoto
+              id="cad-foto"
+              nomeDoItem={form.nome}
+              urlAtual={editando?.fotoAtual ?? null}
+              mudanca={editando?.foto ?? semMudancaDeFoto}
+              aoMudar={(foto) => editando && setEditando({ ...editando, foto })}
+            />
             {erroGeral && (
               <p role="alert" className="text-base font-semibold text-destructive">
                 {erroGeral}

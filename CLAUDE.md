@@ -35,7 +35,7 @@ Gerenciador de pacotes: npm (não há Bun nesta máquina). Não reintroduza `bun
 - **Nunca confie na tela para proteger dados.** Toda tabela do banco nasce com RLS ativa e fechada, e agendamento e venda só mudam por função do banco. `/admin` e `/cliente` verificam a sessão no servidor antes de renderizar (`obterSessao`). Mudou o banco? Skill `migracao-banco`.
 - **Nunca coloque chaves ou senhas no código.** Segredos vão em `.env` (ignorado pelo git); `.env.example` lista os nomes. Variáveis `VITE_*` vão para o navegador: só o que pode ser público.
 - **Dinheiro em centavos inteiros e datas como instante com fuso**, com exibição em `America/Sao_Paulo`. Preço digitado vira centavos por `reaisParaCentavos`; nada de ponto flutuante.
-- **Fotos reais e licenciadas**, com crédito em `docs/creditos-imagens.md`. Nenhuma imagem gerada por IA. Não adicione nenhuma sem a licença registrada: o teste `creditos-das-fotos` acusa.
+- **Fotos reais e licenciadas**, com crédito em `docs/creditos-imagens.md`. Nenhuma imagem gerada por IA. Não adicione nenhuma sem a licença registrada: o teste `creditos-das-fotos` acusa. Exceção: as fotos de serviços e produtos que o dono envia pelo painel ficam no Storage do Supabase (bucket `catalogo`), fora do repositório, e a licença é responsabilidade dele.
 - **Toda rota de conteúdo define o próprio título e descrição** (`head`).
 
 ## Interface
@@ -60,4 +60,4 @@ Design System "Letreiro" (laranja, preto e um pouco de azul): tokens em `src/sty
 
 ## Ainda não existe
 
-Falta ligar os e-mails à conta Resend do dono e a um agendador (`docs/07-emails.md`): o banco já enche a fila e a rota `/api/emails/processar` já envia, mas nenhum envio real foi feito. A Skill `email-transacional` e os testes de ponta a ponta com conta real entram quando houver essa conta e um navegador de teste. Foto de serviço e de produto (Storage do Supabase), cupons, caixa e fidelidade ficam para as Fases 6 e 7.
+Falta ligar os e-mails à conta Resend do dono e a um agendador (`docs/07-emails.md`): o banco já enche a fila e a rota `/api/emails/processar` já envia, mas nenhum envio real foi feito. A Skill `email-transacional` e os testes de ponta a ponta com conta real entram quando houver essa conta e um navegador de teste. Cupons, caixa e fidelidade ficam para as Fases 6 e 7.

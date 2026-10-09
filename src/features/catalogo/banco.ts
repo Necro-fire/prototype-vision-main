@@ -12,6 +12,7 @@ export type Servico = {
   precoCentavos: number;
   duracaoMinutos: number;
   destaque: boolean;
+  fotoUrl: string | null;
 };
 
 export type Produto = {
@@ -19,6 +20,7 @@ export type Produto = {
   nome: string;
   descricao: string;
   precoCentavos: number;
+  fotoUrl: string | null;
 };
 
 export type Catalogo = { categorias: string[]; servicos: Servico[] };
@@ -30,6 +32,7 @@ const linhaDeServico = z.object({
   preco_centavos: z.number().int(),
   duracao_minutos: z.number().int(),
   destaque: z.boolean(),
+  foto_url: z.string().nullish(),
   categorias: z.object({ nome: z.string() }).nullable(),
 });
 
@@ -38,6 +41,7 @@ const linhaDeProduto = z.object({
   nome: z.string(),
   descricao: z.string(),
   preco_centavos: z.number().int(),
+  foto_url: z.string().nullish(),
 });
 
 export function servicoDeLinha(linha: unknown): Servico {
@@ -50,6 +54,7 @@ export function servicoDeLinha(linha: unknown): Servico {
     precoCentavos: l.preco_centavos,
     duracaoMinutos: l.duracao_minutos,
     destaque: l.destaque,
+    fotoUrl: l.foto_url ?? null,
   };
 }
 
@@ -60,6 +65,7 @@ export function produtoDeLinha(linha: unknown): Produto {
     nome: l.nome,
     descricao: l.descricao,
     precoCentavos: l.preco_centavos,
+    fotoUrl: l.foto_url ?? null,
   };
 }
 
@@ -71,7 +77,9 @@ export function categoriasComServico(todas: string[], servicos: Servico[]) {
 export async function lerServicos(): Promise<Servico[]> {
   const { data, error } = await supabasePublico()
     .from("servicos")
-    .select("id, nome, descricao, preco_centavos, duracao_minutos, destaque, categorias(nome)")
+    .select(
+      "id, nome, descricao, preco_centavos, duracao_minutos, destaque, foto_url, categorias(nome)",
+    )
     .eq("ativo", true)
     .order("ordem");
   if (error) throw falhaDoBanco("Não foi possível ler os serviços", error);
@@ -92,7 +100,7 @@ export async function lerCatalogo(): Promise<Catalogo> {
 export async function lerProdutos(): Promise<Produto[]> {
   const { data, error } = await supabasePublico()
     .from("produtos")
-    .select("id, nome, descricao, preco_centavos")
+    .select("id, nome, descricao, preco_centavos, foto_url")
     .eq("ativo", true)
     .order("ordem");
   if (error) throw falhaDoBanco("Não foi possível ler os produtos", error);

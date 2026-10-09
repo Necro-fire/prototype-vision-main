@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { falhou } from "@/lib/erro-do-banco";
 import { supabaseNavegador } from "@/lib/supabase-navegador";
+import { gravarComFoto, semMudancaDeFoto, type MudancaDeFoto } from "./fotos-do-catalogo";
 import type { ProdutoParaSalvar, ServicoParaSalvar } from "./catalogo-validacao";
 
 export const chavesDoCatalogo = {
@@ -25,6 +26,7 @@ export type ServicoDoDono = {
   ativo: boolean;
   destaque: boolean;
   ordem: number;
+  fotoUrl: string | null;
 };
 
 export type ProdutoDoDono = {
@@ -34,6 +36,7 @@ export type ProdutoDoDono = {
   precoCentavos: number;
   ativo: boolean;
   ordem: number;
+  fotoUrl: string | null;
 };
 
 const linhaDeServico = z.object({
@@ -46,6 +49,7 @@ const linhaDeServico = z.object({
   ativo: z.boolean(),
   destaque: z.boolean(),
   ordem: z.number().int(),
+  foto_url: z.string().nullish(),
   categorias: z.object({ nome: z.string() }).nullable(),
 });
 
@@ -56,6 +60,7 @@ const linhaDeProduto = z.object({
   preco_centavos: z.number().int(),
   ativo: z.boolean(),
   ordem: z.number().int(),
+  foto_url: z.string().nullish(),
 });
 
 export const servicoDoDonoDeLinha = (linha: unknown): ServicoDoDono => {
@@ -71,6 +76,7 @@ export const servicoDoDonoDeLinha = (linha: unknown): ServicoDoDono => {
     ativo: l.ativo,
     destaque: l.destaque,
     ordem: l.ordem,
+    fotoUrl: l.foto_url ?? null,
   };
 };
 
@@ -83,6 +89,7 @@ export const produtoDoDonoDeLinha = (linha: unknown): ProdutoDoDono => {
     precoCentavos: l.preco_centavos,
     ativo: l.ativo,
     ordem: l.ordem,
+    fotoUrl: l.foto_url ?? null,
   };
 };
 
@@ -90,7 +97,7 @@ export async function lerServicosDoDono(): Promise<ServicoDoDono[]> {
   const { data, error } = await supabaseNavegador()
     .from("servicos")
     .select(
-      "id, nome, categoria_id, descricao, preco_centavos, duracao_minutos, ativo, destaque, ordem, categorias(nome)",
+      "id, nome, categoria_id, descricao, preco_centavos, duracao_minutos, ativo, destaque, ordem, foto_url, categorias(nome)",
     )
     .order("ordem")
     .order("nome");
@@ -101,7 +108,7 @@ export async function lerServicosDoDono(): Promise<ServicoDoDono[]> {
 export async function lerProdutosDoDono(): Promise<ProdutoDoDono[]> {
   const { data, error } = await supabaseNavegador()
     .from("produtos")
-    .select("id, nome, descricao, preco_centavos, ativo, ordem")
+    .select("id, nome, descricao, preco_centavos, ativo, ordem, foto_url")
     .order("ordem")
     .order("nome");
   if (error) falhou(error);
@@ -129,7 +136,14 @@ async function criarCategoria(nome: string): Promise<string> {
 }
 
 // Cria (sem id) ou atualiza (com id). Categoria nova é criada antes e usada no serviço.
-export async function salvarServico(id: string | null, dados: ServicoParaSalvar): Promise<void> {
+export async function salvarServico(
+  id: string | null,
+  dados: ServicoParaSalvar,
+  foto: { mudanca: MudancaDeFoto; atual: string | null } = {
+    mudanca: semMudancaDeFoto,
+    atual: null,
+  },
+): Promise<void> {
   const categoriaId = dados.novaCategoria
     ? await criarCategoria(dados.novaCategoria)
     : dados.categoriaId;
@@ -142,21 +156,34 @@ export async function salvarServico(id: string | null, dados: ServicoParaSalvar)
     destaque: dados.destaque,
     ordem: dados.ordem,
   };
-  const banco = supabaseNavegador().from("servicos");
-  const { error } = id ? await banco.update(linha).eq("id", id) : await banco.insert(linha);
-  if (error) falhou(error);
+  await gravarComFoto("servicos", foto.mudanca, foto.atual, async (fotoUrl) => {
+    const banco = supabaseNavegador().from("servicos");
+    const completa = fotoUrl === undefined ? linha : { ...linha, foto_url: fotoUrl };
+    const { error } = id ? await banco.update(completa).eq("id", id) : await banco.insert(completa);
+    if (error) falhou(error);
+  });
 }
 
-export async function salvarProduto(id: string | null, dados: ProdutoParaSalvar): Promise<void> {
+export async function salvarProduto(
+  id: string | null,
+  dados: ProdutoParaSalvar,
+  foto: { mudanca: MudancaDeFoto; atual: string | null } = {
+    mudanca: semMudancaDeFoto,
+    atual: null,
+  },
+): Promise<void> {
   const linha = {
     nome: dados.nome,
     descricao: dados.descricao,
     preco_centavos: dados.precoCentavos,
     ordem: dados.ordem,
   };
-  const banco = supabaseNavegador().from("produtos");
-  const { error } = id ? await banco.update(linha).eq("id", id) : await banco.insert(linha);
-  if (error) falhou(error);
+  await gravarComFoto("produtos", foto.mudanca, foto.atual, async (fotoUrl) => {
+    const banco = supabaseNavegador().from("produtos");
+    const completa = fotoUrl === undefined ? linha : { ...linha, foto_url: fotoUrl };
+    const { error } = id ? await banco.update(completa).eq("id", id) : await banco.insert(completa);
+    if (error) falhou(error);
+  });
 }
 
 export async function mudarAtivo(

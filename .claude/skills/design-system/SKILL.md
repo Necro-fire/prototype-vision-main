@@ -56,6 +56,8 @@ Só reais e licenciadas, com crédito em `docs/creditos-imagens.md`, em `public/
 
 Use o componente `Foto` (`src/components/foto.tsx`): ele reserva o espaço em 3:2 e escolhe a largura certa do arquivo. Hoje há duas fotos de banco, provisórias: em Contato e em Serviços.
 
+Fotos de serviços e produtos não são arquivos do projeto: o dono as envia pelo painel (Storage do Supabase) e aparecem como `Miniatura` (`src/components/miniatura.tsx`) ao lado do nome, com `alt` vazio porque o nome já está escrito ao lado.
+
 ## Conferência antes de entregar
 
 Abra a página em 360px e em 1280px. Percorra com o teclado (Tab). Confira o contraste dos pares de cor novos. Rode a Skill `verificar-entrega`.

@@ -111,12 +111,12 @@ Falta, e depende do projeto no Supabase (guia 06):
 
 ## Fase 4 — Painel do dono, sino e e-mails
 
-**Situação: o painel e os e-mails estão prontos e provados por teste; falta o envio real (depende da conta Resend do dono) e as fotos do catálogo.** Ramificação `fase-4-painel`.
+**Situação: o painel, os e-mails e as fotos do catálogo estão prontos e provados por teste; falta o envio real de e-mails (depende da conta Resend do dono) e o dono cadastrar as fotos.** Ramificação `fase-4-painel`.
 
 - [x] Tela "Hoje": próximo cliente, marcados, atendidos, previsto, linha do tempo e avanço de situação em um toque. Agenda da semana e histórico de mudanças de cada horário.
 - [x] Bloqueios e folgas (dia inteiro, vários dias ou parte do dia), em Configurações.
 - [x] Serviços, categorias e produtos, com ordem e "mais pedido", em centavos. Nada se apaga: desativa-se.
-- [ ] Fotos de serviços e produtos (exigem o armazenamento de arquivos do Supabase).
+- [x] Fotos de serviços e produtos: o dono envia, troca e remove no cadastro (JPG, PNG ou WebP, até 5 MB), pelo Storage do Supabase (bucket público `catalogo`). Aparecem em miniatura nas listas do site e do painel. Nenhuma foto foi cadastrada ainda: item sem foto continua como antes.
 - [x] Clientes: lista, busca e histórico de cada um.
 - [x] Vendas e faturamento bruto com dados reais, com filtro por período, serviço e produto e resumo por dia. Estorno em vez de apagar.
 - [x] Configurações: dados da barbearia (aparecem em Contato), funcionamento com almoço, regras da agenda.

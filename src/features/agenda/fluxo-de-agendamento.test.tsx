@@ -39,6 +39,7 @@ const catalogo: Catalogo = {
       precoCentavos: 4500,
       duracaoMinutos: 30,
       destaque: false,
+      fotoUrl: null,
     },
     {
       id: "s2",
@@ -48,6 +49,7 @@ const catalogo: Catalogo = {
       precoCentavos: 3500,
       duracaoMinutos: 30,
       destaque: false,
+      fotoUrl: null,
     },
     {
       id: "s3",
@@ -57,6 +59,7 @@ const catalogo: Catalogo = {
       precoCentavos: 7000,
       duracaoMinutos: 60,
       destaque: true,
+      fotoUrl: null,
     },
   ],
 };

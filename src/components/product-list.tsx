@@ -1,3 +1,4 @@
+import { Miniatura } from "@/components/miniatura";
 import type { Produto } from "@/features/catalogo/banco";
 import { precoCurtoDeCentavos } from "@/lib/dinheiro";
 
@@ -26,9 +27,12 @@ export function ProductList({ produtos }: { produtos: Produto[] | null }) {
     >
       {produtos.map((p) => (
         <li key={p.id} className="flex items-center justify-between gap-4 px-4 py-4 sm:px-5">
-          <div className="grid gap-0.5">
-            <h3 className="font-display text-xl font-bold leading-tight">{p.nome}</h3>
-            <p className="text-sm text-muted-foreground">{p.descricao}</p>
+          <div className="flex items-center gap-3">
+            {p.fotoUrl && <Miniatura url={p.fotoUrl} />}
+            <div className="grid gap-0.5">
+              <h3 className="font-display text-xl font-bold leading-tight">{p.nome}</h3>
+              <p className="text-sm text-muted-foreground">{p.descricao}</p>
+            </div>
           </div>
           <span className="font-display text-xl font-extrabold tabular-nums">
             {precoCurtoDeCentavos(p.precoCentavos)}

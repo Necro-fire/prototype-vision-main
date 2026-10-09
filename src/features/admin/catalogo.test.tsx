@@ -61,9 +61,34 @@ const banco = vi.hoisted(() => {
     };
     return consulta;
   };
-  return { tabelas, escritas, estado, from };
+  const arquivos = {
+    enviados: [] as { caminho: string; tipo: string | undefined }[],
+    apagados: [] as string[],
+    falhaDeEnvio: false,
+  };
+  const storage = {
+    from: (bucket: string) => ({
+      upload: async (caminho: string, _arquivo: unknown, opcoes?: { contentType?: string }) => {
+        if (arquivos.falhaDeEnvio) return { error: { message: "storage" } };
+        arquivos.enviados.push({ caminho: `${bucket}/${caminho}`, tipo: opcoes?.contentType });
+        return { error: null };
+      },
+      getPublicUrl: (caminho: string) => ({
+        data: {
+          publicUrl: `https://projeto.supabase.co/storage/v1/object/public/${bucket}/${caminho}`,
+        },
+      }),
+      remove: async (caminhos: string[]) => {
+        arquivos.apagados.push(...caminhos);
+        return { error: null };
+      },
+    }),
+  };
+  return { tabelas, escritas, estado, from, storage, arquivos };
 });
-vi.mock("@/lib/supabase-navegador", () => ({ supabaseNavegador: () => ({ from: banco.from }) }));
+vi.mock("@/lib/supabase-navegador", () => ({
+  supabaseNavegador: () => ({ from: banco.from, storage: banco.storage }),
+}));
 
 const linhaDeServico = (id: string, nome: string, extras: Linha = {}): Linha => ({
   id,
@@ -101,6 +126,9 @@ beforeEach(() => {
   for (const t of Object.keys(banco.tabelas)) delete banco.tabelas[t];
   banco.escritas.length = 0;
   banco.estado.falhaDeEscrita = null;
+  banco.arquivos.enviados.length = 0;
+  banco.arquivos.apagados.length = 0;
+  banco.arquivos.falhaDeEnvio = false;
   banco.tabelas["categorias"] = [
     { id: "cat-cortes", nome: "Cortes" },
     { id: "cat-barba", nome: "Barba" },
@@ -305,5 +333,157 @@ describe("Produtos", () => {
         id: "p1",
       }),
     );
+  });
+});
+
+describe("Fotos do catálogo", () => {
+  const BASE = "https://projeto.supabase.co/storage/v1/object/public/catalogo";
+  const fotoVelha = `${BASE}/servicos/velha.webp`;
+  const imagem = (nome = "foto.webp", tipo = "image/webp") =>
+    new File(["conteudo"], nome, { type: tipo });
+
+  async function editarServico(nome: string) {
+    abrir("servicos");
+    fireEvent.click(await screen.findByRole("button", { name: `Editar ${nome}` }));
+    return screen.findByRole("dialog", { name: "Editar serviço" });
+  }
+  const escolher = (dialogo: HTMLElement, arquivo: File) =>
+    fireEvent.change(within(dialogo).getByLabelText(/^Foto/), { target: { files: [arquivo] } });
+  const salvar = (dialogo: HTMLElement) =>
+    fireEvent.click(within(dialogo).getByRole("button", { name: "Salvar cadastro" }));
+
+  beforeEach(() => {
+    banco.tabelas["servicos"] = [
+      linhaDeServico("s1", "Corte clássico", { foto_url: fotoVelha }),
+      linhaDeServico("s2", "Barba & navalha"),
+    ];
+  });
+
+  it("mostra a foto na lista e no cadastro, e só oferece remover quando há foto", async () => {
+    const dialogo = await editarServico("Corte clássico");
+    expect(within(dialogo).getByAltText("Foto de Corte clássico")).toHaveAttribute(
+      "src",
+      fotoVelha,
+    );
+    expect(within(dialogo).getByRole("button", { name: "Remover foto" })).toBeInTheDocument();
+    cleanup();
+    const semFoto = await editarServico("Barba & navalha");
+    expect(within(semFoto).queryByRole("img")).not.toBeInTheDocument();
+    expect(within(semFoto).queryByRole("button", { name: "Remover foto" })).not.toBeInTheDocument();
+  });
+
+  it("foto nova: envia ao Storage, grava o endereço e não apaga nada se não havia foto", async () => {
+    const dialogo = await editarServico("Barba & navalha");
+    escolher(dialogo, imagem());
+    expect(within(dialogo).getByText("A foto nova é enviada ao salvar.")).toBeInTheDocument();
+    // Escolher não envia nada: só salvar envia.
+    expect(banco.arquivos.enviados).toEqual([]);
+    salvar(dialogo);
+    expect(await screen.findByRole("status")).toHaveTextContent("Serviço salvo.");
+
+    expect(banco.arquivos.enviados).toHaveLength(1);
+    const { caminho, tipo } = banco.arquivos.enviados[0]!;
+    expect(caminho).toMatch(/^catalogo\/servicos\/[0-9a-f-]{36}\.webp$/);
+    expect(tipo).toBe("image/webp");
+    expect(banco.escritas[0]!.linha["foto_url"]).toBe(
+      `${BASE}/${caminho.replace("catalogo/", "")}`,
+    );
+    expect(banco.arquivos.apagados).toEqual([]);
+  });
+
+  it("trocar a foto grava a nova e só depois apaga a antiga", async () => {
+    const dialogo = await editarServico("Corte clássico");
+    escolher(dialogo, imagem("outra.png", "image/png"));
+    salvar(dialogo);
+    expect(await screen.findByRole("status")).toHaveTextContent("Serviço salvo.");
+    expect(banco.escritas[0]!.linha["foto_url"]).toMatch(
+      /\/catalogo\/servicos\/[0-9a-f-]{36}\.png$/,
+    );
+    expect(banco.arquivos.apagados).toEqual(["servicos/velha.webp"]);
+  });
+
+  it("remover a foto limpa o endereço e apaga o arquivo", async () => {
+    const dialogo = await editarServico("Corte clássico");
+    fireEvent.click(within(dialogo).getByRole("button", { name: "Remover foto" }));
+    expect(within(dialogo).getByText("A foto será removida ao salvar.")).toBeInTheDocument();
+    expect(within(dialogo).queryByRole("img")).not.toBeInTheDocument();
+    salvar(dialogo);
+    expect(await screen.findByRole("status")).toHaveTextContent("Serviço salvo.");
+    expect(banco.escritas[0]!.linha["foto_url"]).toBeNull();
+    expect(banco.arquivos.apagados).toEqual(["servicos/velha.webp"]);
+    expect(banco.arquivos.enviados).toEqual([]);
+  });
+
+  it("sem mexer na foto, o cadastro não toca nela", async () => {
+    const dialogo = await editarServico("Corte clássico");
+    fireEvent.change(within(dialogo).getByLabelText("Nome"), { target: { value: "Corte novo" } });
+    salvar(dialogo);
+    expect(await screen.findByRole("status")).toHaveTextContent("Serviço salvo.");
+    expect(banco.escritas[0]!.linha).not.toHaveProperty("foto_url");
+    expect(banco.arquivos.enviados).toEqual([]);
+    expect(banco.arquivos.apagados).toEqual([]);
+  });
+
+  it("arquivo que não é foto é recusado na hora, com o que fazer", async () => {
+    const dialogo = await editarServico("Barba & navalha");
+    escolher(dialogo, imagem("contrato.pdf", "application/pdf"));
+    expect(await within(dialogo).findByText("Use uma foto JPG, PNG ou WebP.")).toBeInTheDocument();
+    expect(within(dialogo).queryByText("A foto nova é enviada ao salvar.")).not.toBeInTheDocument();
+    salvar(dialogo);
+    await screen.findByRole("status");
+    expect(banco.arquivos.enviados).toEqual([]);
+    expect(banco.escritas[0]!.linha).not.toHaveProperty("foto_url");
+  });
+
+  it("foto grande demais é recusada", async () => {
+    const dialogo = await editarServico("Barba & navalha");
+    const grande = imagem();
+    Object.defineProperty(grande, "size", { value: 6 * 1024 * 1024 });
+    escolher(dialogo, grande);
+    expect(await within(dialogo).findByText("A foto precisa ter até 5 MB.")).toBeInTheDocument();
+  });
+
+  it("se o envio da foto falha, nada é gravado e o cadastro continua aberto", async () => {
+    banco.arquivos.falhaDeEnvio = true;
+    const dialogo = await editarServico("Barba & navalha");
+    escolher(dialogo, imagem());
+    salvar(dialogo);
+    expect(await within(dialogo).findByText(/Não conseguimos enviar a foto/)).toBeInTheDocument();
+    expect(banco.escritas).toEqual([]);
+  });
+
+  it("se o banco recusa o cadastro, a foto recém-enviada é descartada e a antiga fica", async () => {
+    banco.estado.falhaDeEscrita = "falhou";
+    const dialogo = await editarServico("Corte clássico");
+    escolher(dialogo, imagem());
+    salvar(dialogo);
+    await waitFor(() => expect(banco.arquivos.apagados).toHaveLength(1));
+    expect(banco.arquivos.apagados[0]).toBe(
+      banco.arquivos.enviados[0]!.caminho.replace("catalogo/", ""),
+    );
+    expect(banco.arquivos.apagados).not.toContain("servicos/velha.webp");
+  });
+
+  it("fechar o cadastro sem salvar não envia nada", async () => {
+    const dialogo = await editarServico("Barba & navalha");
+    escolher(dialogo, imagem());
+    fireEvent.keyDown(dialogo, { key: "Escape" });
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(banco.arquivos.enviados).toEqual([]);
+    expect(banco.escritas).toEqual([]);
+  });
+
+  it("produto novo com foto vai para a pasta de produtos", async () => {
+    abrir("produtos");
+    fireEvent.click(await screen.findByRole("button", { name: "Novo produto" }));
+    const dialogo = await screen.findByRole("dialog", { name: "Novo produto" });
+    fireEvent.change(within(dialogo).getByLabelText("Nome"), { target: { value: "Pomada" } });
+    fireEvent.change(within(dialogo).getByLabelText("Preço (R$)"), { target: { value: "39,90" } });
+    escolher(dialogo, imagem("pomada.jpg", "image/jpeg"));
+    salvar(dialogo);
+    expect(await screen.findByRole("status")).toHaveTextContent("Produto salvo.");
+    expect(banco.arquivos.enviados[0]!.caminho).toMatch(/^catalogo\/produtos\/.+\.jpg$/);
+    expect(banco.escritas[0]).toMatchObject({ tabela: "produtos", op: "insert" });
+    expect(banco.escritas[0]!.linha["foto_url"]).toMatch(/\/catalogo\/produtos\/.+\.jpg$/);
   });
 });

@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 
+import { Miniatura } from "@/components/miniatura";
 import { Badge } from "@/components/ui/badge";
 import type { Catalogo } from "@/features/catalogo/banco";
 import { precoCurtoDeCentavos } from "@/lib/dinheiro";
@@ -70,16 +71,19 @@ export function ServiceList({
                 search={{ service: s.id }}
                 className="grid min-h-[4.5rem] grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3.5 transition-colors hover:bg-accent sm:px-5"
               >
-                <span className="grid gap-0.5">
-                  <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-                    <strong className="font-display text-xl font-bold leading-tight">
-                      {s.nome}
-                    </strong>
-                    {s.destaque && <Badge variant="info">Mais pedido</Badge>}
-                  </span>
-                  <span className="text-sm text-muted-foreground">
-                    {s.duracaoMinutos} min
-                    {filters && s.descricao ? `. ${s.descricao}` : ""}
+                <span className="flex items-center gap-3">
+                  {s.fotoUrl && <Miniatura url={s.fotoUrl} />}
+                  <span className="grid gap-0.5">
+                    <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                      <strong className="font-display text-xl font-bold leading-tight">
+                        {s.nome}
+                      </strong>
+                      {s.destaque && <Badge variant="info">Mais pedido</Badge>}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {s.duracaoMinutos} min
+                      {filters && s.descricao ? `. ${s.descricao}` : ""}
+                    </span>
                   </span>
                 </span>
                 <span

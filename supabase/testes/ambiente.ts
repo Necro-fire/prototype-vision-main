@@ -26,6 +26,26 @@ const ambienteSupabase = `
     select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid
   $$;
   grant execute on function auth.uid() to anon, authenticated;
+  -- Armazenamento de arquivos: só o formato que a migração usa (buckets e objetos), com a RLS
+  -- ligada como no Supabase. O envio de arquivo em si não existe aqui.
+  create schema storage;
+  create table storage.buckets (
+    id text primary key,
+    name text not null,
+    public boolean not null default false,
+    file_size_limit bigint,
+    allowed_mime_types text[]
+  );
+  create table storage.objects (
+    id uuid primary key default gen_random_uuid(),
+    bucket_id text not null references storage.buckets (id),
+    name text not null,
+    owner uuid
+  );
+  alter table storage.objects enable row level security;
+  grant usage on schema storage to anon, authenticated;
+  grant select on storage.buckets to anon, authenticated;
+  grant select, insert, update, delete on storage.objects to anon, authenticated;
   alter default privileges in schema public grant all on tables to anon, authenticated;
   alter default privileges in schema public grant all on functions to anon, authenticated;
 `;

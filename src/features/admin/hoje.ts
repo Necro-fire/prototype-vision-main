@@ -3,11 +3,14 @@
 import type { Agendamento } from "@/features/agenda/agendamentos";
 import { momentoNoFuso, somarDias } from "@/features/agenda/expediente";
 import { diaDaSemanaDe } from "@/features/agenda/horarios-livres";
+import type { FormaPagamento } from "@/features/financeiro/formas-de-pagamento";
 
 export type AgendamentoDoDono = Agendamento & {
   clienteId: string | null;
   clienteNome: string;
   clienteCelular: string;
+  formaPagamento: FormaPagamento | null; // como foi pago; nulo antes de concluir
+  avulso: boolean; // atendimento sem hora marcada, registrado já concluído
 };
 
 const emAberto = ["agendado", "confirmado", "em_atendimento"];

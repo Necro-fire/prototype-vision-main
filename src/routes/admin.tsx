@@ -6,6 +6,7 @@ import {
   MoreHorizontal,
   Package,
   Bell,
+  Banknote,
   Receipt,
   Scissors,
   Settings,
@@ -31,6 +32,7 @@ const modulos: ItemDoMenu[] = [
   { id: "produtos", label: "Produtos", icone: Package },
   { id: "clientes", label: "Clientes", icone: Users },
   { id: "vendas", label: "Vendas", icone: Receipt },
+  { id: "caixa", label: "Caixa", icone: Banknote },
   { id: "financeiro", label: "Financeiro", icone: Wallet },
   { id: "alertas", label: "Alertas", icone: Bell },
   { id: "configuracoes", label: "Configurações", icone: Settings },
@@ -164,9 +166,6 @@ function AdminShell() {
           id="conteudo-admin"
           className="mx-auto grid w-full max-w-5xl gap-6 px-5 pb-28 pt-6 md:pb-12 md:pt-10"
         >
-          <p className="rounded-md bg-info-soft px-4 py-2.5 text-sm font-semibold text-info">
-            Os dados deste painel ainda são de demonstração e somem ao recarregar. O login é real.
-          </p>
           <Outlet />
         </main>
       </div>

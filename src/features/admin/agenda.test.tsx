@@ -85,6 +85,8 @@ function ag(
     clienteId: `c-${id}`,
     clienteNome: cliente,
     clienteCelular: "11999990000",
+    formaPagamento: null,
+    avulso: false,
   };
 }
 
@@ -102,6 +104,8 @@ const linhaDe = (a: AgendamentoDoDono): Linha => ({
   cliente_id: a.clienteId,
   cliente_nome: a.clienteNome,
   cliente_celular: a.clienteCelular,
+  forma_pagamento: a.formaPagamento,
+  avulso: a.avulso,
 });
 
 const lista = () => [
@@ -203,6 +207,51 @@ describe("Hoje", () => {
     expect(
       screen.queryByRole("button", { name: "Cancelar horário: Carla" }),
     ).not.toBeInTheDocument();
+  });
+
+  it("concluir pede a forma de pagamento antes de chamar o banco", async () => {
+    banco.tabelas["agendamentos"] = [
+      ag("x2", "Carla", local(12, 11, 30), "em_atendimento", "Corte clássico", 4500),
+    ].map(linhaDe);
+    banco.rpc.mockResolvedValue({
+      data: linhaDe(ag("x2", "Carla", local(12, 11, 30), "concluido")),
+      error: null,
+    });
+    abrir(<VisaoGeral />);
+    fireEvent.click(await screen.findByRole("button", { name: "Concluir atendimento: Carla" }));
+    const dialogo = await screen.findByRole("alertdialog");
+    expect(within(dialogo).getByText("Como foi o pagamento?")).toBeInTheDocument();
+    expect(dialogo).toHaveTextContent("Carla, Corte clássico, R$ 45,00");
+
+    // Sem escolher, nada é enviado.
+    fireEvent.click(within(dialogo).getByRole("button", { name: "Concluir atendimento" }));
+    expect(await within(dialogo).findByRole("alert")).toHaveTextContent(
+      "Escolha como o cliente pagou",
+    );
+    expect(banco.rpc).not.toHaveBeenCalled();
+
+    fireEvent.click(within(dialogo).getByRole("radio", { name: "Débito" }));
+    fireEvent.click(within(dialogo).getByRole("button", { name: "Concluir atendimento" }));
+    await waitFor(() =>
+      expect(banco.rpc).toHaveBeenCalledWith("mudar_situacao", {
+        p_id: "x2",
+        p_para: "concluido",
+        p_forma_pagamento: "debito",
+      }),
+    );
+  });
+
+  it("voltar do diálogo de pagamento não conclui nada", async () => {
+    banco.tabelas["agendamentos"] = [ag("x2", "Carla", local(12, 11, 30), "em_atendimento")].map(
+      linhaDe,
+    );
+    abrir(<VisaoGeral />);
+    fireEvent.click(await screen.findByRole("button", { name: "Concluir atendimento: Carla" }));
+    fireEvent.click(
+      within(await screen.findByRole("alertdialog")).getByRole("button", { name: "Voltar" }),
+    );
+    await waitFor(() => expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument());
+    expect(banco.rpc).not.toHaveBeenCalled();
   });
 
   it("'não compareceu' só é oferecido depois do horário começar", async () => {

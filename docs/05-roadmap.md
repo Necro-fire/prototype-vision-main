@@ -145,13 +145,17 @@ Falta, e depende do projeto no Supabase (guia 06):
 
 ## Fase 6 — Caixa e formas de pagamento
 
-- Forma de pagamento ao concluir um atendimento e ao registrar uma venda: Pix, dinheiro, débito, crédito.
-- Atendimento avulso, para o cliente sem hora marcada (se você confirmar a proposta).
-- Abertura e fechamento de caixa, com conferência do dinheiro contado.
-- Estorno de venda, com registro.
-- Financeiro por período e por forma de pagamento.
+**Situação: feita no computador; a migração nova espera o seu projeto no Supabase.** Ramificação `fase-6-caixa`. Migração `20261010000001_caixa.sql`.
+
+- [x] Forma de pagamento (Pix, dinheiro, débito, crédito) ao concluir um atendimento e ao registrar uma venda. O banco recusa as duas sem ela; o histórico anterior continua, aparecendo como "Sem forma registrada".
+- [x] Atendimento avulso, para o cliente sem hora marcada: o dono escolhe o serviço (o preço vem do cadastro), o nome (opcional) e a forma de pagamento. Entra como concluído, sem conta de cliente, sem acender o sino e sem ocupar a agenda. _Proposta aplicada sem confirmação prévia; veja as perguntas ao fim da fase._
+- [x] Abertura e fechamento de caixa (`/admin/caixa`): abre com o troco; cada pagamento e cada estorno guardam em qual caixa entraram; ao fechar, o banco calcula o dinheiro esperado (troco + dinheiro que entrou − dinheiro estornado), compara com o contado e guarda a diferença e o resumo por forma.
+- [x] Estorno de venda com motivo, autor, hora e o caixa em que saiu o dinheiro. A venda continua no histórico.
+- [x] Financeiro por período e por forma de pagamento.
 
 **Pronto quando**: o fechamento do dia bate com a soma dos lançamentos, e a diferença, quando houver, fica registrada.
+
+**Verificado:** 23 testes novos do banco (forma obrigatória, avulso, abertura única, fechamento = soma dos lançamentos, diferença, estorno em caixa posterior, permissões) e 9 quebras de propósito, todas acusadas pelo teste; testes de tela do diálogo de pagamento, das vendas, do caixa e do financeiro por forma. **Não verificado:** as telas novas com a conta do dono num projeto real (e em 360px), e a corrida entre um pagamento e o fechamento do caixa em dois aparelhos ao mesmo tempo (o banco a trava, mas o Postgres de teste não reproduz concorrência).
 
 ## Fase 7 — Descontos e fidelidade
 

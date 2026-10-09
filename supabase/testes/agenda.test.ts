@@ -299,7 +299,9 @@ describe("Agenda no banco", () => {
     it("segue o caminho agendado, confirmado, em atendimento e concluído, e registra cada passo", async () => {
       const a = await reservar(maria, corte, segunda("10:00"));
       for (const para of ["confirmado", "em_atendimento", "concluido"]) {
-        await como(db, dono, () => db.query("select public.mudar_situacao($1, $2)", [a.id, para]));
+        await como(db, dono, () =>
+          db.query("select public.mudar_situacao($1, $2, 'pix')", [a.id, para]),
+        );
       }
       const { rows } = await db.query<{ de: string | null; para: string }>(
         "select de, para from public.agendamento_eventos where agendamento_id = $1 order by em, para",

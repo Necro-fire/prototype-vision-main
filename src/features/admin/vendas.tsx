@@ -20,9 +20,12 @@ import { NativeSelect } from "@/components/ui/native-select";
 import { momentoNoFuso } from "@/features/agenda/expediente";
 import { instanteNoFuso } from "@/features/agenda/horarios-livres";
 import { useAgora, useExpediente } from "@/features/agenda/use-funcionamento";
+import { rotuloDaForma, type FormaPagamento } from "@/features/financeiro/formas-de-pagamento";
+import { SeletorDeForma } from "@/features/financeiro/seletor-de-forma";
 import { dataCurta } from "@/lib/datas";
 import { dinheiroDeCentavos } from "@/lib/dinheiro";
 import { useAgendamentosDoDono } from "./agenda-do-dono";
+import { chavesDoCaixa } from "./caixa-do-dono";
 import { chavesDoCatalogo, lerProdutosDoDono } from "./catalogo-do-dono";
 import { BarraDeFiltros, EstadoVazio, SecaoAdmin } from "./componentes";
 import { diaDoAgendamento } from "./hoje";
@@ -50,6 +53,9 @@ export function Vendas() {
   const [quantidade, setQuantidade] = useState("1");
   const [data, setData] = useState("");
   const [periodo, setPeriodo] = useState("");
+  const [forma, setForma] = useState<FormaPagamento | null>(null);
+  const [erroDaForma, setErroDaForma] = useState<string | undefined>();
+  const [motivo, setMotivo] = useState("");
   const [mensagem, setMensagem] = useState<{ texto: string; erro: boolean } | null>(null);
   const [estornando, setEstornando] = useState<VendaDoDono | null>(null);
 
@@ -57,8 +63,10 @@ export function Vendas() {
     mutationFn: registrarVenda,
     onSuccess: () => {
       setQuantidade("1");
+      setForma(null);
       setMensagem({ texto: "Venda registrada.", erro: false });
       void queryClient.invalidateQueries({ queryKey: chavesDeVendas.vendas });
+      void queryClient.invalidateQueries({ queryKey: chavesDoCaixa.todos });
     },
     onError: (e) => setMensagem({ texto: e.message, erro: true }),
   });
@@ -69,7 +77,9 @@ export function Vendas() {
     onError: (e) => setMensagem({ texto: e.message, erro: true }),
     onSettled: () => {
       setEstornando(null);
+      setMotivo("");
       void queryClient.invalidateQueries({ queryKey: chavesDeVendas.vendas });
+      void queryClient.invalidateQueries({ queryKey: chavesDoCaixa.todos });
     },
   });
 
@@ -114,13 +124,21 @@ export function Vendas() {
       setMensagem({ texto: "A quantidade precisa ser de pelo menos 1.", erro: true });
       return;
     }
+    if (!forma) {
+      setErroDaForma("Escolha como o cliente pagou.");
+      return;
+    }
     setMensagem(null);
     // Venda de hoje leva a hora de agora; de outro dia, meio-dia no horário da barbearia.
     const ocorridaEm =
       dia === hoje
         ? new Date().toISOString()
         : new Date(instanteNoFuso(dia, 720, fuso)).toISOString();
-    registrar.mutate({ itens: [{ produtoId: produtoAtual.id, quantidade: qtd }], ocorridaEm });
+    registrar.mutate({
+      itens: [{ produtoId: produtoAtual.id, quantidade: qtd }],
+      formaPagamento: forma,
+      ocorridaEm,
+    });
   }
 
   const doPeriodo = vendas.data.filter(
@@ -184,6 +202,16 @@ export function Vendas() {
                 />
               )}
             </Campo>
+            <div className="sm:col-span-3">
+              <SeletorDeForma
+                valor={forma}
+                aoMudar={(escolhida) => {
+                  setForma(escolhida);
+                  setErroDaForma(undefined);
+                }}
+                {...(erroDaForma ? { erro: erroDaForma } : {})}
+              />
+            </div>
             <div className="grid gap-3 sm:col-span-3">
               {mensagem && (
                 <p
@@ -232,6 +260,7 @@ export function Vendas() {
               rotulo: "Data",
               render: (v) => dataCurta(momentoNoFuso(new Date(v.ocorridaEm), fuso).data),
             },
+            { rotulo: "Pagamento", render: (v) => rotuloDaForma(v.formaPagamento) },
             {
               rotulo: "Total",
               alinharADireita: true,
@@ -241,7 +270,12 @@ export function Vendas() {
               rotulo: "Situação",
               render: (v) =>
                 v.estornadaEm ? (
-                  <Badge variant="neutral">Estornada</Badge>
+                  <span className="grid justify-items-start gap-1">
+                    <Badge variant="neutral">Estornada</Badge>
+                    {v.estornoMotivo && (
+                      <span className="text-sm text-muted-foreground">{v.estornoMotivo}</span>
+                    )}
+                  </span>
                 ) : (
                   <Button variant="outline" size="sm" onClick={() => setEstornando(v)}>
                     Estornar
@@ -270,6 +304,7 @@ export function Vendas() {
             { rotulo: "Cliente", principal: true, render: (a) => a.clienteNome },
             { rotulo: "Serviço", render: (a) => a.servicoNome },
             { rotulo: "Data", render: (a) => dataCurta(diaDoAgendamento(a, fuso)) },
+            { rotulo: "Pagamento", render: (a) => rotuloDaForma(a.formaPagamento) },
             {
               rotulo: "Valor",
               alinharADireita: true,
@@ -289,12 +324,22 @@ export function Vendas() {
                 : ""}
             </AlertDialogDescription>
           </AlertDialogHeader>
+          <Campo id="estorno-motivo" rotulo="Motivo do estorno" opcional>
+            {(props) => (
+              <Input
+                {...props}
+                maxLength={300}
+                value={motivo}
+                onChange={(e) => setMotivo(e.target.value)}
+              />
+            )}
+          </Campo>
           <AlertDialogFooter>
             <AlertDialogCancel>Manter venda</AlertDialogCancel>
             <AlertDialogAction
               onClick={(evento) => {
                 evento.preventDefault();
-                if (estornando) estorno.mutate(estornando.id);
+                if (estornando) estorno.mutate({ id: estornando.id, motivo });
               }}
             >
               {estorno.isPending ? "Estornando" : "Estornar venda"}

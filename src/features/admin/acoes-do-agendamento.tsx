@@ -14,13 +14,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { rotuloDaSituacao, type Situacao } from "@/features/agenda/agendamentos";
+import type { FormaPagamento } from "@/features/financeiro/formas-de-pagamento";
+import { SeletorDeForma } from "@/features/financeiro/seletor-de-forma";
 import { dataHoraCurta } from "@/lib/datas";
+import { dinheiroDeCentavos } from "@/lib/dinheiro";
 import { chavesDoDono, lerEventos, mudarSituacao } from "./agenda-do-dono";
+import { chavesDoCaixa } from "./caixa-do-dono";
 import type { AgendamentoDoDono } from "./hoje";
 import { acaoPrincipal, proximasSituacoes, rotuloDaAcao } from "./situacoes";
 
 // Os botões que levam o agendamento ao próximo passo: o principal em um toque, os demais ao lado.
-// Cancelar pede confirmação, porque libera o horário para outras pessoas.
+// Cancelar pede confirmação, porque libera o horário para outras pessoas. Concluir pede a forma
+// de pagamento (regra F4), porque é aí que o dinheiro entra no caixa.
 export function AcoesDoAgendamento({
   agendamento,
   agora,
@@ -33,15 +38,21 @@ export function AcoesDoAgendamento({
   const queryClient = useQueryClient();
   const [erro, setErro] = useState<string | null>(null);
   const [cancelando, setCancelando] = useState(false);
+  const [concluindo, setConcluindo] = useState(false);
+  const [forma, setForma] = useState<FormaPagamento | null>(null);
+  const [erroDaForma, setErroDaForma] = useState<string | undefined>();
   const [historico, setHistorico] = useState(false);
 
   const mudanca = useMutation({
-    mutationFn: (para: Situacao) => mudarSituacao(agendamento.id, para),
+    mutationFn: ({ para, forma }: { para: Situacao; forma?: FormaPagamento }) =>
+      mudarSituacao(agendamento.id, para, forma),
     onMutate: () => setErro(null),
     onError: (falha) => setErro(falha.message),
     onSettled: () => {
       setCancelando(false);
+      setConcluindo(false);
       void queryClient.invalidateQueries({ queryKey: chavesDoDono.agendamentos });
+      void queryClient.invalidateQueries({ queryKey: chavesDoCaixa.todos });
       void queryClient.invalidateQueries({ queryKey: chavesDoDono.eventos(agendamento.id) });
     },
   });
@@ -51,6 +62,23 @@ export function AcoesDoAgendamento({
   const outras = disponiveis.filter((s) => s !== principal);
   const nome = agendamento.clienteNome;
 
+  function pedir(para: Situacao) {
+    if (para === "cancelado") setCancelando(true);
+    else if (para === "concluido") {
+      setForma(null);
+      setErroDaForma(undefined);
+      setConcluindo(true);
+    } else mudanca.mutate({ para });
+  }
+
+  function concluir() {
+    if (!forma) {
+      setErroDaForma("Escolha como o cliente pagou.");
+      return;
+    }
+    mudanca.mutate({ para: "concluido", forma });
+  }
+
   return (
     <div className="grid justify-items-start gap-2">
       <div className="flex flex-wrap gap-2">
@@ -59,7 +87,7 @@ export function AcoesDoAgendamento({
             size="sm"
             disabled={mudanca.isPending}
             aria-label={`${rotuloDaAcao[principal]}: ${nome}`}
-            onClick={() => mudanca.mutate(principal)}
+            onClick={() => pedir(principal)}
           >
             {rotuloDaAcao[principal]}
           </Button>
@@ -71,7 +99,7 @@ export function AcoesDoAgendamento({
             variant="outline"
             disabled={mudanca.isPending}
             aria-label={`${rotuloDaAcao[para]}: ${nome}`}
-            onClick={() => (para === "cancelado" ? setCancelando(true) : mudanca.mutate(para))}
+            onClick={() => pedir(para)}
           >
             {rotuloDaAcao[para]}
           </Button>
@@ -101,10 +129,40 @@ export function AcoesDoAgendamento({
             <AlertDialogAction
               onClick={(evento) => {
                 evento.preventDefault();
-                mudanca.mutate("cancelado");
+                mudanca.mutate({ para: "cancelado" });
               }}
             >
               {mudanca.isPending ? "Cancelando" : "Cancelar horário"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={concluindo} onOpenChange={setConcluindo}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Como foi o pagamento?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {nome}, {agendamento.servicoNome}, {dinheiroDeCentavos(agendamento.precoCentavos)}.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <SeletorDeForma
+            valor={forma}
+            aoMudar={(escolhida) => {
+              setForma(escolhida);
+              setErroDaForma(undefined);
+            }}
+            {...(erroDaForma ? { erro: erroDaForma } : {})}
+          />
+          <AlertDialogFooter>
+            <AlertDialogCancel>Voltar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(evento) => {
+                evento.preventDefault();
+                concluir();
+              }}
+            >
+              {mudanca.isPending ? "Concluindo" : "Concluir atendimento"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

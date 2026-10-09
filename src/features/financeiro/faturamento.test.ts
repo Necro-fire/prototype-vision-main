@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import type { VendaDoDono } from "@/features/admin/vendas-do-dono";
 import type { Agendamento, Situacao } from "@/features/agenda/agendamentos";
-import { faturamentoBruto, faturamentoPorDia } from "./faturamento";
+import { faturamentoBruto, faturamentoPorDia, faturamentoPorForma } from "./faturamento";
+import type { FormaPagamento } from "./formas-de-pagamento";
 
 const FUSO = "America/Sao_Paulo"; // UTC-3
 
@@ -43,6 +44,7 @@ function venda(
     formaPagamento: null,
     ocorridaEm,
     estornadaEm: null,
+    estornoMotivo: "",
     itens: itens.map((i) => ({ ...i, produtoNome: i.produtoId })),
     ...extras,
   };
@@ -155,5 +157,56 @@ describe("faturamentoPorDia", () => {
     expect(dias.reduce((t, d) => t + d.totalCentavos, 0)).toBe(
       faturamentoBruto(atendimentos, vendas, FUSO, filtro).totalCentavos,
     );
+  });
+});
+
+describe("faturamentoPorForma", () => {
+  const paga = (a: Agendamento, forma: FormaPagamento) => ({ ...a, formaPagamento: forma });
+  const servicos = [
+    paga(atendimento("corte", 4500, "concluido", local(8, 10)), "pix"),
+    paga(atendimento("barba", 3500, "concluido", local(8, 11)), "dinheiro"),
+    paga(atendimento("corte", 4500, "concluido", local(9, 10)), "pix"),
+    atendimento("corte", 4500, "concluido", local(7, 10)), // histórico antigo, sem forma
+    paga(atendimento("barba", 3500, "cancelado", local(9, 11)), "pix"), // não conta
+  ];
+  const comVendas = [
+    venda("v1", [{ produtoId: "maquina", precoCentavos: 18900, quantidade: 1 }], local(8, 15), {
+      formaPagamento: "credito",
+    }),
+    venda("v2", [{ produtoId: "pente", precoCentavos: 2500, quantidade: 2 }], local(9, 16), {
+      formaPagamento: "dinheiro",
+    }),
+    venda("v3", [{ produtoId: "pente", precoCentavos: 2500, quantidade: 1 }], local(9, 17), {
+      formaPagamento: "pix",
+      estornadaEm: local(9, 18), // estornada não conta
+    }),
+  ];
+
+  it("separa por forma, na ordem da tela, com o histórico antigo por último", () => {
+    expect(faturamentoPorForma(servicos, comVendas, FUSO)).toEqual([
+      { forma: "pix", quantidade: 2, totalCentavos: 9000 },
+      { forma: "dinheiro", quantidade: 2, totalCentavos: 3500 + 5000 },
+      { forma: "credito", quantidade: 1, totalCentavos: 18900 },
+      { forma: null, quantidade: 1, totalCentavos: 4500 },
+    ]);
+  });
+
+  it("a soma das formas é o faturamento bruto, com ou sem filtro", () => {
+    for (const filtro of [
+      {},
+      { de: "2026-10-09" },
+      { servicoId: "corte" },
+      { produtoId: "pente" },
+    ]) {
+      const soma = faturamentoPorForma(servicos, comVendas, FUSO, filtro).reduce(
+        (t, l) => t + l.totalCentavos,
+        0,
+      );
+      expect(soma).toBe(faturamentoBruto(servicos, comVendas, FUSO, filtro).totalCentavos);
+    }
+  });
+
+  it("sem movimento, sem linhas", () => {
+    expect(faturamentoPorForma([], [], FUSO)).toEqual([]);
   });
 });

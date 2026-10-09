@@ -9,8 +9,10 @@ import { useExpediente } from "@/features/agenda/use-funcionamento";
 import {
   faturamentoBruto,
   faturamentoPorDia,
+  faturamentoPorForma,
   type FiltroFinanceiro,
 } from "@/features/financeiro/faturamento";
+import { rotuloDaForma } from "@/features/financeiro/formas-de-pagamento";
 import { dataCurta } from "@/lib/datas";
 import { dinheiroDeCentavos } from "@/lib/dinheiro";
 import { useAgendamentosDoDono } from "./agenda-do-dono";
@@ -64,6 +66,7 @@ export function Financeiro() {
   };
   const r = faturamentoBruto(agendamentos.data, vendas.data, fuso, filtro);
   const porDia = faturamentoPorDia(agendamentos.data, vendas.data, fuso, filtro);
+  const porForma = faturamentoPorForma(agendamentos.data, vendas.data, fuso, filtro);
 
   return (
     <PaginaAdmin module="financeiro">
@@ -146,6 +149,29 @@ export function Financeiro() {
         />
       </div>
 
+      <SecaoAdmin titulo="Por forma de pagamento">
+        <ListaAdaptavel
+          descricao="Faturamento por forma de pagamento"
+          linhas={porForma}
+          chave={(l) => l.forma ?? "sem-forma"}
+          vazio={
+            <EstadoVazio
+              titulo="Nada no período."
+              texto="Atendimentos concluídos e vendas aparecem aqui, separados por como foram pagos."
+            />
+          }
+          colunas={[
+            { rotulo: "Forma", principal: true, render: (l) => rotuloDaForma(l.forma) },
+            { rotulo: "Pagamentos", alinharADireita: true, render: (l) => String(l.quantidade) },
+            {
+              rotulo: "Total",
+              alinharADireita: true,
+              render: (l) => <strong>{dinheiroDeCentavos(l.totalCentavos)}</strong>,
+            },
+          ]}
+        />
+      </SecaoAdmin>
+
       <SecaoAdmin titulo="Por dia">
         <ListaAdaptavel
           descricao="Faturamento por dia"
@@ -177,9 +203,6 @@ export function Financeiro() {
           ]}
         />
       </SecaoAdmin>
-      <p className="text-sm text-muted-foreground">
-        Formas de pagamento, descontos e fechamento de caixa entram nas Fases 6 e 7 do roadmap.
-      </p>
     </PaginaAdmin>
   );
 }

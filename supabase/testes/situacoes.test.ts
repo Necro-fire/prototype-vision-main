@@ -32,8 +32,7 @@ describe("Situações do agendamento: painel e banco concordam", () => {
   it("o banco só conhece as situações que o painel conhece", async () => {
     const { rows } = await db.query<{ definicao: string }>(
       `select pg_get_constraintdef(oid) as definicao from pg_constraint
-       where conrelid = 'public.agendamentos'::regclass and contype = 'c'
-         and pg_get_constraintdef(oid) like '%situacao%'`,
+       where conrelid = 'public.agendamentos'::regclass and conname = 'agendamentos_situacao_check'`,
     );
     const definicao = rows[0]?.definicao ?? "";
     const noBanco = [...definicao.matchAll(/'([a-z_]+)'/g)].map((m) => m[1]).sort();

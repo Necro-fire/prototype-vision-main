@@ -36,6 +36,7 @@ describe("Painel administrativo", () => {
       [
         "agendamentos",
         "alertas",
+        "caixa",
         "clientes",
         "configuracoes",
         "dashboard",

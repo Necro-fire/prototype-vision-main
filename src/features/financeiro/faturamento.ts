@@ -3,6 +3,10 @@
 import type { Agendamento } from "@/features/agenda/agendamentos";
 import { momentoNoFuso } from "@/features/agenda/expediente";
 import type { VendaDoDono } from "@/features/admin/vendas-do-dono";
+import type { FormaPagamento } from "./formas-de-pagamento";
+
+// O que o financeiro precisa de um atendimento: o agendamento e, se já foi pago, como.
+export type AtendimentoFinanceiro = Agendamento & { formaPagamento?: FormaPagamento | null };
 
 export type FiltroFinanceiro = {
   de?: string; // AAAA-MM-DD, inclusive
@@ -16,7 +20,11 @@ const dentro = (dia: string, f: FiltroFinanceiro) =>
 
 const diaDe = (instante: string, fuso: string) => momentoNoFuso(new Date(instante), fuso).data;
 
-function servicosDoPeriodo(agendamentos: Agendamento[], fuso: string, f: FiltroFinanceiro) {
+function servicosDoPeriodo(
+  agendamentos: AtendimentoFinanceiro[],
+  fuso: string,
+  f: FiltroFinanceiro,
+) {
   if (f.produtoId) return [];
   return agendamentos.filter(
     (a) =>
@@ -45,7 +53,7 @@ function vendasDoPeriodo(vendas: VendaDoDono[], fuso: string, f: FiltroFinanceir
 }
 
 export function faturamentoBruto(
-  agendamentos: Agendamento[],
+  agendamentos: AtendimentoFinanceiro[],
   vendas: VendaDoDono[],
   fuso: string,
   filtro: FiltroFinanceiro = {},
@@ -72,7 +80,7 @@ export type LinhaDoDia = {
 
 // Um resumo por dia, do mais recente para o mais antigo.
 export function faturamentoPorDia(
-  agendamentos: Agendamento[],
+  agendamentos: AtendimentoFinanceiro[],
   vendas: VendaDoDono[],
   fuso: string,
   filtro: FiltroFinanceiro = {},
@@ -97,4 +105,36 @@ export function faturamentoPorDia(
   return [...dias.values()]
     .map((d) => ({ ...d, totalCentavos: d.servicosCentavos + d.produtosCentavos }))
     .sort((a, b) => b.dia.localeCompare(a.dia));
+}
+
+export type LinhaDaForma = {
+  forma: FormaPagamento | null; // nulo: histórico anterior à Fase 6, sem forma registrada
+  quantidade: number;
+  totalCentavos: number;
+};
+
+const ordemDasFormas: (FormaPagamento | null)[] = ["pix", "dinheiro", "debito", "credito", null];
+
+// Quanto entrou por forma de pagamento no período (atendimentos concluídos e vendas, sem as
+// estornadas). A soma das linhas é o faturamento bruto do mesmo filtro.
+export function faturamentoPorForma(
+  agendamentos: AtendimentoFinanceiro[],
+  vendas: VendaDoDono[],
+  fuso: string,
+  filtro: FiltroFinanceiro = {},
+): LinhaDaForma[] {
+  const formas = new Map<FormaPagamento | null, LinhaDaForma>();
+  const somar = (forma: FormaPagamento | null, centavos: number) => {
+    const atual = formas.get(forma) ?? { forma, quantidade: 0, totalCentavos: 0 };
+    atual.quantidade += 1;
+    atual.totalCentavos += centavos;
+    formas.set(forma, atual);
+  };
+  for (const a of servicosDoPeriodo(agendamentos, fuso, filtro)) {
+    somar(a.formaPagamento ?? null, a.precoCentavos);
+  }
+  for (const v of vendasDoPeriodo(vendas, fuso, filtro)) {
+    somar(v.formaPagamento, valorDaVenda(v, filtro.produtoId));
+  }
+  return ordemDasFormas.flatMap((forma) => formas.get(forma) ?? []);
 }

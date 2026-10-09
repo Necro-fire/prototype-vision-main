@@ -5,6 +5,7 @@ export const moduleNames: Record<string, string> = {
   produtos: "Produtos",
   clientes: "Clientes",
   vendas: "Vendas",
+  caixa: "Caixa",
   financeiro: "Financeiro",
   alertas: "Alertas",
   configuracoes: "Configurações",

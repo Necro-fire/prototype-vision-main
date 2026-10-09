@@ -8,6 +8,10 @@ import {
   type Agendamento,
   type Situacao,
 } from "@/features/agenda/agendamentos";
+import {
+  valoresDeFormaDePagamento,
+  type FormaPagamento,
+} from "@/features/financeiro/formas-de-pagamento";
 import { falhou } from "@/lib/erro-do-banco";
 import { supabaseNavegador } from "@/lib/supabase-navegador";
 import type { AgendamentoDoDono } from "./hoje";
@@ -22,6 +26,8 @@ const clienteDoAgendamento = z.object({
   cliente_id: z.string().nullable(),
   cliente_nome: z.string(),
   cliente_celular: z.string(),
+  forma_pagamento: z.enum(valoresDeFormaDePagamento).nullish(),
+  avulso: z.boolean().nullish(),
 });
 
 export function agendamentoDoDonoDeLinha(linha: unknown): AgendamentoDoDono {
@@ -31,11 +37,13 @@ export function agendamentoDoDonoDeLinha(linha: unknown): AgendamentoDoDono {
     clienteId: cliente.cliente_id,
     clienteNome: cliente.cliente_nome,
     clienteCelular: cliente.cliente_celular,
+    formaPagamento: cliente.forma_pagamento ?? null,
+    avulso: cliente.avulso ?? false,
   };
 }
 
 const COLUNAS =
-  "id, servico_id, servico_nome, preco_centavos, duracao_minutos, inicio, fim, situacao, observacao, cliente_id, cliente_nome, cliente_celular";
+  "id, servico_id, servico_nome, preco_centavos, duracao_minutos, inicio, fim, situacao, observacao, cliente_id, cliente_nome, cliente_celular, forma_pagamento, avulso";
 
 export async function lerAgendamentosDoDono(): Promise<AgendamentoDoDono[]> {
   const { data, error } = await supabaseNavegador()
@@ -47,10 +55,16 @@ export async function lerAgendamentosDoDono(): Promise<AgendamentoDoDono[]> {
   return (data ?? []).map(agendamentoDoDonoDeLinha);
 }
 
-export async function mudarSituacao(id: string, para: Situacao): Promise<Agendamento> {
+// Concluir pede a forma de pagamento; as outras mudanças não.
+export async function mudarSituacao(
+  id: string,
+  para: Situacao,
+  formaPagamento?: FormaPagamento,
+): Promise<Agendamento> {
   const { data, error } = await supabaseNavegador().rpc("mudar_situacao", {
     p_id: id,
     p_para: para,
+    ...(formaPagamento ? { p_forma_pagamento: formaPagamento } : {}),
   });
   if (error) falhou(error);
   return agendamentoDeLinha(data);

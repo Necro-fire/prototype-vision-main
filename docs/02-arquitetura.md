@@ -139,7 +139,7 @@ Os endereços atuais são mantidos. Itens marcados com a fase em que entram; sem
 | `/admin/clientes`, `/admin/clientes/$id` | Lista e histórico de cada cliente                           |
 | `/admin/vendas`                          | Registro e histórico de vendas                              |
 | `/admin/financeiro`                      | Faturamento por período                                     |
-| `/admin/caixa`                           | Abertura, fechamento e conferência (fase 6)                 |
+| `/admin/caixa`                           | Abertura, fechamento, conferência e atendimento avulso      |
 | `/admin/descontos`                       | Cupons e regra de fidelidade (fase 7)                       |
 | `/admin/alertas`                         | Histórico do sino                                           |
 | `/admin/configuracoes`                   | Empresa, horários, e-mails, regras da agenda                |
@@ -240,7 +240,7 @@ Todas as tabelas têm regras de acesso por linha ativas e começam fechadas: sem
 
 | Tabela                  | Fase | Guarda                                                                |
 | ----------------------- | ---- | --------------------------------------------------------------------- |
-| `caixas`                | 6    | Abertura, valor inicial, fechamento, valor contado, diferença         |
+| `caixas`                | 6 ✓  | Abertura, valor inicial, fechamento, valor contado, diferença         |
 | `cupons`                | 7    | Código, tipo e valor do desconto, validade, limite e contagem de usos |
 | `fidelidade_movimentos` | 7    | Pontos ganhos e resgatados por cliente; o saldo é a soma              |
 

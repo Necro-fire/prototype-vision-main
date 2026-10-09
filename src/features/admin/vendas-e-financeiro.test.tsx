@@ -183,11 +183,12 @@ describe("Vendas", () => {
     await screen.findByLabelText("Produto");
     fireEvent.change(screen.getByLabelText("Produto"), { target: { value: "pente" } });
     fireEvent.change(screen.getByLabelText("Quantidade"), { target: { value: "3" } });
+    fireEvent.click(screen.getByRole("radio", { name: "Dinheiro" }));
     fireEvent.click(screen.getByRole("button", { name: /Registrar venda/ }));
     expect(await screen.findByText("Venda registrada.")).toBeInTheDocument();
     expect(banco.rpc).toHaveBeenCalledWith("registrar_venda", {
       p_itens: [{ produto_id: "pente", quantidade: 3 }],
-      p_forma_pagamento: null,
+      p_forma_pagamento: "dinheiro",
       p_desconto_centavos: 0,
       p_ocorrida_em: "2026-10-12T15:00:00.000Z",
     });
@@ -198,6 +199,7 @@ describe("Vendas", () => {
     abrir(<Vendas />);
     await screen.findByLabelText("Produto");
     fireEvent.change(screen.getByLabelText("Data"), { target: { value: "2026-10-09" } });
+    fireEvent.click(screen.getByRole("radio", { name: "Pix" }));
     fireEvent.click(screen.getByRole("button", { name: /Registrar venda/ }));
     await screen.findByText("Venda registrada.");
     expect(banco.rpc.mock.calls[0]?.[1]).toMatchObject({
@@ -214,10 +216,19 @@ describe("Vendas", () => {
     expect(banco.rpc).not.toHaveBeenCalled();
   });
 
+  it("não registra sem a forma de pagamento, e diz o que falta", async () => {
+    abrir(<Vendas />);
+    await screen.findByLabelText("Produto");
+    fireEvent.click(screen.getByRole("button", { name: /Registrar venda/ }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Escolha como o cliente pagou");
+    expect(banco.rpc).not.toHaveBeenCalled();
+  });
+
   it("mostra a mensagem do banco quando a venda é recusada", async () => {
     banco.rpc.mockResolvedValue({ data: null, error: { message: "produto_indisponivel" } });
     abrir(<Vendas />);
     await screen.findByLabelText("Produto");
+    fireEvent.click(screen.getByRole("radio", { name: "Pix" }));
     fireEvent.click(screen.getByRole("button", { name: /Registrar venda/ }));
     expect(await screen.findByRole("alert")).toHaveTextContent("não está disponível");
   });
@@ -241,8 +252,16 @@ describe("Vendas", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /Estornar.*Máquina de acabamento/ }));
     const outro = await screen.findByRole("alertdialog");
+    fireEvent.change(within(outro).getByLabelText(/Motivo do estorno/), {
+      target: { value: "Cliente devolveu" },
+    });
     fireEvent.click(within(outro).getByRole("button", { name: "Estornar venda" }));
-    await waitFor(() => expect(banco.rpc).toHaveBeenCalledWith("estornar_venda", { p_id: "v1" }));
+    await waitFor(() =>
+      expect(banco.rpc).toHaveBeenCalledWith("estornar_venda", {
+        p_id: "v1",
+        p_motivo: "Cliente devolveu",
+      }),
+    );
   });
 
   it("lista os serviços concluídos e filtra por data", async () => {
@@ -303,6 +322,30 @@ describe("Financeiro", () => {
     expect(dias[0]).toHaveTextContent("R$ 259,00");
     expect(dias[1]).toHaveTextContent("09/10/2026");
     expect(dias[1]).toHaveTextContent("R$ 95,00");
+  });
+
+  it("separa o que entrou por forma de pagamento, com o histórico antigo à parte", async () => {
+    banco.tabelas["agendamentos"] = [
+      { ...atendimento("a1", "Ana", 9, "concluido"), forma_pagamento: "pix" },
+      { ...atendimento("a2", "Bruno", 12, "concluido", 7000), forma_pagamento: "dinheiro" },
+      atendimento("a5", "Eva", 12, "concluido"), // anterior à Fase 6: sem forma
+    ];
+    banco.tabelas["vendas"] = [
+      venda("v1", "maquina", "Máquina de acabamento", 18900, 1, 12, { forma_pagamento: "credito" }),
+    ];
+    abrir(<Financeiro />);
+    const formas = await screen.findByRole("region", { name: "Por forma de pagamento" });
+    const linhas = within(formas).getAllByRole("listitem");
+    expect(linhas.map((l) => l.textContent)).toEqual([
+      expect.stringContaining("Pix"),
+      expect.stringContaining("Dinheiro"),
+      expect.stringContaining("Crédito"),
+      expect.stringContaining("Sem forma registrada"),
+    ]);
+    expect(linhas[0]).toHaveTextContent("R$ 45,00");
+    expect(linhas[1]).toHaveTextContent("R$ 70,00");
+    expect(linhas[2]).toHaveTextContent("R$ 189,00");
+    expect(linhas[3]).toHaveTextContent("R$ 45,00");
   });
 
   it("limpa os filtros", async () => {

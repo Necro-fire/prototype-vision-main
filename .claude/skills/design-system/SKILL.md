@@ -5,13 +5,26 @@ description: Use em qualquer trabalho de interface do ON-STYLE (tela nova, compo
 
 # Design System
 
-A direção visual será escolhida e fechada na Fase 1 (`docs/03-design-system.md`, três propostas: Letreiro, Azulejo e Poste). Depois disso, esta Skill é atualizada com os tokens e componentes da direção escolhida.
+Direção fechada na Fase 1: **Letreiro, em laranja, preto e um pouco de azul** (`docs/03-design-system.md`). Os tokens ficam em `src/styles.css`.
 
-## Enquanto a direção não está fechada
+## Cores: só por token
 
-- Não invente estilos novos nem adicione cores. Reaproveite as classes e variáveis de `src/styles.css`.
-- Não aprofunde o visual atual (fundo escuro, laranja, títulos em caixa alta): ele será substituído.
-- Se a tarefa exige visual novo, pare e pergunte se a Fase 1 já começou.
+| Para                                     | Classe                                                                                       |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Fundo e texto                            | `bg-background`, `text-foreground`, `bg-card`                                                |
+| Texto secundário                         | `text-muted-foreground`                                                                      |
+| Ação principal                           | `bg-primary text-primary-foreground` (laranja com texto preto)                               |
+| Ação forte ou secundária                 | `bg-secondary text-secondary-foreground` (preto com texto branco)                            |
+| Links, etiqueta, foco                    | `text-info`, `bg-info text-info-foreground`, `ring` (o azul, só em pequenos pontos)          |
+| Borda de campo                           | `border-input` (3:1 ou mais). `border-border` é só divisória decorativa                      |
+| Faixas escuras (cabeçalho, rodapé, menu) | `bg-header text-header-foreground` e a classe `on-dark` no contêiner, que clareia o foco     |
+| Situações                                | `success`, `warning`, `destructive`, `neutral` e as versões `-soft`; sempre com ícone e nome |
+
+**O laranja nunca é texto sobre fundo claro** (2,6:1). Para destaque em texto, use o preto em negrito ou o azul.
+
+Tipografia: `font-display` (Bricolage Grotesque) nos títulos e o padrão (Figtree) no resto. Em títulos use `font-extrabold` e `leading-tight`.
+
+Para trocar uma cor do sistema, mude o valor em `:root` de `src/styles.css`. O teste `contraste-dos-tokens` diz se ainda passa.
 
 ## Limites que valem sempre
 
@@ -24,7 +37,7 @@ A direção visual será escolhida e fechada na Fase 1 (`docs/03-design-system.m
 
 ## Componentes
 
-Use `src/components/ui/` (Button, Input, Dialog...). Se faltar um, crie lá, com o mesmo padrão dos vizinhos, em vez de montar HTML solto com classes soltas. Não use `window.confirm`: use o diálogo.
+Use `src/components/ui/`: Button, Input, Textarea, NativeSelect, **Campo** (rótulo, controle, ajuda e erro, com `aria-describedby`), Badge, Dialog, AlertDialog (no lugar de `confirm`) e Sheet. No painel: `ListaAdaptavel`, `Indicador`, `EstadoVazio` e `SecaoAdmin`. Se faltar um, crie com o mesmo padrão dos vizinhos em vez de montar HTML solto.
 
 Cores e tamanhos vêm de variáveis (`var(--primary)` ou classes do Tailwind ligadas a elas), nunca valores soltos como `#f60`.
 
@@ -39,7 +52,7 @@ Cores e tamanhos vêm de variáveis (`var(--primary)` ou classes do Tailwind lig
 
 ## Fotografias
 
-Reais e licenciadas, com crédito em `docs/creditos-imagens.md`. Nenhuma imagem gerada por IA. Arquivos em `public/fotos/`, referenciados por `src/assets/fotos.ts`. Sempre com texto alternativo que descreva a cena.
+O site não usa fotos hoje. Quando houver, só reais e licenciadas, com crédito em `docs/creditos-imagens.md`, em `public/fotos/` e sempre com texto alternativo que descreva a cena. Nenhuma imagem gerada por IA.
 
 ## Conferência antes de entregar
 

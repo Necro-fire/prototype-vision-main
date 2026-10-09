@@ -1,34 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ShopLayout } from "@/components/shop-layout";
+
 import { ServiceList } from "@/components/service-list";
+import { ShopLayout } from "@/components/shop-layout";
+import { metasDaPagina } from "@/lib/marca";
+
 export const Route = createFileRoute("/servicos")({
   component: Services,
   head: () => ({
-    meta: [
-      { title: "Serviços — Slick Barbearia" },
-      {
-        name: "description",
-        content:
-          "Cortes, barba, tratamentos, sobrancelha e FreeStyle. Encontre seu próximo cuidado na Slick.",
-      },
-      { property: "og:title", content: "Serviços — Slick Barbearia" },
-      { property: "og:description", content: "Conheça nosso ofício e escolha seu serviço." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+    meta: metasDaPagina(
+      "Serviços e preços",
+      "Cortes, barba, tratamentos, sobrancelha e FreeStyle, com preço e duração. Toque no serviço para agendar.",
+    ),
   }),
 });
+
 function Services() {
   return (
     <ShopLayout>
-      <section className="section-wrap catalog-page">
-        <span className="eyebrow">PRECISÃO. PERSONALIDADE. CUIDADO.</span>
-        <h1>
-          NOSSO <span className="text-primary">OFÍCIO.</span>
-        </h1>
-        <p className="page-intro">Escolha seu ritual. Deixe o resto com a gente.</p>
+      <div className="mx-auto grid w-full max-w-3xl gap-6 px-5 pb-20 pt-10">
+        <header className="grid gap-2">
+          <h1 className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">
+            Serviços e preços
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Toque no serviço para escolher o dia e o horário.
+          </p>
+        </header>
         <ServiceList filters />
-      </section>
+      </div>
     </ShopLayout>
   );
 }

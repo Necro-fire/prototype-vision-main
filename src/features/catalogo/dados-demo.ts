@@ -28,6 +28,7 @@ export const initialServices: Service[] = [
     price: 70,
     duration: 60,
     active: true,
+    featured: true,
   },
   {
     id: "4",

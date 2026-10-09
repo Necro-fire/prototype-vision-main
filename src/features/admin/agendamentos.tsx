@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { NativeSelect } from "@/components/ui/native-select";
 import { useShop } from "@/features/demo/shop-provider";
+import { BarraDeFiltros } from "./componentes";
 import { statuses } from "./modulos";
 import { PaginaAdmin } from "./pagina-admin";
 import { TabelaAgendamentos, ordenarPorData } from "./tabela-agendamentos";
@@ -20,23 +23,28 @@ export function Agendamentos() {
   );
   return (
     <PaginaAdmin module="agendamentos">
-      <div className="admin-filter-bar">
-        <div className="search-input">
-          <Search size={17} />
+      <BarraDeFiltros>
+        <div className="relative sm:min-w-64 sm:flex-1">
+          <Search
+            aria-hidden="true"
+            className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-muted-foreground"
+          />
           <Input
+            className="pl-11"
             aria-label="Pesquisar registros"
-            placeholder="Buscar cliente ou serviço..."
+            placeholder="Buscar cliente ou serviço"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
         <Input
           type="date"
+          className="sm:w-auto"
           aria-label="Filtrar por data"
           value={period}
           onChange={(e) => setPeriod(e.target.value)}
         />
-        <select
+        <NativeSelect
           aria-label="Filtrar status"
           value={status}
           onChange={(e) => setStatus(e.target.value)}
@@ -45,18 +53,18 @@ export function Agendamentos() {
           {statuses.map((s) => (
             <option key={s}>{s}</option>
           ))}
-        </select>
+        </NativeSelect>
         <Button
-          variant="ghost"
+          variant="outline"
           onClick={() => {
             setQuery("");
             setPeriod("");
             setStatus("Todos");
           }}
         >
-          Limpar
+          Limpar filtros
         </Button>
-      </div>
+      </BarraDeFiltros>
       <TabelaAgendamentos rows={filtered} />
     </PaginaAdmin>
   );

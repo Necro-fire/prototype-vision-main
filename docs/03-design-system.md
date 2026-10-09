@@ -24,21 +24,30 @@ O nome traz um interruptor. Em qualquer direção escolhida, o "ON" da marca mos
 
 ## Decisão
 
-**Escolhida em 8 de outubro de 2026: A, Letreiro, em laranja, preto e um pouco de azul.** Azulejo e Poste foram descartadas; as descrições abaixo ficam como registro.
+**Escolhida em 8 de outubro de 2026: A, Letreiro, em laranja, preto e um pouco de azul. Versão clara.** Azulejo e Poste foram descartadas; as descrições abaixo ficam como registro. A versão escura ficou como alternativa: trocar é mudar os valores de `:root` em `src/styles.css`.
 
-A paleta do Letreiro mudou em relação à proposta original (que usava azul e amarelo):
+## Estado atual
 
-| Papel                                 | Cor                        | Observação                                                                              |
-| ------------------------------------- | -------------------------- | --------------------------------------------------------------------------------------- |
-| Ação, ON aceso, destaques             | Laranja `#FF7A1A`          | Sempre fundo com texto preto (7,1:1). Como texto sobre o claro só tem 2,6:1: nunca usar |
-| Texto de destaque sobre o claro       | Laranja queimado `#B34700` | 5,4:1 sobre Cal                                                                         |
-| Texto, bordas, faixa do cabeçalho     | Preto `#131416`            | 18,1:1 sobre Cal                                                                        |
-| Fundo da versão clara                 | Cal `#FDFDFB`              |                                                                                         |
-| Pontos de azul: links, etiqueta, foco | Azul `#2B4FD9`             | 6,4:1 como texto sobre Cal; 6,5:1 com texto branco                                      |
-| Texto secundário e borda de campo     | Cimento `#5F6672`          | 5,7:1                                                                                   |
-| Erro                                  | Vermelho `#B42318`         | 6,5:1                                                                                   |
+Os tokens de função estão em `src/styles.css` e as telas só usam esses nomes (`bg-primary`, `text-muted-foreground`, `border-input`...).
 
-Em aberto: **versão clara** (fundo claro, faixa preta no alto) ou **escura** (fundo `#111214`, azul claro `#7C9CFF` nos links, rosa `#FF8A7A` nos erros). A página `/identidade` mostra as duas.
+| Papel                                    | Token                                          | Valor         | Observação                                                                       |
+| ---------------------------------------- | ---------------------------------------------- | ------------- | -------------------------------------------------------------------------------- |
+| Fundo                                    | `background`                                   | `#FDFDFB`     | Cal                                                                              |
+| Texto, bordas fortes, faixa do cabeçalho | `foreground`, `header`                         | `#131416`     | 18,1:1 sobre Cal                                                                 |
+| Ação                                     | `primary`                                      | `#FF7A1A`     | Sempre fundo com texto preto (7,1:1). Como texto sobre claro só 2,6:1: **nunca** |
+| Ação secundária                          | `secondary`                                    | `#131416`     | Texto branco                                                                     |
+| Texto secundário                         | `muted-foreground`                             | `#5F6672`     | 5,7:1                                                                            |
+| Borda de campo                           | `input`                                        | `#5F6672`     | 5,7:1 (mínimo 3)                                                                 |
+| Links, etiquetas, foco                   | `info`, `ring`                                 | `#2B4FD9`     | 6,4:1 sobre Cal; só em pequenos pontos                                           |
+| Situações                                | `success`, `warning`, `destructive`, `neutral` | ver o arquivo | Sempre cor, ícone e nome                                                         |
+
+O teste `src/test/contraste-dos-tokens.test.ts` lê o `styles.css` e falha se qualquer par deixar de passar.
+
+**Fontes:** Bricolage Grotesque nos títulos (`font-display`) e Figtree no texto (`font-sans`), pelo Google Fonts, com `preconnect`. Hospedar as fontes no próprio site fica para a Fase 5.
+
+**Componentes** em `src/components/ui/`: Button, Input, Textarea, NativeSelect, Campo (rótulo, ajuda e erro ligados ao controle), Badge, Dialog, AlertDialog, Sheet, Sonner. Do site: Marca (o ON que acende) e EstadoDeFuncionamento. Do painel: ListaAdaptavel (tabela no computador, cartões no celular), Indicador, EstadoVazio, SecaoAdmin.
+
+**Travas:** `src/test/regras-de-interface.test.ts` impede texto abaixo de 14px e `confirm` do navegador.
 
 ---
 

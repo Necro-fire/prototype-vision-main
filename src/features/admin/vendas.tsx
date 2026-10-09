@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
+import { Campo } from "@/components/ui/campo";
 import { Input } from "@/components/ui/input";
+import { NativeSelect } from "@/components/ui/native-select";
 import { today } from "@/features/agenda/disponibilidade";
 import { useShop } from "@/features/demo/shop-provider";
+import { dataCurta } from "@/lib/datas";
 import { money } from "@/lib/dinheiro";
+import { BarraDeFiltros, EstadoVazio, SecaoAdmin } from "./componentes";
+import { ListaAdaptavel } from "./lista-adaptavel";
 import { PaginaAdmin } from "./pagina-admin";
 
 export function Vendas() {
@@ -14,138 +20,130 @@ export function Vendas() {
   const [qty, setQty] = useState(1);
   const [date, setDate] = useState(today());
   const [period, setPeriod] = useState("");
-  const [msg, setMsg] = useState("");
+  const [msg, setMsg] = useState<{ texto: string; erro: boolean } | null>(null);
   const sales = shop.sales.filter((v) => !period || v.date === period);
   const services = shop.bookings.filter(
     (b) => b.status === "Concluído" && (!period || b.date === period),
   );
   return (
     <PaginaAdmin module="vendas">
-      <section className="settings-layout">
-        <section>
-          <h2>Registrar venda de produto</h2>
-          <div className="form-columns">
-            <label className="field-label">
-              Produto
-              <select value={productId} onChange={(e) => setProductId(e.target.value)}>
+      <SecaoAdmin titulo="Registrar venda de produto">
+        <div className="grid gap-4 rounded-md border-2 border-foreground bg-card p-4 sm:grid-cols-3 sm:p-5">
+          <Campo id="venda-produto" rotulo="Produto">
+            {(props) => (
+              <NativeSelect
+                {...props}
+                value={productId}
+                onChange={(e) => setProductId(e.target.value)}
+              >
                 {active.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.name} · {money(p.price)}
+                    {p.name}, {money(p.price)}
                   </option>
                 ))}
-              </select>
-            </label>
-            <label className="field-label">
-              Quantidade
+              </NativeSelect>
+            )}
+          </Campo>
+          <Campo id="venda-quantidade" rotulo="Quantidade">
+            {(props) => (
               <Input
+                {...props}
                 type="number"
+                inputMode="numeric"
                 min="1"
                 value={qty}
                 onChange={(e) => setQty(Number(e.target.value))}
               />
-            </label>
-            <label className="field-label">
-              Data
-              <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-            </label>
+            )}
+          </Campo>
+          <Campo id="venda-data" rotulo="Data">
+            {(props) => (
+              <Input
+                {...props}
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            )}
+          </Campo>
+          <div className="grid gap-3 sm:col-span-3">
+            {msg && (
+              <p
+                role={msg.erro ? "alert" : "status"}
+                className={`text-base font-semibold ${msg.erro ? "text-destructive" : "text-success"}`}
+              >
+                {msg.texto}
+              </p>
+            )}
+            <div>
+              <Button
+                onClick={() => {
+                  try {
+                    shop.sell(productId, qty, date);
+                    setQty(1);
+                    setMsg({ texto: "Venda registrada nesta sessão.", erro: false });
+                  } catch (e) {
+                    setMsg({
+                      texto: e instanceof Error ? e.message : "Não foi possível registrar.",
+                      erro: true,
+                    });
+                  }
+                }}
+              >
+                <Plus /> Registrar venda
+              </Button>
+            </div>
           </div>
-          {msg && (
-            <p role="status" className="returning-client">
-              {msg}
-            </p>
-          )}
-          <Button
-            onClick={() => {
-              try {
-                shop.sell(productId, qty, date);
-                setQty(1);
-                setMsg("Venda registrada nesta sessão.");
-              } catch (e) {
-                setMsg(e instanceof Error ? e.message : "Erro ao registrar.");
-              }
-            }}
-          >
-            Registrar venda <Plus />
-          </Button>
-        </section>
-      </section>
-      <div className="admin-filter-bar">
+        </div>
+      </SecaoAdmin>
+
+      <BarraDeFiltros>
         <Input
           type="date"
+          className="sm:w-auto"
           aria-label="Filtrar vendas por data"
           value={period}
           onChange={(e) => setPeriod(e.target.value)}
         />
-        <Button variant="ghost" onClick={() => setPeriod("")}>
-          Limpar
+        <Button variant="outline" onClick={() => setPeriod("")}>
+          Limpar filtro
         </Button>
-      </div>
-      <div className="admin-section-head">
-        <h2>Histórico de vendas</h2>
-      </div>
-      <div className="table-scroll">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Produto</th>
-              <th>Qtd.</th>
-              <th>Data</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sales.map((v) => (
-              <tr key={v.id}>
-                <td>
-                  <strong>{v.productName}</strong>
-                </td>
-                <td>{v.quantity}</td>
-                <td>{new Date(`${v.date}T12:00:00`).toLocaleDateString("pt-BR")}</td>
-                <td>{money(v.total)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {sales.length === 0 && (
-          <div className="admin-empty">
-            <h3>Nenhuma venda registrada.</h3>
-          </div>
-        )}
-      </div>
-      <div className="admin-section-head">
-        <h2>Histórico de serviços</h2>
-        <span className="text-muted-foreground text-sm">Atendimentos concluídos</span>
-      </div>
-      <div className="table-scroll">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Cliente</th>
-              <th>Serviço</th>
-              <th>Data</th>
-              <th>Valor</th>
-            </tr>
-          </thead>
-          <tbody>
-            {services.map((b) => (
-              <tr key={b.id}>
-                <td>
-                  <strong>{b.name}</strong>
-                </td>
-                <td>{b.serviceName}</td>
-                <td>{new Date(`${b.date}T12:00:00`).toLocaleDateString("pt-BR")}</td>
-                <td>{money(b.price)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {services.length === 0 && (
-          <div className="admin-empty">
-            <h3>Nenhum serviço concluído.</h3>
-            <p>Marque agendamentos como Concluído para vê-los aqui.</p>
-          </div>
-        )}
-      </div>
+      </BarraDeFiltros>
+
+      <SecaoAdmin titulo="Histórico de vendas">
+        <ListaAdaptavel
+          descricao="Vendas de produtos"
+          linhas={sales}
+          chave={(v) => v.id}
+          vazio={<EstadoVazio titulo="Nenhuma venda registrada." />}
+          colunas={[
+            { rotulo: "Produto", principal: true, render: (v) => v.productName },
+            { rotulo: "Qtd.", render: (v) => v.quantity },
+            { rotulo: "Data", render: (v) => dataCurta(v.date) },
+            { rotulo: "Total", alinharADireita: true, render: (v) => money(v.total) },
+          ]}
+        />
+      </SecaoAdmin>
+
+      <SecaoAdmin titulo="Histórico de serviços" nota="Atendimentos concluídos">
+        <ListaAdaptavel
+          descricao="Serviços concluídos"
+          linhas={services}
+          chave={(b) => b.id}
+          vazio={
+            <EstadoVazio
+              titulo="Nenhum serviço concluído."
+              texto="Marque um agendamento como Concluído para ele aparecer aqui."
+            />
+          }
+          colunas={[
+            { rotulo: "Cliente", principal: true, render: (b) => b.name },
+            { rotulo: "Serviço", render: (b) => b.serviceName },
+            { rotulo: "Data", render: (b) => dataCurta(b.date) },
+            { rotulo: "Valor", alinharADireita: true, render: (b) => money(b.price) },
+          ]}
+        />
+      </SecaoAdmin>
     </PaginaAdmin>
   );
 }

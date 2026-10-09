@@ -1,7 +1,19 @@
 import type { ReactNode } from "react";
 import { Check, X } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { moduleNames } from "./modulos";
+
+const descricoes: Record<string, string> = {
+  dashboard: "O resumo do seu negócio.",
+  agendamentos: "Todos os horários marcados, com busca e filtros.",
+  servicos: "O que você oferece, com preço e duração.",
+  produtos: "O que está à venda no balcão.",
+  clientes: "Quem já agendou.",
+  vendas: "Registre as vendas de produtos e veja o histórico.",
+  financeiro: "Quanto entrou, por período.",
+  configuracoes: "Horário de funcionamento e dados da barbearia.",
+};
 
 type PaginaAdminProps = {
   module: string;
@@ -20,39 +32,39 @@ export function PaginaAdmin({
   children,
 }: PaginaAdminProps) {
   return (
-    <>
-      <div className="admin-page-heading">
-        <div>
-          <span className="eyebrow">SLICK / GESTÃO</span>
-          <h1>{moduleNames[module] ?? "Página não encontrada"}</h1>
-          <p>
-            {module === "dashboard"
-              ? "O que importa para o seu negócio, em um só lugar."
-              : module === "configuracoes"
-                ? "Os detalhes que fazem a barbearia funcionar."
-                : "Organize o seu ofício."}
+    <div className="grid gap-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="grid gap-1">
+          <h1 className="font-display text-3xl font-extrabold leading-tight sm:text-4xl">
+            {moduleNames[module] ?? "Página não encontrada"}
+          </h1>
+          <p className="text-base text-muted-foreground">
+            {descricoes[module] ?? "Esta página não existe."}
           </p>
         </div>
         {action ?? (
-          <span className="admin-date">
+          <p className="hidden text-base text-muted-foreground sm:block">
             {new Date().toLocaleDateString("pt-BR", {
               day: "numeric",
               month: "long",
               year: "numeric",
             })}
-          </span>
+          </p>
         )}
       </div>
       {message && (
-        <div role="status" className="admin-notice">
-          <Check size={16} />
-          {message}
+        <div
+          role="status"
+          className="flex items-center gap-3 rounded-md border-2 border-success bg-success-soft py-1 pl-4 pr-1 text-base font-semibold text-success"
+        >
+          <Check aria-hidden="true" className="size-5 shrink-0" />
+          <span className="flex-1">{message}</span>
           <Button variant="ghost" size="icon" aria-label="Fechar aviso" onClick={onCloseMessage}>
             <X />
           </Button>
         </div>
       )}
       {children}
-    </>
+    </div>
   );
 }

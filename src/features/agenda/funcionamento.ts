@@ -24,3 +24,25 @@ export function abertoAgora(hours: Hours, now = new Date()): Funcionamento {
   }
   return { aberto: false, texto: "Fechado no momento" };
 }
+
+// "segunda a sábado", "segunda a quarta e sexta", "sábado". Dias seguidos viram um intervalo.
+export function descreverDias(days: number[]) {
+  const ordenados = [...new Set(days)].sort((a, b) => a - b);
+  const trechos: string[] = [];
+  for (let i = 0; i < ordenados.length;) {
+    let fim = i;
+    while (ordenados[fim + 1] === (ordenados[fim] ?? -2) + 1) fim++;
+    const primeiro = diasDaSemana[ordenados[i] ?? 0] ?? "";
+    const ultimo = diasDaSemana[ordenados[fim] ?? 0] ?? "";
+    if (fim - i >= 2) trechos.push(`${primeiro} a ${ultimo}`);
+    else for (let k = i; k <= fim; k++) trechos.push(diasDaSemana[ordenados[k] ?? 0] ?? "");
+    i = fim + 1;
+  }
+  if (trechos.length === 0) return "";
+  if (trechos.length === 1) return trechos[0] ?? "";
+  return `${trechos.slice(0, -1).join(", ")} e ${trechos.at(-1)}`;
+}
+
+export function descreverFuncionamento(hours: Hours) {
+  return { dias: descreverDias(hours.days), horas: `${hours.open}h às ${hours.close}h` };
+}

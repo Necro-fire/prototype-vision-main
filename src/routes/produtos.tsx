@@ -1,36 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ShopLayout } from "@/components/shop-layout";
+
 import { ProductList } from "@/components/product-list";
+import { ShopLayout } from "@/components/shop-layout";
+import { metasDaPagina } from "@/lib/marca";
+
 export const Route = createFileRoute("/produtos")({
   component: Products,
   head: () => ({
-    meta: [
-      { title: "Produtos — Slick Barbearia" },
-      {
-        name: "description",
-        content: "Equipamentos e cuidados selecionados pela Slick Barbearia.",
-      },
-      { property: "og:title", content: "Produtos — Slick Barbearia" },
-      {
-        property: "og:description",
-        content: "O cuidado continua em casa. Explore a seleção Slick.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+    meta: metasDaPagina(
+      "Produtos",
+      "Produtos à venda na barbearia. Retire no balcão: não há compra online.",
+    ),
   }),
 });
+
 function Products() {
   return (
     <ShopLayout>
-      <section className="section-wrap catalog-page">
-        <span className="eyebrow">O CUIDADO CONTINUA EM CASA</span>
-        <h1>
-          SELEÇÃO <span className="text-primary">SLICK.</span>
-        </h1>
-        <p className="page-intro">Ferramentas de quem entende. Para o seu dia a dia.</p>
+      <div className="mx-auto grid w-full max-w-3xl gap-6 px-5 pb-20 pt-10">
+        <header className="grid gap-2">
+          <h1 className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">
+            Produtos
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            À venda na barbearia. Retire no balcão: não há compra online.
+          </p>
+        </header>
         <ProductList />
-      </section>
+      </div>
     </ShopLayout>
   );
 }

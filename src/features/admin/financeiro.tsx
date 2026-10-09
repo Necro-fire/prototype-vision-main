@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { Package, Scissors, TrendingUp } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { NativeSelect } from "@/components/ui/native-select";
 import { useShop } from "@/features/demo/shop-provider";
 import { grossRevenue } from "@/features/financeiro/faturamento";
 import { money } from "@/lib/dinheiro";
+import { BarraDeFiltros, Indicador } from "./componentes";
 import { PaginaAdmin } from "./pagina-admin";
 
 export function Financeiro() {
@@ -15,14 +18,15 @@ export function Financeiro() {
   const r = grossRevenue(shop.bookings, shop.sales, { date, serviceId, productId });
   return (
     <PaginaAdmin module="financeiro">
-      <div className="admin-filter-bar">
+      <BarraDeFiltros>
         <Input
           type="date"
+          className="sm:w-auto"
           aria-label="Filtrar por data"
           value={date}
           onChange={(e) => setDate(e.target.value)}
         />
-        <select
+        <NativeSelect
           aria-label="Filtrar serviço"
           value={serviceId}
           onChange={(e) => {
@@ -36,8 +40,8 @@ export function Financeiro() {
               {s.name}
             </option>
           ))}
-        </select>
-        <select
+        </NativeSelect>
+        <NativeSelect
           aria-label="Filtrar produto"
           value={productId}
           onChange={(e) => {
@@ -51,44 +55,41 @@ export function Financeiro() {
               {p.name}
             </option>
           ))}
-        </select>
+        </NativeSelect>
         <Button
-          variant="ghost"
+          variant="outline"
           onClick={() => {
             setDate("");
             setServiceId("");
             setProductId("");
           }}
         >
-          Limpar
+          Limpar filtros
         </Button>
+      </BarraDeFiltros>
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        <Indicador
+          rotulo="Faturamento bruto"
+          icone={TrendingUp}
+          valor={money(r.total)}
+          nota="Serviços concluídos mais vendas"
+        />
+        <Indicador
+          rotulo="Serviços"
+          icone={Scissors}
+          valor={money(r.services)}
+          nota="Atendimentos concluídos"
+        />
+        <Indicador
+          rotulo="Produtos"
+          icone={Package}
+          valor={money(r.products)}
+          nota="Vendas registradas"
+        />
       </div>
-      <div className="stats-grid financial-stats">
-        <div className="stat">
-          <span>
-            Faturamento bruto <TrendingUp />
-          </span>
-          <strong>{money(r.total)}</strong>
-          <small>Serviços concluídos + vendas</small>
-        </div>
-        <div className="stat">
-          <span>
-            Serviços <Scissors />
-          </span>
-          <strong>{money(r.services)}</strong>
-          <small>Atendimentos concluídos</small>
-        </div>
-        <div className="stat">
-          <span>
-            Produtos <Package />
-          </span>
-          <strong>{money(r.products)}</strong>
-          <small>Vendas registradas</small>
-        </div>
-      </div>
-      <p className="demo-note">
-        Outros indicadores (líquido, descontos, formas de pagamento) serão avaliados conforme
-        necessidade.
+      <p className="text-sm text-muted-foreground">
+        Formas de pagamento, descontos e fechamento de caixa entram na Fase 6 do roadmap.
       </p>
     </PaginaAdmin>
   );

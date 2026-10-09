@@ -1,67 +1,67 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Clock, MapPin, ArrowUpRight } from "lucide-react";
+import { Clock, MapPin } from "lucide-react";
+
+import { EstadoDeFuncionamento } from "@/components/marca";
 import { ShopLayout } from "@/components/shop-layout";
 import { Button } from "@/components/ui/button";
-import { useShop } from "@/features/demo/shop-provider";
-import { fotos } from "@/assets/fotos";
-const photo = { url: fotos.acabamentoNavalha };
+import { descreverFuncionamento } from "@/features/agenda/funcionamento";
+import { useFuncionamento } from "@/features/agenda/use-funcionamento";
+import { metasDaPagina } from "@/lib/marca";
+
 export const Route = createFileRoute("/contato")({
   component: Contact,
   head: () => ({
-    meta: [
-      { title: "Contato — Slick Barbearia" },
-      { name: "description", content: "Conheça os horários de atendimento da Slick Barbearia." },
-      { property: "og:title", content: "Contato — Slick Barbearia" },
-      { property: "og:description", content: "Chega mais. Sua cadeira está esperando." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+    meta: metasDaPagina("Contato", "Horário de atendimento e como chegar à ON-STYLE."),
   }),
 });
+
 function Contact() {
-  const { hours } = useShop();
+  const { funcionamento, hours } = useFuncionamento();
+  const { dias, horas } = descreverFuncionamento(hours);
   return (
     <ShopLayout>
-      <section className="section-wrap catalog-page">
-        <span className="eyebrow">BORA TROCAR UMA IDEIA?</span>
-        <h1>
-          CHEGA <span className="text-primary">MAIS.</span>
-        </h1>
-        <div className="contact-layout">
-          <img src={photo.url} alt="Acabamento profissional de um corte na barbearia" />
-          <div>
-            <h2>SUA PRÓXIMA VISITA.</h2>
-            <div className="contact-line">
-              <Clock />
-              <div>
-                <strong>Horário de atendimento</strong>
-                <p>
-                  {hours.days
-                    .map((d) => ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"][d])
-                    .join(" · ")}
-                  <br />
-                  {String(hours.open).padStart(2, "0")}h às {String(hours.close).padStart(2, "0")}h
-                </p>
-              </div>
+      <div className="mx-auto grid w-full max-w-3xl gap-8 px-5 pb-20 pt-10">
+        <header className="grid gap-3">
+          <h1 className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">
+            Contato
+          </h1>
+          <EstadoDeFuncionamento
+            aberto={funcionamento?.aberto ?? false}
+            texto={funcionamento?.texto}
+          />
+        </header>
+
+        <dl className="grid gap-4">
+          <div className="flex gap-4 rounded-md border-2 border-foreground bg-card p-5">
+            <Clock aria-hidden="true" className="mt-1 size-6 shrink-0" />
+            <div className="grid gap-1">
+              <dt className="font-display text-xl font-bold">Horário de atendimento</dt>
+              <dd className="text-lg">
+                {dias ? `${capitalizar(dias)}, das ${horas}.` : "A definir."}
+              </dd>
             </div>
-            <div className="contact-line">
-              <MapPin />
-              <div>
-                <strong>Endereço e canais de contato</strong>
-                <p>A definir pela barbearia.</p>
-              </div>
-            </div>
-            <Button asChild>
-              <Link to="/agendamento" search={{ service: undefined }}>
-                Reserve sua cadeira <ArrowUpRight />
-              </Link>
-            </Button>
-            <p className="demo-note">
-              Horários ilustrativos. Endereço, telefone e redes sociais ainda não foram fornecidos.
-            </p>
           </div>
+          <div className="flex gap-4 rounded-md border-2 border-foreground bg-card p-5">
+            <MapPin aria-hidden="true" className="mt-1 size-6 shrink-0" />
+            <div className="grid gap-1">
+              <dt className="font-display text-xl font-bold">Endereço e telefone</dt>
+              <dd className="text-lg text-muted-foreground">
+                A barbearia ainda não informou o endereço nem o telefone.
+              </dd>
+            </div>
+          </div>
+        </dl>
+
+        <div>
+          <Button asChild size="lg">
+            <Link to="/agendamento" search={{ service: undefined }}>
+              Agendar horário
+            </Link>
+          </Button>
         </div>
-      </section>
+      </div>
     </ShopLayout>
   );
 }
+
+const capitalizar = (texto: string) => texto.charAt(0).toUpperCase() + texto.slice(1);

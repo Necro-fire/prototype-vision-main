@@ -37,7 +37,6 @@ src/
   features/     regras e telas por área (agenda, catalogo, admin, ...)
   components/   componentes de interface
   lib/          utilidades
-public/fotos/   fotografias do site
 docs/           planejamento
 .claude/        instruções e Skills do Claude Code
 ```

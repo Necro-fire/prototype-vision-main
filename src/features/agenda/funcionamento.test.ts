@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { abertoAgora } from "./funcionamento";
+import { abertoAgora, descreverDias, descreverFuncionamento } from "./funcionamento";
 
 const hours = { open: 9, close: 19, days: [1, 2, 3, 4, 5, 6] };
 // 8 de outubro de 2026 é quinta-feira; 10 é sábado; 11 é domingo.
@@ -37,6 +37,33 @@ describe("Aberto agora", () => {
     expect(abertoAgora({ ...hours, days: [] }, em(8, 10))).toEqual({
       aberto: false,
       texto: "Fechado no momento",
+    });
+  });
+});
+
+describe("Descrição do funcionamento", () => {
+  it("resume dias seguidos num intervalo", () => {
+    expect(descreverDias([1, 2, 3, 4, 5, 6])).toBe("segunda a sábado");
+    expect(descreverDias([0, 1, 2, 3])).toBe("domingo a quarta");
+  });
+  it("junta trechos separados", () => {
+    expect(descreverDias([1, 2, 3, 5])).toBe("segunda a quarta e sexta");
+    expect(descreverDias([1, 2, 4, 5, 6])).toBe("segunda, terça e quinta a sábado");
+  });
+  it("trata um dia só e nenhum dia", () => {
+    expect(descreverDias([6])).toBe("sábado");
+    expect(descreverDias([])).toBe("");
+  });
+  it("dois dias seguidos não viram intervalo", () => {
+    expect(descreverDias([1, 2])).toBe("segunda e terça");
+  });
+  it("ignora a ordem e repetições", () => {
+    expect(descreverDias([6, 1, 1, 2, 3])).toBe("segunda a quarta e sábado");
+  });
+  it("descreve dias e horas", () => {
+    expect(descreverFuncionamento(hours)).toEqual({
+      dias: "segunda a sábado",
+      horas: "9h às 19h",
     });
   });
 });

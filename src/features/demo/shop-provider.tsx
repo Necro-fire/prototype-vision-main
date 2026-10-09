@@ -107,8 +107,8 @@ function useShopState() {
 
 type Shop = ReturnType<typeof useShopState>;
 // Keep one context instance across hot reloads so the provider and screens always match.
-const g = globalThis as typeof globalThis & { __slickShopContext?: React.Context<Shop | null> };
-const ShopContext = (g.__slickShopContext ??= createContext<Shop | null>(null));
+const g = globalThis as typeof globalThis & { __onstyleShopContext?: React.Context<Shop | null> };
+const ShopContext = (g.__onstyleShopContext ??= createContext<Shop | null>(null));
 
 export function ShopProvider({ children }: { children: ReactNode }) {
   const shop = useShopState();

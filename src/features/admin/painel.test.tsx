@@ -114,7 +114,9 @@ describe("Painel administrativo", () => {
   it("soma serviços concluídos e vendas no faturamento", async () => {
     mostrar("financeiro");
     // Corte + barba (R$ 70) + 2 máquinas (R$ 378) + 1 pente (R$ 25)
-    const cartao = (await screen.findByText("Faturamento bruto")).closest(".stat") as HTMLElement;
+    const cartao = (await screen.findByText("Faturamento bruto")).closest(
+      '[role="group"]',
+    ) as HTMLElement;
     expect(within(cartao).getByText(/473,00/)).toBeInTheDocument();
   });
 

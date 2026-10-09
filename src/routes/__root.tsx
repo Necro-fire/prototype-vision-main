@@ -12,6 +12,7 @@ import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { ShopProvider } from "@/features/demo/shop-provider";
+import { NOME } from "@/lib/marca";
 
 function NotFoundComponent() {
   return (
@@ -75,19 +76,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Slick — Barbearia & Estilo" },
+      { title: `${NOME} — Barbearia` },
       {
         name: "description",
         content:
-          "Cortes precisos, barba bem cuidada e um estilo que é só seu. Conheça a Slick Barbearia.",
+          "Corte, barba e sobrancelha com hora marcada. Veja os preços e agende em um minuto.",
       },
-      { property: "og:title", content: "Slick — Barbearia & Estilo" },
+      { property: "og:title", content: `${NOME} — Barbearia` },
       {
         property: "og:description",
-        content: "Seu estilo. Nosso ofício. Conheça a Slick Barbearia.",
+        content: "Veja os preços e marque seu horário na ON-STYLE.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [
       {
@@ -95,9 +96,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400..800&display=swap",
       },
     ],
   }),

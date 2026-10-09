@@ -6,6 +6,8 @@ export type Service = {
   price: number;
   duration: number;
   active: boolean;
+  // Etiqueta "Mais pedido". Hoje marcada nos dados; o dono passa a marcar na Fase 4.
+  featured?: boolean;
 };
 
 export type Product = {

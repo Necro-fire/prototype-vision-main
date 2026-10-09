@@ -1,83 +1,121 @@
-import { Link, useLocation } from "@tanstack/react-router";
-import { useState, type ReactNode } from "react";
-import { ArrowUpRight, Menu, Scissors, X, Instagram } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import type { ReactNode } from "react";
+import { Menu } from "lucide-react";
+
+import { MarcaLink } from "@/components/marca";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { useFuncionamento } from "@/features/agenda/use-funcionamento";
 
 const links = [
-  { to: "/" as const, label: "Início" },
-  { to: "/servicos" as const, label: "Serviços" },
-  { to: "/produtos" as const, label: "Produtos" },
-  { to: "/contato" as const, label: "Contato" },
-];
-export function Brand() {
-  return (
-    <Link to="/" className="brand">
-      <Scissors />
-      <span>
-        SLICK<span className="text-primary">.</span>
-        <small>BARBEARIA & ESTILO</small>
-      </span>
-    </Link>
-  );
-}
+  { to: "/", label: "Início" },
+  { to: "/servicos", label: "Serviços" },
+  { to: "/produtos", label: "Produtos" },
+  { to: "/contato", label: "Contato" },
+] as const;
+
+const linkDoMenu =
+  "inline-flex min-h-11 items-center border-b-4 border-transparent px-3 text-base font-semibold text-header-muted transition-colors hover:text-header-foreground";
+
 export function ShopLayout({ children }: { children: ReactNode }) {
-  const [menu, setMenu] = useState(false);
-  const location = useLocation();
+  const { funcionamento } = useFuncionamento();
   return (
-    <div className="shop">
-      <header className="site-header">
-        <div className="site-header-inner">
-          <Brand />
-          <nav className="desktop-nav">
-            {links.map((l) => (
-              <Link key={l.to} to={l.to} className={location.pathname === l.to ? "active" : ""}>
-                {l.label}
+    <div className="flex min-h-dvh flex-col">
+      <a
+        href="#conteudo"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-3 focus:font-bold focus:text-primary-foreground"
+      >
+        Ir para o conteúdo
+      </a>
+
+      <header className="on-dark bg-header text-header-foreground">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-2">
+          <MarcaLink ligado={funcionamento?.aberto ?? false} />
+
+          <nav aria-label="Principal" className="hidden items-center gap-1 md:flex">
+            {links.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                activeOptions={{ exact: link.to === "/" }}
+                activeProps={{ className: "!border-primary !text-header-foreground" }}
+                className={linkDoMenu}
+              >
+                {link.label}
               </Link>
             ))}
           </nav>
-          <div className="header-actions">
-            <Link to="/cliente" className="customer-link">
+
+          <div className="flex items-center gap-1.5">
+            <Link
+              to="/cliente"
+              className="hidden min-h-11 items-center px-3 text-base font-semibold text-header-muted hover:text-header-foreground md:inline-flex"
+            >
               Minha conta
             </Link>
-            <Button asChild className="booking-button">
-              <Link to="/agendamento" search={{ service: undefined }}>
-                Agendar horário <ArrowUpRight />
+            <Button asChild size="sm">
+              <Link to="/agendamento" search={{ service: undefined }} aria-label="Agendar horário">
+                <span className="hidden sm:inline">Agendar horário</span>
+                <span className="sm:hidden">Agendar</span>
               </Link>
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="mobile-menu"
-              aria-label={menu ? "Fechar menu" : "Abrir menu"}
-              onClick={() => setMenu(!menu)}
-            >
-              {menu ? <X /> : <Menu />}
-            </Button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden" aria-label="Abrir menu">
+                  <Menu className="text-header-foreground" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-4/5 max-w-xs">
+                <SheetTitle className="mb-4">Menu</SheetTitle>
+                <nav aria-label="Menu" className="grid">
+                  {[...links, { to: "/cliente", label: "Minha conta" } as const].map((link) => (
+                    <SheetClose key={link.to} asChild>
+                      <Link
+                        to={link.to}
+                        className="flex min-h-12 items-center border-b border-border text-lg font-semibold"
+                      >
+                        {link.label}
+                      </Link>
+                    </SheetClose>
+                  ))}
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
-        {menu && (
-          <nav className="mobile-nav">
-            {[...links, { to: "/cliente" as const, label: "Minha conta" }].map((l) => (
-              <Link key={l.to} to={l.to} onClick={() => setMenu(false)}>
-                {l.label}
+      </header>
+
+      <main id="conteudo" className="flex-1">
+        {children}
+      </main>
+
+      <footer className="on-dark bg-header text-header-foreground">
+        <div className="mx-auto grid max-w-6xl gap-6 px-5 py-10 md:grid-cols-[1fr_auto] md:items-end">
+          <div className="grid gap-3">
+            <MarcaLink ligado={funcionamento?.aberto ?? false} />
+            <p className="max-w-[40ch] text-base text-header-muted">
+              Corte, barba e sobrancelha com hora marcada.
+            </p>
+          </div>
+          <nav aria-label="Rodapé" className="flex flex-wrap gap-x-1 gap-y-0">
+            {links.map((link) => (
+              <Link key={link.to} to={link.to} className={linkDoMenu}>
+                {link.label}
               </Link>
             ))}
+            <Link to="/cliente" className={linkDoMenu}>
+              Minha conta
+            </Link>
+            <Link to="/admin" className={linkDoMenu}>
+              Área do dono
+            </Link>
           </nav>
-        )}
-      </header>
-      <main>{children}</main>
-      <footer className="site-footer">
-        <div className="footer-top">
-          <Brand />
-          <p>Seu estilo. Nosso ofício.</p>
-          <Link to="/admin">
-            Painel demonstrativo <ArrowUpRight size={14} />
-          </Link>
         </div>
-        <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} Slick Barbearia</span>
-          <span>Protótipo · Marca, preços e horários ilustrativos</span>
-          <Instagram size={17} />
+        <div className="border-t border-white/15">
+          <p className="mx-auto max-w-6xl px-5 py-4 text-sm text-header-muted">
+            © {new Date().getFullYear()} ON-STYLE. Versão de demonstração: os dados não ficam salvos
+            ao recarregar a página.
+          </p>
         </div>
       </footer>
     </div>

@@ -46,17 +46,23 @@ Deixar o projeto independente, legível e seguro para evoluir, sem mudar nada do
 
 ## Fase 1 — Identidade e Design System
 
-**Situação: começou.** Ramificação `fase-1-identidade`. Direção escolhida: Letreiro em laranja, preto e azul. Falta decidir entre a versão clara e a escura, na página `/identidade`; depois vêm os tokens, os componentes e o site público refeito.
+**Situação: feita no computador.** Ramificação `fase-1-identidade`. Direção: Letreiro em laranja, preto e azul, versão clara.
 
-- Página de comparação das três direções, se você quiser decidir vendo; em seguida, a direção escolhida é fechada.
-- Marca ON-STYLE com o "ON" aceso ou apagado, ícone do site e imagem de compartilhamento.
-- Tokens, escala de texto e espaço, e os componentes base.
-- Site público refeito: início, serviços, produtos, contato.
-- Fluxo de agendamento e conta do cliente com a nova interface, ainda sobre dados de demonstração.
-- Estrutura do painel: menu lateral no computador, barra inferior no celular.
-- Remoção dos componentes e bibliotecas sem uso.
+- [x] Escolha da direção, por uma página de comparação (já removida do código).
+- [x] Tokens, escala de texto e componentes base em `src/styles.css` e `src/components/ui/`.
+- [x] Marca ON-STYLE com o "ON" aceso ou apagado conforme o horário de funcionamento.
+- [x] Site público refeito: início, serviços, produtos, contato.
+- [x] Agendamento (faixa de dias, grade de horários, erro em cada campo, foco acompanhando o passo) e "Meus horários" (diálogo no lugar do `confirm`).
+- [x] Painel: menu lateral no computador, barra inferior no celular, listas que viram cartões no celular.
+- [x] 43 componentes shadcn e 29 bibliotecas sem uso removidos; CSS antigo apagado.
+- [ ] Ícone do site e imagem de compartilhamento (precisam de arte final da marca).
+- [ ] Fotografias: o site não usa nenhuma. Entram quando houver foto própria ou de banco com licença registrada.
 
 **Pronto quando**: nenhuma tela usa texto abaixo de 14px ou alvo de toque abaixo de 44px; o contraste passa em todas as telas; o fluxo de agendamento funciona em 360px de largura; não resta CSS do visual antigo.
+
+**Travado em teste** (`npm run verificar`): nenhum texto abaixo de 14px no código e no CSS, nenhum `confirm` do navegador, e o contraste de cada par de cor dos tokens, lido do próprio `styles.css`.
+
+**Verificado:** 89 testes, compilação, ESLint sem erros; telas conferidas em 1280px e em 360px de largura. **Não verificado:** teclado e leitor de tela reais (só atributos e testes), o painel com dados reais e o "aberto agora" em 360px (a captura não hidratou).
 
 ## Fase 2 — Banco e contas
 

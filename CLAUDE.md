@@ -22,7 +22,7 @@ Gerenciador de pacotes: npm (não há Bun nesta máquina). Não reintroduza `bun
 - `src/features/<área>/`: regras de negócio, tipos e componentes de cada área (agenda, catalogo, clientes, vendas, financeiro, conta, admin).
 - `src/features/demo/shop-provider.tsx`: estado provisório em memória. É a única fonte de dados hoje e **sai** quando o banco entrar (Fases 2 e 3). Não construa nada novo apoiado nele sem avisar.
 - `src/lib/`: utilidades sem regra de negócio (dinheiro, telefone, erros).
-- `src/components/ui/`: componentes base (shadcn). Muitos não são usados; a limpeza é da Fase 1.
+- `src/components/ui/`: componentes base do Design System (Button, Input, Campo, NativeSelect, Dialog...). Só ficam os que têm uso.
 - Detalhes em `docs/02-arquitetura.md`.
 
 ## Regras que não se quebram
@@ -32,17 +32,18 @@ Gerenciador de pacotes: npm (não há Bun nesta máquina). Não reintroduza `bun
 - **Nunca confie na tela para proteger dados.** Quando houver login, páginas de `/admin` e `/cliente` verificam a sessão no servidor e toda tabela do banco nasce com RLS ativa e fechada.
 - **Nunca coloque chaves ou senhas no código.** Segredos vão em `.env` (ignorado pelo git); `.env.example` lista os nomes. Variáveis `VITE_*` vão para o navegador: só o que pode ser público.
 - **Dinheiro em centavos inteiros e datas como instante com fuso**, com exibição em `America/Sao_Paulo`, nas áreas novas. O código antigo ainda usa decimais e texto; não copie esse padrão.
-- **Fotos reais e licenciadas**, com crédito em `docs/creditos-imagens.md`. Nenhuma imagem gerada por IA. A captura de tela de referência nunca é conteúdo do site.
+- **Fotos reais e licenciadas**, com crédito em `docs/creditos-imagens.md`. Nenhuma imagem gerada por IA. O site não usa fotos hoje: não adicione nenhuma sem a licença registrada.
 - **Toda rota de conteúdo define o próprio título e descrição** (`head`).
 
 ## Interface
 
-Enquanto a identidade da Fase 1 não for fechada, não invente estilos novos: reaproveite o que existe. Em qualquer tela nova:
+Design System "Letreiro" (laranja, preto e um pouco de azul): tokens em `src/styles.css`, componentes em `src/components/ui/`. Detalhes em `docs/03-design-system.md` e na Skill `design-system`.
 
+- Use só os tokens (`bg-primary`, `text-muted-foreground`...) e os componentes existentes. Sem cor ou tamanho solto.
+- O laranja (`primary`) é sempre fundo com texto preto. Nunca texto laranja sobre claro.
 - Nenhum texto abaixo de 14px; alvos de toque com 44px ou mais; desenhe a partir de 360px de largura.
-- Contraste mínimo de 4,5:1 em texto.
 - Textos curtos, em sentença com maiúscula só no início. Sem rótulos em caixa alta sobre títulos.
-- Detalhes em `docs/03-design-system.md`.
+- Estas regras estão travadas em teste (`npm run verificar`); se o teste reclamar, corrija a tela, não o teste.
 
 ## Como trabalhar
 

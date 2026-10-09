@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Agendamentos } from "./agendamentos";
+import { Alertas } from "./alertas";
 import { Catalogo } from "./catalogo";
 import { Clientes } from "./clientes";
 import { Configuracoes } from "./configuracoes";
@@ -24,6 +25,8 @@ export function AdminPanel({ module = "dashboard" }: { module?: string }) {
       return <Vendas />;
     case "financeiro":
       return <Financeiro />;
+    case "alertas":
+      return <Alertas />;
     case "configuracoes":
       return <Configuracoes />;
     default:

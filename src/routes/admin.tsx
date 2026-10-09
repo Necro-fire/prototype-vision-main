@@ -5,6 +5,7 @@ import {
   type LucideIcon,
   MoreHorizontal,
   Package,
+  Bell,
   Receipt,
   Scissors,
   Settings,
@@ -15,6 +16,8 @@ import {
 import { MarcaLink } from "@/components/marca";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { useAlertasEmTempoReal } from "@/features/admin/alertas-do-dono";
+import { Sino } from "@/features/admin/sino";
 import { obterSessao } from "@/features/conta/sessao";
 import { useSair } from "@/features/conta/sair";
 import { cn } from "@/lib/utils";
@@ -29,6 +32,7 @@ const modulos: ItemDoMenu[] = [
   { id: "clientes", label: "Clientes", icone: Users },
   { id: "vendas", label: "Vendas", icone: Receipt },
   { id: "financeiro", label: "Financeiro", icone: Wallet },
+  { id: "alertas", label: "Alertas", icone: Bell },
   { id: "configuracoes", label: "Configurações", icone: Settings },
 ];
 // Os três que o dono mais usa ficam na barra inferior do celular; o resto fica em "Mais".
@@ -94,6 +98,7 @@ function Item({
 function AdminShell() {
   const { sessao } = Route.useRouteContext();
   const sair = useSair();
+  useAlertasEmTempoReal();
   const { pathname } = useLocation();
   const atual =
     pathname === "/admin" || pathname === "/admin/" ? "dashboard" : pathname.split("/").pop();
@@ -113,8 +118,9 @@ function AdminShell() {
 
       {/* Computador: menu lateral */}
       <aside className="on-dark sticky top-0 hidden h-dvh w-64 shrink-0 flex-col gap-6 bg-header p-4 text-header-foreground md:flex">
-        <div className="px-1 pt-1">
+        <div className="flex items-center justify-between px-1 pt-1">
           <MarcaLink />
+          <Sino />
         </div>
         <nav aria-label="Gestão" className="grid gap-1">
           {todos.map((m) => (
@@ -142,12 +148,15 @@ function AdminShell() {
       {/* Celular: faixa no alto */}
       <header className="on-dark sticky top-0 z-30 flex items-center justify-between bg-header px-5 py-2 text-header-foreground md:hidden">
         <MarcaLink />
-        <Link
-          to="/"
-          className="inline-flex min-h-11 items-center px-2 text-base font-semibold text-header-muted"
-        >
-          Ver o site
-        </Link>
+        <div className="flex items-center gap-1">
+          <Sino />
+          <Link
+            to="/"
+            className="inline-flex min-h-11 items-center px-2 text-base font-semibold text-header-muted"
+          >
+            Ver o site
+          </Link>
+        </div>
       </header>
 
       <div className="min-w-0 flex-1">

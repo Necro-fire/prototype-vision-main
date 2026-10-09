@@ -35,6 +35,7 @@ describe("Painel administrativo", () => {
     expect(Object.keys(moduleNames).sort()).toEqual(
       [
         "agendamentos",
+        "alertas",
         "clientes",
         "configuracoes",
         "dashboard",

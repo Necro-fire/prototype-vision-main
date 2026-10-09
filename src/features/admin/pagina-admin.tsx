@@ -12,7 +12,8 @@ const descricoes: Record<string, string> = {
   clientes: "Quem tem conta e o histórico de cada um.",
   vendas: "Registre as vendas de produtos e veja o histórico.",
   financeiro: "Quanto entrou, por período.",
-  configuracoes: "Horário de funcionamento e dados da barbearia.",
+  alertas: "O que aconteceu na agenda: novos horários, cancelamentos e remarcações.",
+  configuracoes: "Dados da barbearia, horário de funcionamento, regras da agenda e bloqueios.",
 };
 
 type PaginaAdminProps = {

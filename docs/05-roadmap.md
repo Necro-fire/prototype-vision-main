@@ -111,16 +111,21 @@ Falta, e depende do projeto no Supabase (guia 06):
 
 ## Fase 4 — Painel do dono, sino e e-mails
 
-- Tela "Hoje" e agenda da semana, com avanço de situação em um toque e histórico de mudanças.
-- Bloqueios e folgas: almoço, feriados, férias, bloqueio manual.
-- Serviços, categorias e produtos com foto, ordem e destaque.
-- Clientes: lista, busca e histórico de cada um.
-- Vendas e faturamento bruto com dados reais, com as mesmas funções de hoje e filtro por período.
-- Configurações: dados da empresa, funcionamento, regras da agenda.
-- Sino em tempo real e histórico de alertas.
-- E-mails ao cliente: confirmação, lembrete na véspera, remarcação, cancelamento; preferências no perfil.
+**Situação: o painel está no banco e provado com o banco simulado; faltam os e-mails (dependem da conta Resend) e as fotos do catálogo.** Ramificação `fase-4-painel`.
+
+- [x] Tela "Hoje": próximo cliente, marcados, atendidos, previsto, linha do tempo e avanço de situação em um toque. Agenda da semana e histórico de mudanças de cada horário.
+- [x] Bloqueios e folgas (dia inteiro, vários dias ou parte do dia), em Configurações.
+- [x] Serviços, categorias e produtos, com ordem e "mais pedido", em centavos. Nada se apaga: desativa-se.
+- [ ] Fotos de serviços e produtos (exigem o armazenamento de arquivos do Supabase).
+- [x] Clientes: lista, busca e histórico de cada um.
+- [x] Vendas e faturamento bruto com dados reais, com filtro por período, serviço e produto e resumo por dia. Estorno em vez de apagar.
+- [x] Configurações: dados da barbearia (aparecem em Contato), funcionamento com almoço, regras da agenda.
+- [x] Sino em tempo real e histórico de alertas.
+- [ ] E-mails ao cliente (confirmação, lembrete na véspera, remarcação, cancelamento) e erro de envio visível ao dono: a fila `emails_fila` existe, mas nada a preenche nem a processa. Depende da conta Resend do dono e de um agendador.
 
 **Pronto quando**: cada funcionalidade listada em "O que funciona e será preservado" do diagnóstico existe com dados reais; um agendamento feito num celular acende o sino no painel em segundos; o lembrete chega no dia anterior; um e-mail que falha aparece para o dono.
+
+**Verificado:** testes de tela com o banco simulado, a migração nova (`salvar_funcionamento`) no Postgres de teste e a paridade das situações com o banco. **Não verificado:** o painel com a conta do dono num projeto real, o tempo real do sino (o PGlite não tem), e os e-mails.
 
 ## Fase 5 — Publicação (versão 1.0)
 

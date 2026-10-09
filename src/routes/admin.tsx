@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 
 type ItemDoMenu = { id: string; label: string; icone: LucideIcon };
 
-const visaoGeral: ItemDoMenu = { id: "dashboard", label: "Visão geral", icone: LayoutDashboard };
+const visaoGeral: ItemDoMenu = { id: "dashboard", label: "Hoje", icone: LayoutDashboard };
 const modulos: ItemDoMenu[] = [
   { id: "agendamentos", label: "Agendamentos", icone: CalendarDays },
   { id: "servicos", label: "Serviços", icone: Scissors },

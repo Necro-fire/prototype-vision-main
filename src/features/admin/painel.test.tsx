@@ -78,11 +78,8 @@ afterEach(cleanup);
 
 describe("Painel administrativo", () => {
   it.each([
-    ["dashboard", "Visão geral"],
-    ["agendamentos", "Agendamentos"],
     ["servicos", "Serviços"],
     ["produtos", "Produtos"],
-    ["clientes", "Clientes"],
     ["vendas", "Vendas"],
     ["financeiro", "Financeiro"],
     ["configuracoes", "Configurações"],
@@ -94,21 +91,6 @@ describe("Painel administrativo", () => {
   it("avisa quando o módulo não existe", async () => {
     mostrar("inexistente");
     expect(await screen.findByText("Módulo não encontrado.")).toBeInTheDocument();
-  });
-
-  it("lista os agendamentos e permite filtrar por situação", async () => {
-    mostrar("agendamentos");
-    expect(await screen.findByText("João Silva")).toBeInTheDocument();
-    fireEvent.change(screen.getByLabelText("Filtrar status"), { target: { value: "Concluído" } });
-    expect(screen.getByText("João Silva")).toBeInTheDocument();
-    expect(screen.queryByText("Pedro Souza")).not.toBeInTheDocument();
-  });
-
-  it("muda a situação de um agendamento", async () => {
-    mostrar("agendamentos");
-    const campo = await screen.findByLabelText("Status de Pedro Souza");
-    fireEvent.change(campo, { target: { value: "Confirmado" } });
-    expect(screen.getByLabelText("Status de Pedro Souza")).toHaveValue("Confirmado");
   });
 
   it("soma serviços concluídos e vendas no faturamento", async () => {

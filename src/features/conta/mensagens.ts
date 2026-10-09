@@ -43,6 +43,15 @@ const doBanco: Record<string, string> = {
   ja_comecou: "Esse horário já começou e não pode mais ser alterado.",
   dono_nao_pode_excluir: "A conta do dono não pode ser excluída por aqui.",
   sem_permissao: "Você não tem permissão para fazer isso.",
+  transicao_invalida: "Essa mudança de situação não é permitida a partir da situação atual.",
+  ainda_nao_comecou: "Esse horário ainda não começou. Só dá para marcar falta depois dele.",
+  bloqueio_com_agendamento: "Há agendamento nesse período. Remarque ou cancele antes de bloquear.",
+  venda_vazia: "Escolha pelo menos um produto.",
+  quantidade_invalida: "A quantidade precisa ser de pelo menos 1.",
+  produto_indisponivel: "Esse produto não está disponível para venda.",
+  desconto_invalido: "O desconto não pode ser maior que o valor da venda.",
+  venda_inexistente: "Não encontramos essa venda.",
+  ja_estornada: "Essa venda já foi estornada.",
 };
 
 // O banco levanta exceções com o código como mensagem (raise exception 'horario_indisponivel').

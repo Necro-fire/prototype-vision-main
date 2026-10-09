@@ -1,5 +1,5 @@
 export const moduleNames: Record<string, string> = {
-  dashboard: "Visão geral",
+  dashboard: "Hoje",
   agendamentos: "Agendamentos",
   servicos: "Serviços",
   produtos: "Produtos",

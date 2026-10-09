@@ -2,7 +2,7 @@
 // é lá que moram as regras e a barreira contra dois horários iguais. Aqui só se chama e se traduz.
 import { z } from "zod";
 
-import { mensagemDoBanco } from "@/features/conta/mensagens";
+import { ErroDoBanco, falhou } from "@/lib/erro-do-banco";
 import { supabaseNavegador } from "@/lib/supabase-navegador";
 
 export type Situacao =
@@ -89,20 +89,6 @@ export function separarAgendamentos(lista: Agendamento[], agora: Date) {
   };
 }
 
-// Erro de uma função do banco: a mensagem já vem em português, e o código diz o que aconteceu.
-export class ErroDoBanco extends Error {
-  readonly codigo: string;
-  constructor(codigo: string, mensagem: string) {
-    super(mensagem);
-    this.name = "ErroDoBanco";
-    this.codigo = codigo;
-  }
-}
-
-function falhou(erro: { message: string }): never {
-  throw new ErroDoBanco(erro.message.trim(), mensagemDoBanco(erro));
-}
-
 // O horário escolhido deixou de servir (alguém reservou antes, passou da hora...): vale voltar
 // à escolha de horário, não só mostrar o erro.
 const codigosDeHorario = [
@@ -113,6 +99,7 @@ const codigosDeHorario = [
   "fora_do_funcionamento",
   "horario_bloqueado",
 ];
+export { ErroDoBanco };
 export const ehErroDeHorario = (erro: unknown) =>
   erro instanceof ErroDoBanco && codigosDeHorario.includes(erro.codigo);
 

@@ -41,6 +41,15 @@ describe("mensagemDoBanco", () => {
       "ja_comecou",
       "dono_nao_pode_excluir",
       "sem_permissao",
+      "transicao_invalida",
+      "ainda_nao_comecou",
+      "bloqueio_com_agendamento",
+      "venda_vazia",
+      "quantidade_invalida",
+      "produto_indisponivel",
+      "desconto_invalido",
+      "venda_inexistente",
+      "ja_estornada",
     ];
     for (const codigo of codigos) {
       expect(mensagemDoBanco({ message: codigo }), codigo).not.toBe(PADRAO);

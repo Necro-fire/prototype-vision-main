@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { moduleNames } from "./modulos";
 
 const descricoes: Record<string, string> = {
-  dashboard: "O resumo do seu negócio.",
+  dashboard: "O que a barbearia precisa saber agora.",
   agendamentos: "Todos os horários marcados, com busca e filtros.",
   servicos: "O que você oferece, com preço e duração.",
   produtos: "O que está à venda no balcão.",
-  clientes: "Quem já agendou.",
+  clientes: "Quem tem conta e o histórico de cada um.",
   vendas: "Registre as vendas de produtos e veja o histórico.",
   financeiro: "Quanto entrou, por período.",
   configuracoes: "Horário de funcionamento e dados da barbearia.",

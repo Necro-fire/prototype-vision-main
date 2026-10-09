@@ -2,31 +2,41 @@ import { Link } from "@tanstack/react-router";
 import { CalendarDays } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { NativeSelect } from "@/components/ui/native-select";
-import type { Booking } from "@/features/agenda/tipos";
-import { useShop } from "@/features/demo/shop-provider";
+import { rotuloDaSituacao } from "@/features/agenda/agendamentos";
+import { SituacaoBadge } from "@/features/agenda/situacao";
 import { dataCurta } from "@/lib/datas";
-import { money } from "@/lib/dinheiro";
+import { precoCurtoDeCentavos } from "@/lib/dinheiro";
+import { AcoesDoAgendamento } from "./acoes-do-agendamento";
 import { EstadoVazio } from "./componentes";
+import { diaDoAgendamento, type AgendamentoDoDono } from "./hoje";
 import { ListaAdaptavel } from "./lista-adaptavel";
-import { statuses } from "./modulos";
+import { horaNoFuso } from "@/features/agenda/horarios-livres";
 
-export function TabelaAgendamentos({ rows }: { rows: Booking[] }) {
-  const shop = useShop();
+export function TabelaAgendamentos({
+  linhas,
+  agora,
+  fuso,
+  vazio,
+}: {
+  linhas: AgendamentoDoDono[];
+  agora: Date;
+  fuso: string;
+  vazio?: string;
+}) {
   return (
     <ListaAdaptavel
       descricao="Agendamentos"
-      linhas={rows}
-      chave={(b) => b.id}
+      linhas={linhas}
+      chave={(a) => a.id}
       vazio={
         <EstadoVazio
           icone={CalendarDays}
-          titulo="Nenhum agendamento por aqui."
-          texto="Os agendamentos feitos no site aparecem aqui, nesta sessão."
+          titulo={vazio ?? "Nenhum agendamento por aqui."}
+          texto="Os agendamentos feitos pelos clientes no site aparecem aqui."
           acao={
             <Button asChild variant="outline">
               <Link to="/agendamento" search={{ service: undefined }}>
-                Criar um agendamento
+                Ver o agendamento do site
               </Link>
             </Button>
           }
@@ -36,42 +46,34 @@ export function TabelaAgendamentos({ rows }: { rows: Booking[] }) {
         {
           rotulo: "Cliente",
           principal: true,
-          render: (b) => (
+          render: (a) => (
             <>
-              <strong className="font-semibold">{b.name}</strong>
-              <span className="block text-sm font-normal text-muted-foreground">{b.phone}</span>
+              <strong className="font-semibold">{a.clienteNome}</strong>
+              <span className="block text-sm font-normal text-muted-foreground">
+                {a.clienteCelular}
+              </span>
             </>
           ),
         },
-        { rotulo: "Serviço", render: (b) => b.serviceName },
-        { rotulo: "Quando", render: (b) => `${dataCurta(b.date)}, ${b.time}` },
-        { rotulo: "Valor", alinharADireita: true, render: (b) => money(b.price) },
+        { rotulo: "Serviço", render: (a) => a.servicoNome },
+        {
+          rotulo: "Quando",
+          render: (a) => `${dataCurta(diaDoAgendamento(a, fuso))}, ${horaNoFuso(a.inicio, fuso)}`,
+        },
+        {
+          rotulo: "Valor",
+          alinharADireita: true,
+          render: (a) => precoCurtoDeCentavos(a.precoCentavos),
+        },
         {
           rotulo: "Situação",
-          render: (b) => (
-            <NativeSelect
-              aria-label={`Status de ${b.name}`}
-              className="min-h-11 py-1 font-semibold"
-              value={b.status}
-              onChange={(e) =>
-                shop.setBookings((old) =>
-                  old.map((item) =>
-                    item.id === b.id ? { ...item, status: e.target.value } : item,
-                  ),
-                )
-              }
-            >
-              {statuses.map((s) => (
-                <option key={s}>{s}</option>
-              ))}
-            </NativeSelect>
-          ),
+          render: (a) => <SituacaoBadge situacao={rotuloDaSituacao(a.situacao)} />,
+        },
+        {
+          rotulo: "Ações",
+          render: (a) => <AcoesDoAgendamento agendamento={a} agora={agora} fuso={fuso} />,
         },
       ]}
     />
   );
-}
-
-export function ordenarPorData(bookings: Booking[]) {
-  return [...bookings].sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`));
 }

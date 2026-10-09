@@ -14,3 +14,15 @@ export const diaDaSemanaCurto = (iso: string) =>
 
 // "8"
 export const diaDoMes = (iso: string) => String(emData(iso).getDate());
+
+// "09/10/2026, 14:30", visto no fuso informado (o da barbearia).
+export const dataHoraCurta = (instante: string, fuso: string) =>
+  new Date(instante).toLocaleString("pt-BR", {
+    timeZone: fuso,
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  });

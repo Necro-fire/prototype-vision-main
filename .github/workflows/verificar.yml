@@ -14,5 +14,15 @@ jobs:
         with:
           node-version: 24
           cache: npm
-      - run: npm ci
+      # Se a instalação falhar, a causa vira anotação da execução, legível sem abrir o log.
+      - name: Instalar dependências
+        run: |
+          echo "::notice title=Versões::node $(node -v), npm $(npm -v)"
+          npm ci > npm-ci.log 2>&1 && status=0 || status=$?
+          cat npm-ci.log
+          if [ "$status" -ne 0 ]; then
+            mensagem=$(head -c 3000 npm-ci.log | sed -e ':a' -e 'N' -e '$!ba' -e 's/%/%25/g' -e 's/\r/%0D/g' -e 's/\n/%0A/g')
+            echo "::error title=npm ci falhou::${mensagem}"
+          fi
+          exit "$status"
       - run: npm run verificar

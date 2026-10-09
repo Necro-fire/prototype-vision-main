@@ -13,7 +13,9 @@ const descricoes: Record<string, string> = {
   vendas: "Registre as vendas de produtos e veja o histórico.",
   caixa: "Abra e feche o caixa do dia e registre quem chegou sem hora marcada.",
   descontos: "Cupons e cartão fidelidade.",
+  avaliacoes: "O que os clientes disseram, e o que aparece no site.",
   financeiro: "Quanto entrou, por período e por forma de pagamento.",
+  relatorios: "Compare períodos, veja os mais pedidos e baixe planilhas.",
   alertas: "O que aconteceu na agenda: novos horários, cancelamentos e remarcações.",
   configuracoes: "Dados da barbearia, horário de funcionamento, regras da agenda e bloqueios.",
 };

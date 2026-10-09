@@ -21,6 +21,10 @@ Cada foto foi recortada em 3:2 e salva em WebP nas larguras de 640, 960 e 1440 p
 
 O protótipo trazia três fotos que vieram do projeto original do Lovable, sem autor nem licença informados. Elas mostravam marcas de terceiros e foram retiradas do site na Fase 1, antes de o repositório ficar público. **Continuam no histórico do git**, nos commits anteriores a essa retirada. Se a licença delas não puder ser confirmada, o histórico precisa ser reescrito para apagá-las; isso é uma decisão sua, porque reescrever histórico já enviado tem custo.
 
+## Ícone do painel
+
+O ícone do painel (`public/icones/icone.svg` e os PNGs gerados a partir dele) não é foto: é um desenho vetorial simples, feito em código, que reproduz o "ON" aceso da marca (letras pretas sobre o laranja `#ff7a1a`, fundo `#131416`). É **provisório**, até haver arte final da marca. Os PNGs (192, 512 e 180 pixels) foram gerados com o Chrome a partir do SVG; para refazer, abra o SVG numa página do tamanho desejado e tire a captura.
+
 ## Fotos de serviços e produtos
 
 Não ficam no repositório nem entram nesta lista: o dono as envia pelo painel (Serviços e Produtos), e elas vão para o Storage do Supabase. Usar foto própria ou com licença que permita uso comercial é responsabilidade de quem envia, e o cadastro lembra disso.

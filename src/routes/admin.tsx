@@ -7,6 +7,8 @@ import {
   Package,
   Bell,
   Banknote,
+  ChartColumn,
+  Star,
   Ticket,
   Receipt,
   Scissors,
@@ -36,6 +38,8 @@ const modulos: ItemDoMenu[] = [
   { id: "caixa", label: "Caixa", icone: Banknote },
   { id: "descontos", label: "Descontos", icone: Ticket },
   { id: "financeiro", label: "Financeiro", icone: Wallet },
+  { id: "relatorios", label: "Relatórios", icone: ChartColumn },
+  { id: "avaliacoes", label: "Avaliações", icone: Star },
   { id: "alertas", label: "Alertas", icone: Bell },
   { id: "configuracoes", label: "Configurações", icone: Settings },
 ];
@@ -52,7 +56,19 @@ export const Route = createFileRoute("/admin")({
     if (sessao.papel !== "dono") throw redirect({ to: "/cliente" });
     return { sessao };
   },
-  head: () => ({ meta: [{ name: "robots", content: "noindex" }] }),
+  head: () => ({
+    meta: [
+      { name: "robots", content: "noindex" },
+      { name: "theme-color", content: "#131416" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "ON-STYLE" },
+    ],
+    links: [
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/icones/apple-touch-icon.png" },
+    ],
+  }),
 });
 
 function Item({

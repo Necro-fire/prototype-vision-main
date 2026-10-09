@@ -10,6 +10,7 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-li
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { Expediente } from "@/features/agenda/expediente";
+import { lerMinhasAvaliacoes } from "@/features/avaliacoes/banco";
 import type { Sessao } from "@/features/conta/sessao";
 import {
   ErroDoBanco,
@@ -31,6 +32,10 @@ vi.mock("./agendamentos", async (importar) => ({
   lerMeusAgendamentos: vi.fn(),
   cancelar: vi.fn(),
   remarcar: vi.fn(),
+}));
+vi.mock("@/features/avaliacoes/banco", async (importar) => ({
+  ...(await importar<typeof import("@/features/avaliacoes/banco")>()),
+  lerMinhasAvaliacoes: vi.fn().mockResolvedValue({}),
 }));
 const sair = vi.hoisted(() => vi.fn());
 vi.mock("@/features/conta/sair", () => ({ useSair: () => sair }));
@@ -101,11 +106,39 @@ beforeEach(() => {
   vi.mocked(cancelar).mockReset();
   vi.mocked(remarcar).mockReset();
   vi.mocked(lerOcupados).mockReset().mockResolvedValue([]);
+  vi.mocked(lerMinhasAvaliacoes).mockReset().mockResolvedValue({});
   sair.mockReset();
 });
 afterEach(cleanup);
 
 describe("Meus horários", () => {
+  it("atendimento concluído sem avaliação oferece Avaliar; o já avaliado mostra as estrelas", async () => {
+    vi.mocked(lerMeusAgendamentos).mockResolvedValue([concluido()]);
+    abrir();
+    const historico = await screen.findByRole("region", { name: "Histórico" });
+    const avaliar = await within(historico).findByRole("button", { name: /Avaliar/ });
+    fireEvent.click(avaliar);
+    expect(
+      await screen.findByRole("heading", { name: "Como foi seu atendimento?" }),
+    ).toBeInTheDocument();
+    cleanup();
+
+    vi.mocked(lerMinhasAvaliacoes).mockResolvedValue({ a2: 4 });
+    abrir();
+    const depois = await screen.findByRole("region", { name: "Histórico" });
+    expect(await within(depois).findByRole("img", { name: "4 de 5 estrelas" })).toBeInTheDocument();
+    expect(within(depois).queryByRole("button", { name: /Avaliar/ })).not.toBeInTheDocument();
+  });
+
+  it("só atendimento concluído pode ser avaliado", async () => {
+    vi.mocked(lerMeusAgendamentos).mockResolvedValue([
+      agendamento("a9", "Barba & navalha", -5, "cancelado"),
+    ]);
+    abrir();
+    const historico = await screen.findByRole("region", { name: "Histórico" });
+    expect(within(historico).queryByRole("button", { name: /Avaliar/ })).not.toBeInTheDocument();
+  });
+
   it("separa o que vem pela frente do histórico, com a situação de cada um", async () => {
     vi.mocked(lerMeusAgendamentos).mockResolvedValue([concluido(), proximo()]);
     abrir();

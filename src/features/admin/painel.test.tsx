@@ -36,6 +36,7 @@ describe("Painel administrativo", () => {
       [
         "agendamentos",
         "alertas",
+        "avaliacoes",
         "caixa",
         "clientes",
         "configuracoes",
@@ -43,6 +44,7 @@ describe("Painel administrativo", () => {
         "descontos",
         "financeiro",
         "produtos",
+        "relatorios",
         "servicos",
         "vendas",
       ].sort(),

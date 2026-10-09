@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AgendamentoRouteImport } from './routes/agendamento'
+import { Route as AvaliacoesRouteImport } from './routes/avaliacoes'
 import { Route as ClienteRouteImport } from './routes/cliente'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as CriarContaRouteImport } from './routes/criar-conta'
@@ -44,6 +45,11 @@ const AdminRoute = AdminRouteImport.update({
 const AgendamentoRoute = AgendamentoRouteImport.update({
   id: '/agendamento',
   path: '/agendamento',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AvaliacoesRoute = AvaliacoesRouteImport.update({
+  id: '/avaliacoes',
+  path: '/avaliacoes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ClienteRoute = ClienteRouteImport.update({
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/agendamento': typeof AgendamentoRoute
+  '/avaliacoes': typeof AvaliacoesRoute
   '/cliente': typeof ClienteRouteWithChildren
   '/contato': typeof ContatoRoute
   '/criar-conta': typeof CriarContaRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/agendamento': typeof AgendamentoRoute
+  '/avaliacoes': typeof AvaliacoesRoute
   '/contato': typeof ContatoRoute
   '/criar-conta': typeof CriarContaRoute
   '/entrar': typeof EntrarRoute
@@ -186,6 +194,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/agendamento': typeof AgendamentoRoute
+  '/avaliacoes': typeof AvaliacoesRoute
   '/cliente': typeof ClienteRouteWithChildren
   '/contato': typeof ContatoRoute
   '/criar-conta': typeof CriarContaRoute
@@ -211,6 +220,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/agendamento'
+    | '/avaliacoes'
     | '/cliente'
     | '/contato'
     | '/criar-conta'
@@ -233,6 +243,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/agendamento'
+    | '/avaliacoes'
     | '/contato'
     | '/criar-conta'
     | '/entrar'
@@ -255,6 +266,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/agendamento'
+    | '/avaliacoes'
     | '/cliente'
     | '/contato'
     | '/criar-conta'
@@ -279,6 +291,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   AgendamentoRoute: typeof AgendamentoRoute
+  AvaliacoesRoute: typeof AvaliacoesRoute
   ClienteRoute: typeof ClienteRouteWithChildren
   ContatoRoute: typeof ContatoRoute
   CriarContaRoute: typeof CriarContaRoute
@@ -315,6 +328,13 @@ declare module '@tanstack/react-router' {
       path: '/agendamento'
       fullPath: '/agendamento'
       preLoaderRoute: typeof AgendamentoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/avaliacoes': {
+      id: '/avaliacoes'
+      path: '/avaliacoes'
+      fullPath: '/avaliacoes'
+      preLoaderRoute: typeof AvaliacoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cliente': {
@@ -477,6 +497,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   AgendamentoRoute: AgendamentoRoute,
+  AvaliacoesRoute: AvaliacoesRoute,
   ClienteRoute: ClienteRouteWithChildren,
   ContatoRoute: ContatoRoute,
   CriarContaRoute: CriarContaRoute,

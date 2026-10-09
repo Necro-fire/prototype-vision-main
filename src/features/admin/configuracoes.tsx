@@ -45,6 +45,7 @@ import {
   type FormularioDeRegras,
 } from "./configuracoes-validacao";
 import { EstadoVazio, SecaoAdmin } from "./componentes";
+import { PainelNoCelular } from "./painel-no-celular";
 import { PaginaAdmin } from "./pagina-admin";
 
 const FUSO_PADRAO = "America/Sao_Paulo";
@@ -121,6 +122,10 @@ export function Configuracoes() {
           nota="Feriado, férias ou saída: o período some da agenda do site"
         >
           <BloqueiosSecao />
+        </SecaoAdmin>
+
+        <SecaoAdmin titulo="Painel no celular" nota="Instalação na tela inicial">
+          <PainelNoCelular />
         </SecaoAdmin>
       </div>
     </PaginaAdmin>

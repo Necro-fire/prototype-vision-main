@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Agendamentos } from "./agendamentos";
 import { Alertas } from "./alertas";
+import { Avaliacoes } from "./avaliacoes";
 import { CaixaDoDia } from "./caixa";
 import { Catalogo } from "./catalogo";
 import { Clientes } from "./clientes";
@@ -9,6 +10,7 @@ import { Configuracoes } from "./configuracoes";
 import { Descontos } from "./descontos";
 import { Financeiro } from "./financeiro";
 import { PaginaAdmin } from "./pagina-admin";
+import { Relatorios } from "./relatorios";
 import { Vendas } from "./vendas";
 import { VisaoGeral } from "./visao-geral";
 
@@ -31,6 +33,10 @@ export function AdminPanel({ module = "dashboard" }: { module?: string }) {
       return <Descontos />;
     case "financeiro":
       return <Financeiro />;
+    case "avaliacoes":
+      return <Avaliacoes />;
+    case "relatorios":
+      return <Relatorios />;
     case "alertas":
       return <Alertas />;
     case "configuracoes":

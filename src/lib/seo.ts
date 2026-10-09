@@ -2,7 +2,14 @@
 // vale em qualquer domínio (o de teste da Cloudflare e o da barbearia) sem configurar nada.
 
 // Páginas públicas de conteúdo. Área do dono, conta e rotas de API ficam de fora.
-export const paginasPublicas = ["/", "/servicos", "/produtos", "/contato", "/agendamento"];
+export const paginasPublicas = [
+  "/",
+  "/servicos",
+  "/produtos",
+  "/avaliacoes",
+  "/contato",
+  "/agendamento",
+];
 
 const escaparXml = (texto: string) =>
   texto

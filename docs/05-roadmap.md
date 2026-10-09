@@ -175,12 +175,14 @@ Falta, e depende do projeto no Supabase (guia 06):
 
 ## Fase 8 — Refinos
 
-Itens independentes, escolhidos por você conforme a necessidade:
+**Situação: três dos quatro itens feitos no computador; o quarto depende de fotos suas.** Ramificação `fase-8-refinos`. Migração `20261012000001_avaliacoes.sql`.
 
-- Relatórios comparativos com gráficos e exportação.
-- Instalação do painel na tela inicial do celular do dono.
-- Página de avaliações de clientes.
-- Fotos próprias da ON-STYLE no lugar das do banco de imagens.
+- [x] Relatórios comparativos (`/admin/relatorios`): períodos prontos (7 e 30 dias, este mês e mês passado) ou datas à escolha, até um ano; compara com o período de mesmo tamanho logo antes (quanto subiu ou caiu); gráfico de barras dia a dia (por semana quando passa de 45 dias) com legenda, texto descrevendo o gráfico e a tabela com os mesmos valores; serviços mais pedidos e produtos mais vendidos; exportação em CSV (ponto e vírgula, vírgula decimal, acentos certos no Excel; texto que viraria fórmula leva uma aspa na frente).
+- [x] Painel na tela inicial do celular: manifesto e ícones (`public/manifest.webmanifest`, `public/icones/`), cartão "Painel no celular" em Configurações com o botão de instalar (onde o navegador oferece) e os passos do iPhone e do Android. O ícone é **provisório**: um "ON" aceso desenhado em código; troque pela arte final da marca quando houver.
+- [x] Avaliações: depois de um atendimento concluído, o cliente dá de 1 a 5 estrelas e um comentário opcional (uma vez por atendimento, em Meus horários). Entra publicada; o dono oculta ou volta a publicar em `/admin/avaliacoes` e é avisado pelo sino. A página pública `/avaliacoes` mostra média, total e as publicadas, só com o primeiro nome e a inicial do sobrenome. Excluir a conta apaga as avaliações da pessoa.
+- [ ] Fotos próprias da ON-STYLE no lugar das do banco de imagens. _Depende de você: as fotos._ Quando houver, entram em `public/fotos/` com o registro em `docs/creditos-imagens.md` (passo a passo lá).
+
+**Verificado:** 14 testes novos do banco e 9 quebras de propósito (avaliação) todas acusadas; testes das contas dos relatórios, do CSV, das telas de relatórios, avaliações e instalação, e do manifesto (arquivos e tamanhos dos ícones). **Não verificado:** a instalação num celular de verdade (iPhone e Android), o gráfico em 360px num navegador, e a leitura do CSV no Excel.
 
 ## Riscos e como são tratados
 

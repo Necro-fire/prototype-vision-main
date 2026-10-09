@@ -33,6 +33,9 @@ import {
   type Agendamento,
 } from "@/features/agenda/agendamentos";
 import { descreverQuando, type Expediente } from "@/features/agenda/expediente";
+import { chavesDeAvaliacoes, lerMinhasAvaliacoes } from "@/features/avaliacoes/banco";
+import { DialogoDeAvaliacao } from "@/features/avaliacoes/dialogo-de-avaliacao";
+import { Estrelas } from "@/features/avaliacoes/estrelas";
 import { SituacaoBadge } from "@/features/agenda/situacao";
 import { SeletorDeHorario } from "@/features/agenda/seletor-de-horario";
 import { useAgora } from "@/features/agenda/use-funcionamento";
@@ -59,8 +62,13 @@ export function MeusHorarios({
   const [cancelando, setCancelando] = useState<Agendamento | null>(null);
   const [remarcando, setRemarcando] = useState<Agendamento | null>(null);
   const [aviso, setAviso] = useState<Aviso | null>(null);
+  const [avaliando, setAvaliando] = useState<Agendamento | null>(null);
 
   const consulta = useQuery({ queryKey: CHAVE, queryFn: lerMeusAgendamentos });
+  const avaliacoes = useQuery({
+    queryKey: chavesDeAvaliacoes.minhas,
+    queryFn: lerMinhasAvaliacoes,
+  });
   const { proximos, historico } = separarAgendamentos(consulta.data ?? [], agora ?? new Date());
 
   const cancelamento = useMutation({
@@ -161,11 +169,24 @@ export function MeusHorarios({
               <Secao titulo="Histórico">
                 {historico.map((a) => (
                   <Cartao key={a.id} agendamento={a} fuso={fuso}>
-                    <Button asChild variant="outline" size="sm">
-                      <Link to="/agendamento" search={{ service: a.servicoId }}>
-                        Agendar de novo
-                      </Link>
-                    </Button>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {a.situacao === "concluido" &&
+                        (avaliacoes.data?.[a.id] !== undefined ? (
+                          <Estrelas nota={avaliacoes.data[a.id] ?? 0} />
+                        ) : (
+                          avaliacoes.isSuccess && (
+                            <Button variant="outline" size="sm" onClick={() => setAvaliando(a)}>
+                              Avaliar
+                              <span className="sr-only">: {a.servicoNome}</span>
+                            </Button>
+                          )
+                        ))}
+                      <Button asChild variant="outline" size="sm">
+                        <Link to="/agendamento" search={{ service: a.servicoId }}>
+                          Agendar de novo
+                        </Link>
+                      </Button>
+                    </div>
                   </Cartao>
                 ))}
               </Secao>
@@ -197,6 +218,18 @@ export function MeusHorarios({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {avaliando && (
+        <DialogoDeAvaliacao
+          agendamentoId={avaliando.id}
+          servico={avaliando.servicoNome}
+          aoFechar={() => setAvaliando(null)}
+          aoAvaliar={() => {
+            setAvaliando(null);
+            setAviso({ tipo: "ok", texto: "Obrigado pela avaliação." });
+          }}
+        />
+      )}
 
       {remarcando && expediente && agora && (
         <DialogoDeRemarcacao

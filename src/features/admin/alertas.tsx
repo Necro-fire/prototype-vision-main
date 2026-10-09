@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Bell, CalendarClock, CalendarPlus, CalendarX, Clock, Mail } from "lucide-react";
+import { Bell, CalendarClock, CalendarPlus, CalendarX, Clock, Mail, Star } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ const tipos: Record<TipoDeAlerta, { rotulo: string; icone: typeof Bell }> = {
   remarcacao: { rotulo: "Remarcação", icone: CalendarClock },
   falta_sem_registro: { rotulo: "Sem registro", icone: Clock },
   email_falhou: { rotulo: "E-mail não enviado", icone: Mail },
+  nova_avaliacao: { rotulo: "Nova avaliação", icone: Star },
 };
 
 const modelosDeEmail: Record<string, string> = {

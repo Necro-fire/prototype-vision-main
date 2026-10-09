@@ -6,8 +6,10 @@ export const moduleNames: Record<string, string> = {
   clientes: "Clientes",
   vendas: "Vendas",
   caixa: "Caixa",
+  avaliacoes: "Avaliações",
   descontos: "Descontos",
   financeiro: "Financeiro",
+  relatorios: "Relatórios",
   alertas: "Alertas",
   configuracoes: "Configurações",
 };

@@ -61,4 +61,4 @@ Design System "Letreiro" (laranja, preto e um pouco de azul): tokens em `src/sty
 
 ## Ainda não existe
 
-Falta ligar os e-mails à conta Resend do dono e a um agendador (`docs/07-emails.md`): o banco já enche a fila e a rota `/api/emails/processar` já envia, mas nenhum envio real foi feito. A Skill `email-transacional` e os testes de ponta a ponta com conta real entram quando houver essa conta e um navegador de teste. A Fase 8 (refinos) é opcional e independente.
+Falta ligar os e-mails à conta Resend do dono e a um agendador (`docs/07-emails.md`): o banco já enche a fila e a rota `/api/emails/processar` já envia, mas nenhum envio real foi feito. A Skill `email-transacional` e os testes de ponta a ponta com conta real entram quando houver essa conta e um navegador de teste. Fotos próprias da barbearia (Fase 8) dependem do dono; o ícone do painel é provisório.

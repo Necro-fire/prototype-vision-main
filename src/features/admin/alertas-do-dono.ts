@@ -11,7 +11,12 @@ import { chavesDoDono } from "./agenda-do-dono";
 export const chavesDeAlertas = { alertas: ["admin", "alertas"], emails: ["admin", "emails"] };
 
 export type TipoDeAlerta =
-  "novo_agendamento" | "cancelamento" | "remarcacao" | "falta_sem_registro" | "email_falhou";
+  | "novo_agendamento"
+  | "cancelamento"
+  | "remarcacao"
+  | "falta_sem_registro"
+  | "email_falhou"
+  | "nova_avaliacao";
 
 export type AlertaDoDono = {
   id: string;
@@ -29,6 +34,7 @@ const linhaDeAlerta = z.object({
     "remarcacao",
     "falta_sem_registro",
     "email_falhou",
+    "nova_avaliacao",
   ]),
   texto: z.string(),
   criado_em: z.string(),

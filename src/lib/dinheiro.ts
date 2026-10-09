@@ -7,3 +7,25 @@ export const precoCurto = (value: number) =>
 
 // O banco guarda dinheiro em centavos inteiros; a tela mostra em reais.
 export const precoCurtoDeCentavos = (centavos: number) => precoCurto(centavos / 100);
+
+// "45", "45,5", "45.50", "R$ 1.234,56" → centavos inteiros. Nulo se não for um valor válido
+// (vazio, negativo, texto, mais de duas casas decimais). Nada de ponto flutuante: o dinheiro
+// é inteiro de ponta a ponta.
+export function reaisParaCentavos(texto: string): number | null {
+  let valor = texto.replace(/R\$/gi, "").replace(/\s/g, "");
+  if (valor.includes(",")) {
+    valor = valor.replace(/\./g, "").replace(",", ".");
+  } else if (/^\d{1,3}(\.\d{3})+$/.test(valor)) {
+    valor = valor.replace(/\./g, ""); // "1.234" é mil duzentos e trinta e quatro
+  }
+  const casamento = /^(\d+)(?:\.(\d{1,2}))?$/.exec(valor);
+  if (!casamento) return null;
+  const reais = Number(casamento[1]);
+  const centavos = Number((casamento[2] ?? "").padEnd(2, "0") || "0");
+  const total = reais * 100 + centavos;
+  return Number.isSafeInteger(total) ? total : null;
+}
+
+// 4500 → "45,00", para preencher um campo de edição.
+export const centavosParaCampo = (centavos: number) =>
+  `${Math.floor(centavos / 100)},${String(centavos % 100).padStart(2, "0")}`;

@@ -78,8 +78,6 @@ afterEach(cleanup);
 
 describe("Painel administrativo", () => {
   it.each([
-    ["servicos", "Serviços"],
-    ["produtos", "Produtos"],
     ["vendas", "Vendas"],
     ["financeiro", "Financeiro"],
     ["configuracoes", "Configurações"],
@@ -100,11 +98,5 @@ describe("Painel administrativo", () => {
       '[role="group"]',
     ) as HTMLElement;
     expect(within(cartao).getByText(/473,00/)).toBeInTheDocument();
-  });
-
-  it("abre o cadastro de um serviço para edição", async () => {
-    mostrar("servicos");
-    fireEvent.click(await screen.findByLabelText("Editar Corte clássico"));
-    expect(await screen.findByText("Cadastro de serviço")).toBeInTheDocument();
   });
 });

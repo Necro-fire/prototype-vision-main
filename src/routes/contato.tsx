@@ -5,7 +5,7 @@ import { Foto } from "@/components/foto";
 import { EstadoDeFuncionamento } from "@/components/marca";
 import { ShopLayout } from "@/components/shop-layout";
 import { Button } from "@/components/ui/button";
-import { descreverFuncionamento } from "@/features/agenda/funcionamento";
+import { descreverExpediente } from "@/features/agenda/expediente";
 import { useFuncionamento } from "@/features/agenda/use-funcionamento";
 import { metasDaPagina } from "@/lib/marca";
 
@@ -17,8 +17,8 @@ export const Route = createFileRoute("/contato")({
 });
 
 function Contact() {
-  const { funcionamento, hours } = useFuncionamento();
-  const { dias, horas } = descreverFuncionamento(hours);
+  const { funcionamento, expediente } = useFuncionamento();
+  const atendimento = expediente ? descreverExpediente(expediente) : [];
   return (
     <ShopLayout>
       <div className="mx-auto grid w-full max-w-3xl gap-8 px-5 pb-20 pt-10">
@@ -43,7 +43,13 @@ function Contact() {
             <div className="grid gap-1">
               <dt className="font-display text-xl font-bold">Horário de atendimento</dt>
               <dd className="text-lg">
-                {dias ? `${capitalizar(dias)}, das ${horas}.` : "A definir."}
+                {atendimento.length > 0
+                  ? atendimento.map((g) => (
+                      <span key={g.dias} className="block">
+                        {capitalizar(g.dias)}, das {g.horas}.
+                      </span>
+                    ))
+                  : "A definir."}
               </dd>
             </div>
           </div>

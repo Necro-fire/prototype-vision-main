@@ -2,17 +2,32 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
-import { categories } from "@/features/catalogo/tipos";
-import { useShop } from "@/features/demo/shop-provider";
+import type { Catalogo } from "@/features/catalogo/banco";
+import { precoCurtoDeCentavos } from "@/lib/dinheiro";
 import { cn } from "@/lib/utils";
-import { precoCurto } from "@/lib/dinheiro";
 
 // A tabela de preços da parede: nome, pontilhado, preço. Cada linha leva ao agendamento.
-export function ServiceList({ filters = false }: { filters?: boolean }) {
-  const { services } = useShop();
+// `catalogo` é nulo quando a leitura no banco falhou.
+export function ServiceList({
+  catalogo,
+  filters = false,
+}: {
+  catalogo: Catalogo | null;
+  filters?: boolean;
+}) {
   const [category, setCategory] = useState("Todos");
-  const ativos = services.filter((s) => s.active);
-  const visiveis = ativos.filter((s) => category === "Todos" || s.category === category);
+
+  if (!catalogo) {
+    return (
+      <p role="alert" className="rounded-md border-2 border-dashed border-input p-6 text-base">
+        Não conseguimos carregar os serviços agora. Recarregue a página em instantes.
+      </p>
+    );
+  }
+
+  const ativos = catalogo.servicos;
+  const categories = ["Todos", ...catalogo.categorias];
+  const visiveis = ativos.filter((s) => category === "Todos" || s.categoria === category);
 
   return (
     <div className="grid gap-5">
@@ -58,13 +73,13 @@ export function ServiceList({ filters = false }: { filters?: boolean }) {
                 <span className="grid gap-0.5">
                   <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
                     <strong className="font-display text-xl font-bold leading-tight">
-                      {s.name}
+                      {s.nome}
                     </strong>
-                    {s.featured && <Badge variant="info">Mais pedido</Badge>}
+                    {s.destaque && <Badge variant="info">Mais pedido</Badge>}
                   </span>
                   <span className="text-sm text-muted-foreground">
-                    {s.duration} min
-                    {filters && s.description ? `. ${s.description}` : ""}
+                    {s.duracaoMinutos} min
+                    {filters && s.descricao ? `. ${s.descricao}` : ""}
                   </span>
                 </span>
                 <span
@@ -72,7 +87,7 @@ export function ServiceList({ filters = false }: { filters?: boolean }) {
                   className="h-0 self-center border-b-2 border-dotted border-muted-foreground/60"
                 />
                 <span className="font-display text-xl font-extrabold tabular-nums">
-                  {precoCurto(s.price)}
+                  {precoCurtoDeCentavos(s.precoCentavos)}
                 </span>
               </Link>
             </li>

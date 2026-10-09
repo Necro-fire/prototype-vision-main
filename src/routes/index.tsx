@@ -4,13 +4,16 @@ import { EstadoDeFuncionamento } from "@/components/marca";
 import { ServiceList } from "@/components/service-list";
 import { ShopLayout } from "@/components/shop-layout";
 import { Button } from "@/components/ui/button";
-import { descreverFuncionamento } from "@/features/agenda/funcionamento";
+import { descreverExpediente } from "@/features/agenda/expediente";
 import { ProximoHorarioCard } from "@/features/agenda/proximo-horario-card";
 import { useFuncionamento } from "@/features/agenda/use-funcionamento";
+import { lerCatalogo } from "@/features/catalogo/banco";
 import { metasDaPagina } from "@/lib/marca";
+import { ouNulo } from "@/lib/supabase";
 
 export const Route = createFileRoute("/")({
   component: Index,
+  loader: async () => ({ catalogo: await ouNulo(lerCatalogo()) }),
   head: () => ({
     meta: metasDaPagina(
       "Barbearia",
@@ -26,8 +29,11 @@ const passos = [
 ];
 
 function Index() {
-  const { funcionamento, hours } = useFuncionamento();
-  const { dias, horas } = descreverFuncionamento(hours);
+  const { catalogo } = Route.useLoaderData();
+  const { funcionamento, expediente } = useFuncionamento();
+  const atendimento = expediente
+    ? descreverExpediente(expediente).map((g) => `${g.dias}, das ${g.horas}`)
+    : [];
   return (
     <ShopLayout>
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 pb-16 pt-8 lg:grid-cols-[5fr_6fr] lg:items-start lg:gap-14 lg:pt-12">
@@ -39,9 +45,9 @@ function Index() {
           <h1 className="font-display text-4xl font-extrabold leading-[1.05] sm:text-5xl">
             Escolha o serviço, veja o preço e marque em um minuto.
           </h1>
-          <ProximoHorarioCard />
+          <ProximoHorarioCard servico={catalogo?.servicos[0]} />
         </div>
-        <ServiceList />
+        <ServiceList catalogo={catalogo} />
       </div>
 
       <section aria-labelledby="como-funciona" className="border-y border-border bg-muted py-14">
@@ -77,7 +83,9 @@ function Index() {
             Horário de atendimento
           </h2>
           <p className="text-lg">
-            {dias ? `Atendemos de ${dias}, das ${horas}.` : "Horário de atendimento a definir."}
+            {atendimento.length > 0
+              ? `Atendemos de ${atendimento.join("; ")}.`
+              : "Horário de atendimento a definir."}
           </p>
         </div>
         <Button asChild variant="outline">

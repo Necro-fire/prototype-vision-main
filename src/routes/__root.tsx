@@ -11,8 +11,10 @@ import {
 import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { lerExpediente } from "@/features/agenda/banco";
 import { ShopProvider } from "@/features/demo/shop-provider";
 import { NOME } from "@/lib/marca";
+import { ouNulo } from "@/lib/supabase";
 
 function NotFoundComponent() {
   return (
@@ -72,6 +74,9 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  // O funcionamento aparece em todas as páginas (o "ON" aceso da marca), então vem da raiz.
+  loader: async () => ({ expediente: await ouNulo(lerExpediente()) }),
+  staleTime: 60_000,
   head: () => ({
     meta: [
       { charSet: "utf-8" },

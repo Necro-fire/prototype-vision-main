@@ -3,10 +3,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Foto } from "@/components/foto";
 import { ServiceList } from "@/components/service-list";
 import { ShopLayout } from "@/components/shop-layout";
+import { lerCatalogo } from "@/features/catalogo/banco";
 import { metasDaPagina } from "@/lib/marca";
+import { ouNulo } from "@/lib/supabase";
 
 export const Route = createFileRoute("/servicos")({
   component: Services,
+  loader: async () => ({ catalogo: await ouNulo(lerCatalogo()) }),
   head: () => ({
     meta: metasDaPagina(
       "Serviços e preços",
@@ -16,6 +19,7 @@ export const Route = createFileRoute("/servicos")({
 });
 
 function Services() {
+  const { catalogo } = Route.useLoaderData();
   return (
     <ShopLayout>
       <div className="mx-auto grid w-full max-w-3xl gap-6 px-5 pb-20 pt-10">
@@ -32,7 +36,7 @@ function Services() {
           alt="Cadeira de barbeiro preta, vista de costas, em uma sala clara."
           prioridade
         />
-        <ServiceList filters />
+        <ServiceList catalogo={catalogo} filters />
       </div>
     </ShopLayout>
   );

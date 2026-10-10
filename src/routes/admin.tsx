@@ -59,7 +59,7 @@ export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
       { name: "robots", content: "noindex" },
-      { name: "theme-color", content: "#131416" },
+      { name: "theme-color", content: "#0d0f12" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-title", content: "ON-STYLE" },
@@ -82,9 +82,9 @@ function Item({
 }) {
   const Icone = item.icone;
   const classe = cn(
-    "flex min-h-11 items-center gap-3 rounded-md border-l-4 px-3 text-base font-semibold transition-colors",
+    "flex min-h-11 items-center gap-3 rounded-sm border-l-4 px-3 text-base font-semibold transition-colors",
     ativo
-      ? "border-primary bg-white/10 text-header-foreground"
+      ? "border-primary bg-white/5 text-header-foreground"
       : "border-transparent text-header-muted hover:bg-white/5 hover:text-header-foreground",
   );
   const conteudo = (
@@ -137,7 +137,7 @@ function AdminShell() {
       </a>
 
       {/* Computador: menu lateral */}
-      <aside className="on-dark sticky top-0 hidden h-dvh w-64 shrink-0 flex-col gap-6 bg-header p-4 text-header-foreground md:flex">
+      <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col gap-6 overflow-y-auto border-r border-line bg-header p-4 text-header-foreground md:flex">
         <div className="flex items-center justify-between px-1 pt-1">
           <MarcaLink />
           <Sino />
@@ -147,7 +147,7 @@ function AdminShell() {
             <Item key={m.id} item={m} ativo={atual === m.id} />
           ))}
         </nav>
-        <div className="mt-auto grid gap-2 border-t border-white/15 pt-4">
+        <div className="mt-auto grid gap-2 border-t border-line pt-4">
           <Link
             to="/"
             className="flex min-h-11 items-center px-3 text-base font-semibold text-header-muted hover:text-header-foreground"
@@ -155,18 +155,14 @@ function AdminShell() {
             Ver o site
           </Link>
           <p className="break-words px-3 text-sm text-header-muted">Dono: {sessao.email}</p>
-          <Button
-            variant="outline"
-            className="border-white/40 bg-transparent text-header-foreground hover:bg-white/10"
-            onClick={sair}
-          >
+          <Button variant="outline" onClick={sair}>
             Sair
           </Button>
         </div>
       </aside>
 
       {/* Celular: faixa no alto */}
-      <header className="on-dark sticky top-0 z-30 flex items-center justify-between bg-header px-5 py-2 text-header-foreground md:hidden">
+      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-line bg-header px-5 py-2 text-header-foreground md:hidden">
         <MarcaLink />
         <div className="flex items-center gap-1">
           <Sino />
@@ -191,14 +187,14 @@ function AdminShell() {
       {/* Celular: barra inferior */}
       <nav
         aria-label="Gestão"
-        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t-2 border-foreground bg-card md:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-line bg-header md:hidden"
       >
         {barra.map((m) => {
           const Icone = m.icone;
           const ativo = atual === m.id;
           const classe = cn(
             "flex min-h-16 flex-col items-center justify-center gap-0.5 border-t-4 text-sm font-semibold",
-            ativo ? "border-primary text-foreground" : "border-transparent text-muted-foreground",
+            ativo ? "border-primary text-primary" : "border-transparent text-muted-foreground",
           );
           const interno = (
             <>
@@ -233,16 +229,14 @@ function AdminShell() {
               type="button"
               className={cn(
                 "flex min-h-16 cursor-pointer flex-col items-center justify-center gap-0.5 border-t-4 text-sm font-semibold",
-                emMais
-                  ? "border-primary text-foreground"
-                  : "border-transparent text-muted-foreground",
+                emMais ? "border-primary text-primary" : "border-transparent text-muted-foreground",
               )}
             >
               <MoreHorizontal aria-hidden="true" className="size-6" />
               Mais
             </button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="rounded-t-lg">
+          <SheetContent side="bottom" className="rounded-t-xl">
             <SheetTitle className="mb-3">Mais opções</SheetTitle>
             <nav aria-label="Mais opções" className="grid">
               {restantes.map((m) => (

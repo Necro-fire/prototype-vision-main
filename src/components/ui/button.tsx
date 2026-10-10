@@ -4,16 +4,17 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
-// Alvos de toque com 44px ou mais. O laranja (default) sempre leva texto preto.
+// Alvos de toque com 44px ou mais. O laranja (default) sempre leva texto escuro.
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 rounded-md text-base font-bold leading-tight cursor-pointer transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-5 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/85",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/85",
-        outline: "border-2 border-input bg-background text-foreground hover:bg-muted",
-        ghost: "text-foreground hover:bg-muted",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        outline:
+          "border border-input bg-transparent text-foreground hover:border-foreground hover:bg-white/5",
+        ghost: "text-foreground hover:bg-white/5",
         link: "px-1 text-info underline underline-offset-4 hover:no-underline",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
       },
@@ -24,6 +25,8 @@ const buttonVariants = cva(
         icon: "size-11",
       },
     },
+    // O link é texto sublinhado: não leva o respiro lateral dos botões.
+    compoundVariants: [{ variant: "link", class: "px-1" }],
     defaultVariants: {
       variant: "default",
       size: "default",

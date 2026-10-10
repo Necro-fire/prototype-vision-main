@@ -1,3 +1,4 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Bell, CalendarClock, CalendarPlus, CalendarX, Clock, Mail, Star } from "lucide-react";
 import { useState } from "react";
@@ -65,7 +66,7 @@ export function Alertas() {
   if (consulta.isError) {
     return (
       <PaginaAdmin module="alertas">
-        <div className="grid justify-items-start gap-3 rounded-md border-2 border-dashed border-input p-5">
+        <div className="grid justify-items-start gap-3 rounded-xl border border-dashed border-line bg-card/40 p-5">
           <p role="alert" className="text-base font-semibold">
             Não conseguimos carregar os alertas agora.
           </p>
@@ -79,7 +80,7 @@ export function Alertas() {
   if (consulta.isPending) {
     return (
       <PaginaAdmin module="alertas">
-        <p className="text-base text-muted-foreground">Carregando.</p>
+        <EstadoCarregando texto="Carregando." />
       </PaginaAdmin>
     );
   }
@@ -165,7 +166,7 @@ export function Alertas() {
                 key={a.id}
                 className={cn(
                   "grid gap-2 rounded-md border-2 p-4 sm:grid-cols-[auto_1fr_auto] sm:items-center",
-                  naoLido ? "border-foreground bg-card" : "border-border bg-transparent",
+                  naoLido ? "border-line bg-card" : "border-border bg-transparent",
                 )}
               >
                 <Icone aria-hidden="true" className="size-6" />

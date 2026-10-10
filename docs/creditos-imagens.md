@@ -6,10 +6,10 @@ Toda fotografia do site precisa ter autor, origem e licença registrados aqui. N
 
 Duas fotos de banco de imagens, provisórias até a ON-STYLE ter fotos próprias. Nenhuma mostra pessoas nem marca legível.
 
-| Arquivo (`public/fotos/`) | Onde aparece      | Autor                                              | Página original                                                                    | Licença                                          | Conferida em |
-| ------------------------- | ----------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------ | ------------ |
-| `cadeira-junto-a-porta-*` | Contato           | [Ten](https://unsplash.com/@tensees)               | <https://unsplash.com/photos/4y50IXfnaIo>                                          | [Unsplash License](https://unsplash.com/license) | 08/10/2026   |
-| `cadeira-em-sala-clara-*` | Serviços e preços | [Caio Coelho](https://unsplash.com/@smokthebikini) | <https://unsplash.com/photos/black-leather-barber-chair-in-white-room-OOKPHqAICKA> | [Unsplash License](https://unsplash.com/license) | 08/10/2026   |
+| Arquivo (`public/fotos/`) | Onde aparece                       | Autor                                              | Página original                                                                    | Licença                                          | Conferida em |
+| ------------------------- | ---------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------ | ------------ |
+| `cadeira-junto-a-porta-*` | Início e Contato                   | [Ten](https://unsplash.com/@tensees)               | <https://unsplash.com/photos/4y50IXfnaIo>                                          | [Unsplash License](https://unsplash.com/license) | 08/10/2026   |
+| `cadeira-em-sala-clara-*` | Início (Sobre) e Serviços e preços | [Caio Coelho](https://unsplash.com/@smokthebikini) | <https://unsplash.com/photos/black-leather-barber-chair-in-white-room-OOKPHqAICKA> | [Unsplash License](https://unsplash.com/license) | 08/10/2026   |
 
 A Unsplash License permite uso comercial, sem pedir autorização e sem exigir crédito na página. O crédito fica registrado aqui mesmo assim.
 
@@ -23,7 +23,7 @@ O protótipo trazia três fotos que vieram do projeto original do Lovable, sem a
 
 ## Ícone do painel
 
-O ícone do painel (`public/icones/icone.svg` e os PNGs gerados a partir dele) não é foto: é um desenho vetorial simples, feito em código, que reproduz o "ON" aceso da marca (letras pretas sobre o laranja `#ff7a1a`, fundo `#131416`). É **provisório**, até haver arte final da marca. Os PNGs (192, 512 e 180 pixels) foram gerados com o Chrome a partir do SVG; para refazer, abra o SVG numa página do tamanho desejado e tire a captura.
+O ícone do painel (`public/icones/icone.svg` e os PNGs gerados a partir dele) não é foto: é um desenho vetorial simples, feito em código, que reproduz o "ON" aceso da marca (letras escuras sobre o laranja `#ff7a1a`, fundo `#0d0f12`). É **provisório**, até haver arte final da marca. Os PNGs (192, 512 e 180 pixels) foram gerados com o Chrome a partir do SVG; para refazer, abra o SVG numa página do tamanho desejado e tire a captura.
 
 ## Fotos de serviços e produtos
 

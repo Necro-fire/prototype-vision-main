@@ -10,7 +10,7 @@ import {
 } from "@/features/contato/links";
 
 const linkDoRodape =
-  "inline-flex min-h-11 items-center gap-2.5 font-semibold text-header-foreground underline underline-offset-4 hover:no-underline";
+  "inline-flex min-h-11 items-center gap-2.5 font-semibold text-header-foreground underline decoration-primary/60 underline-offset-4 hover:text-primary hover:no-underline";
 
 // Os dados que a barbearia informou, no rodapé de todas as páginas.
 // Campo vazio não aparece, e sem nenhum dado o bloco some.
@@ -20,7 +20,7 @@ export function ContatoDoRodape({ contato }: { contato: Contato | null }) {
   if (!endereco && !telefone && !whatsapp && !instagram) return null;
 
   return (
-    <ul aria-label="Contato da barbearia" className="grid gap-0.5 text-base">
+    <ul aria-label="Contato da barbearia" className="grid gap-1 text-base">
       {endereco && (
         <Item
           icone={<MapPin aria-hidden="true" className="size-5 shrink-0" />}

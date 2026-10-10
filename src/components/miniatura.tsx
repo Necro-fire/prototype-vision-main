@@ -9,7 +9,7 @@ export function Miniatura({ url }: { url: string }) {
       height={56}
       loading="lazy"
       decoding="async"
-      className="size-12 shrink-0 sm:size-14 rounded-md border-2 border-foreground bg-muted object-cover"
+      className="size-12 shrink-0 sm:size-14 rounded-lg border border-line bg-muted object-cover"
     />
   );
 }

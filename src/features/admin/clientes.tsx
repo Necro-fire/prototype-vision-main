@@ -1,3 +1,4 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { useQuery } from "@tanstack/react-query";
 import { Search, Users } from "lucide-react";
 import { useState } from "react";
@@ -34,14 +35,14 @@ export function Clientes() {
   if (clientes.isPending || agendamentos.isPending) {
     return (
       <PaginaAdmin module="clientes">
-        <p className="text-base text-muted-foreground">Carregando os clientes.</p>
+        <EstadoCarregando texto="Carregando os clientes." />
       </PaginaAdmin>
     );
   }
   if (clientes.isError || agendamentos.isError) {
     return (
       <PaginaAdmin module="clientes">
-        <div className="grid justify-items-start gap-3 rounded-md border-2 border-dashed border-input p-5">
+        <div className="grid justify-items-start gap-3 rounded-xl border border-dashed border-line bg-card/40 p-5">
           <p role="alert" className="text-base font-semibold">
             Não conseguimos carregar os clientes agora.
           </p>
@@ -157,7 +158,7 @@ function HistoricoDoCliente({
         ) : (
           <ul className="grid gap-2">
             {ordenados.map((a) => (
-              <li key={a.id} className="grid gap-1 rounded-md border-2 border-border p-3">
+              <li key={a.id} className="grid gap-1 rounded-xl border border-line p-3">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                   <strong className="font-semibold">{a.servicoNome}</strong>
                   <SituacaoBadge situacao={rotuloDaSituacao(a.situacao)} />

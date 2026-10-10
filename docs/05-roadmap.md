@@ -184,6 +184,17 @@ Falta, e depende do projeto no Supabase (guia 06):
 
 **Verificado:** 14 testes novos do banco e 9 quebras de propósito (avaliação) todas acusadas; testes das contas dos relatórios, do CSV, das telas de relatórios, avaliações e instalação, e do manifesto (arquivos e tamanhos dos ícones). **Não verificado:** a instalação num celular de verdade (iPhone e Android), o gráfico em 360px num navegador, e a leitura do CSV no Excel.
 
+## Revisão visual: Letreiro noturno
+
+**Situação: feita no computador, na ramificação `fase-8-refinos`.** Só apresentação: nenhuma regra de negócio, rota ou contrato mudou.
+
+- [x] Tokens, fonte (Archivo) e componentes base novos (`docs/03-design-system.md`, seção "Revisão de 10 de outubro de 2026"): tema escuro, laranja e azul, cantos retos, sem sombra suave.
+- [x] Página inicial refeita: tabela de preços na abertura, faixa azul, passos, quem somos, cartão fidelidade, avaliações reais e quadro de horários da semana.
+- [x] Painel: menu lateral com item ativo marcado por régua laranja, números do dia e da barbearia em cartões retos, tabelas, formulários, diálogos e avisos no mesmo tema; estados de espera com barras.
+- [x] Ícone do painel e manifesto na nova paleta.
+
+**Verificado:** contraste de todos os pares de token por teste e varredura do texto renderizado (site em 390px e 1280px, painel em 1280px); telas conferidas no Chrome. **Não verificado:** o painel com dados reais (as capturas usaram a tela sem conta), leitor de tela em todas as telas e o e-mail em clientes de e-mail reais.
+
 ## Riscos e como são tratados
 
 | Risco                                             | Tratamento                                                                                    |

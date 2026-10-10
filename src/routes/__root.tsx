@@ -12,6 +12,7 @@ import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { lerExpediente } from "@/features/agenda/banco";
+import { lerServicos } from "@/features/catalogo/banco";
 import { lerContato } from "@/features/contato/banco";
 import { dadosDeNegocioLocal, jsonParaScript } from "@/features/contato/seo";
 import { NOME } from "@/lib/marca";
@@ -22,15 +23,17 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Não achamos essa página</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <h1 className="font-display text-8xl font-semibold text-primary">404</h1>
+        <h2 className="mt-2 font-display text-3xl font-semibold text-foreground">
+          Não achamos essa página
+        </h2>
+        <p className="mt-2 text-base text-muted-foreground">
           O endereço pode estar errado ou a página mudou de lugar.
         </p>
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex min-h-12 items-center justify-center rounded-md bg-primary px-5 py-2 text-base font-bold text-primary-foreground transition-colors hover:bg-primary/85"
           >
             Ir para o início
           </Link>
@@ -47,10 +50,10 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
+        <h1 className="font-display text-3xl font-bold text-foreground">
           Esta página não carregou
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="mt-2 text-base text-muted-foreground">
           Algo deu errado do nosso lado. Tente de novo ou volte para o início.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
@@ -59,13 +62,13 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-md bg-primary px-5 py-2 text-base font-bold text-primary-foreground transition-colors hover:bg-primary/85"
           >
             Tentar de novo
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            className="inline-flex min-h-12 items-center justify-center rounded-md border border-input bg-transparent px-5 py-2 text-base font-bold text-foreground transition-colors hover:bg-primary/10"
           >
             Ir para o início
           </a>
@@ -76,12 +79,20 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  // O funcionamento (o "ON" aceso da marca) e o contato (o rodapé) aparecem em todas as páginas,
-  // então vêm da raiz.
-  loader: async () => ({
-    expediente: await ouNulo(lerExpediente()),
-    contato: await ouNulo(lerContato()),
-  }),
+  // O funcionamento (o "ON" aceso da marca), o contato e os serviços do rodapé aparecem em todas
+  // as páginas, então vêm da raiz. Do serviço só seguem o código e o nome.
+  loader: async () => {
+    const [expediente, contato, servicos] = await Promise.all([
+      ouNulo(lerExpediente()),
+      ouNulo(lerContato()),
+      ouNulo(lerServicos()),
+    ]);
+    return {
+      expediente,
+      contato,
+      servicos: servicos?.map((s) => ({ id: s.id, nome: s.nome })) ?? null,
+    };
+  },
   staleTime: 60_000,
   head: ({ loaderData }) => {
     const site = urlDoSite();
@@ -94,6 +105,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "theme-color", content: "#0d0f12" },
         { title: `${NOME} — Barbearia` },
         {
           name: "description",
@@ -128,7 +140,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
         {
           rel: "stylesheet",
-          href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400..800&display=swap",
+          href: "https://fonts.googleapis.com/css2?family=Public+Sans:wght@400..700&display=swap",
         },
       ],
     };

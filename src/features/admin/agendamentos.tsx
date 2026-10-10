@@ -1,3 +1,4 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { useState } from "react";
 
@@ -32,14 +33,14 @@ export function Agendamentos() {
   if (consulta.isPending || agora === null) {
     return (
       <PaginaAdmin module="agendamentos">
-        <p className="text-base text-muted-foreground">Carregando a agenda.</p>
+        <EstadoCarregando texto="Carregando a agenda." />
       </PaginaAdmin>
     );
   }
   if (consulta.isError) {
     return (
       <PaginaAdmin module="agendamentos">
-        <div className="grid justify-items-start gap-3 rounded-md border-2 border-dashed border-input p-5">
+        <div className="grid justify-items-start gap-3 rounded-xl border border-dashed border-line bg-card/40 p-5">
           <p role="alert" className="text-base font-semibold">
             Não conseguimos carregar os agendamentos agora.
           </p>

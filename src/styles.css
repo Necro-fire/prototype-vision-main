@@ -3,24 +3,28 @@
 @import "tw-animate-css";
 
 /*
- * Design System ON-STYLE: Letreiro, versão clara (docs/03-design-system.md).
+ * Design System ON-STYLE: Letreiro noturno (docs/03-design-system.md).
  *
  * Três níveis: paleta (docs), função (as variáveis abaixo) e componente.
  * As telas só usam o nível de função. Trocar a identidade é trocar os valores daqui.
- * Contraste conferido: texto 4,5:1 ou mais; bordas de campo e ícones 3:1 ou mais.
- * O laranja (primary) é sempre fundo com texto preto; nunca texto sobre claro.
+ * Contraste conferido por teste: texto 4,5:1 ou mais; bordas de campo e ícones 3:1 ou mais.
+ *
+ * Tema escuro, laranja e um pouco de azul. Cantos retos (1 a 4px), sem sombra suave nem blur:
+ * a hierarquia vem de filete e de degrau de superfície. O laranja é fundo com texto escuro, ou
+ * texto sobre o escuro (7,4:1). O azul é estrutural: faixa, link, foco e seleção.
+ * Fonte: Public Sans, uma família e uma largura para o sistema inteiro.
  */
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Bricolage Grotesque", "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Public Sans", ui-sans-serif, system-ui, sans-serif;
 
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
-  --radius-xl: 14px;
+  --radius-sm: 1px;
+  --radius-md: 2px;
+  --radius-lg: 3px;
+  --radius-xl: 4px;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -40,11 +44,14 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-destructive-soft: var(--destructive-soft);
   --color-border: var(--border);
+  --color-line: var(--line);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-header: var(--header);
   --color-header-foreground: var(--header-foreground);
   --color-header-muted: var(--header-muted);
+  --color-blue: var(--blue);
+  --color-blue-foreground: var(--blue-foreground);
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
   --color-info-soft: var(--info-soft);
@@ -57,52 +64,56 @@
 }
 
 :root {
-  --radius: 6px;
+  --radius: 2px;
+  color-scheme: dark;
 
   /* superfícies e texto */
-  --background: #fdfdfb; /* Cal */
-  --foreground: #131416; /* Preto */
-  --card: #ffffff;
-  --card-foreground: #131416;
-  --popover: #ffffff;
-  --popover-foreground: #131416;
-  --muted: #f2f2ef;
-  --muted-foreground: #5f6672; /* Cimento: 5,7:1 sobre Cal, 5,2:1 sobre muted */
-  --accent: #ffe9d9; /* laranja bem claro, hover de linhas */
-  --accent-foreground: #131416;
+  --background: #0d0f12; /* Asfalto */
+  --foreground: #eceef1; /* 16,5:1 sobre Asfalto */
+  --card: #14171c; /* Chapa: superfície elevada */
+  --card-foreground: #eceef1;
+  --popover: #1a1e25;
+  --popover-foreground: #eceef1;
+  --muted: #1b2027; /* superfície funda: cabeçalho de tabela, trilhas */
+  --muted-foreground: #9ba4b0; /* 7,6:1 sobre Asfalto, 6,5:1 sobre muted */
+  --accent: #1c2330; /* hover de linhas e itens */
+  --accent-foreground: #eceef1;
 
-  /* ação: laranja com texto preto (7,1:1) */
+  /* ação: laranja com texto escuro (7,4:1) */
   --primary: #ff7a1a;
-  --primary-foreground: #131416;
-  /* ação secundária: preto com texto branco */
-  --secondary: #131416;
-  --secondary-foreground: #ffffff;
+  --primary-foreground: #0d0f12;
+  /* ação secundária: superfície escura com texto claro */
+  --secondary: #232933;
+  --secondary-foreground: #eceef1;
 
   /* bordas */
-  --border: #d9dbdf; /* divisórias, só decoração */
-  --input: #5f6672; /* bordas de campo: 5,7:1 */
-  --ring: #2b4fd9; /* foco: 6,4:1 */
+  --border: #262c35; /* divisórias, só decoração */
+  --line: #3a424e; /* contorno de cartão e de tabela */
+  --input: #7d8795; /* bordas de campo: 5,3:1 sobre Asfalto */
+  --ring: #8fa8ff; /* foco: 8,4:1 sobre Asfalto */
 
-  /* faixa preta do cabeçalho */
-  --header: #131416;
-  --header-foreground: #ffffff;
-  --header-muted: #d5d8dd;
+  /* menu lateral, cabeçalho e rodapé: um degrau abaixo do fundo */
+  --header: #090b0d;
+  --header-foreground: #eceef1;
+  --header-muted: #aab3bf;
 
-  /* azul, só em pequenos pontos: links, etiquetas, foco */
-  --info: #2b4fd9;
-  --info-foreground: #ffffff;
-  --info-soft: #e8edfd;
+  /* azul: preenchimento (faixa, texto branco 5,4:1) e versão clara para texto */
+  --blue: #2d52d9;
+  --blue-foreground: #ffffff;
+  --info: #8fa8ff; /* links e etiquetas: 8,4:1 sobre Asfalto */
+  --info-foreground: #0d0f12;
+  --info-soft: #15213f;
 
   /* situações */
-  --success: #17692f;
-  --success-soft: #e3f4e8;
-  --warning: #8a3a00;
-  --warning-soft: #ffe9d9;
-  --destructive: #b42318;
-  --destructive-foreground: #ffffff;
-  --destructive-soft: #fde8e6;
-  --neutral-soft: #ecedef;
-  --neutral-foreground: #4b515c;
+  --success: #5fd08a;
+  --success-soft: #10261a;
+  --warning: #ffb454;
+  --warning-soft: #2b2010;
+  --destructive: #ff7466;
+  --destructive-foreground: #0d0f12;
+  --destructive-soft: #331512;
+  --neutral-soft: #232830;
+  --neutral-foreground: #b3bbc6;
 }
 
 @layer base {
@@ -122,26 +133,32 @@
     font-family: var(--font-sans);
     font-size: 1rem;
     line-height: 1.5;
+    font-variant-numeric: tabular-nums;
     -webkit-tap-highlight-color: transparent;
   }
 
+  /*
+   * Uma família só, a Public Sans, em uma largura: sóbria, sem ornamento. O título se separa do
+   * texto por tamanho e peso (600), com as letras um pouco mais juntas.
+   */
   h1,
   h2,
   h3,
-  h4 {
+  h4,
+  .font-display {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.015em;
     text-wrap: balance;
   }
 
-  :focus-visible {
-    outline: 3px solid var(--color-ring);
-    outline-offset: 3px;
+  ::selection {
+    background: var(--primary);
+    color: var(--primary-foreground);
   }
 
-  /* Dentro de faixas escuras o foco precisa ser claro. */
-  .on-dark {
-    --ring: #7c9cff;
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
   }
 
   @media (prefers-reduced-motion: reduce) {

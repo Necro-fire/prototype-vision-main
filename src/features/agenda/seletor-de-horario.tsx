@@ -1,3 +1,4 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { useQueries } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
@@ -73,11 +74,11 @@ export function SeletorDeHorario({
   const diaAtual = escolhido ?? grade.find((d) => d.horarios.length > 0)?.dia ?? null;
   const horarios = grade.find((d) => d.dia === diaAtual)?.horarios ?? [];
 
-  if (carregando) return <p className="text-base text-muted-foreground">Carregando os horários.</p>;
+  if (carregando) return <EstadoCarregando texto="Carregando os horários." />;
 
   if (falhou) {
     return (
-      <div className="grid justify-items-start gap-3 rounded-md border-2 border-dashed border-input p-5">
+      <div className="grid justify-items-start gap-3 rounded-xl border border-dashed border-line bg-card/40 p-5">
         <p role="alert" className="text-base font-semibold">
           Não conseguimos ver os horários agora. Confira a internet e tente de novo.
         </p>
@@ -90,7 +91,7 @@ export function SeletorDeHorario({
 
   if (grade.every((d) => d.horarios.length === 0)) {
     return (
-      <p className="rounded-md border-2 border-dashed border-input p-5 text-base">
+      <p className="rounded-xl border border-dashed border-line bg-card/40 p-5 text-base">
         Não há horários livres nos próximos {DIAS_A_FRENTE} dias.{" "}
         <Link to="/contato" className="font-semibold text-info underline">
           Veja como falar com a barbearia
@@ -101,15 +102,16 @@ export function SeletorDeHorario({
   }
 
   return (
-    <div className="grid gap-6">
+    <div className="@container grid gap-6">
       <div className="grid gap-2">
         <p id="rotulo-dia" className="text-base font-semibold">
           Dia
         </p>
+        {/* Faixa que rola de lado no espaço estreito; com espaço, as duas semanas viram grade. */}
         <div
           role="group"
           aria-labelledby="rotulo-dia"
-          className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-2"
+          className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-2 @sm:mx-0 @sm:grid @sm:grid-cols-7 @sm:gap-1.5 @sm:overflow-visible @sm:px-0 @sm:pb-0"
         >
           {grade.map((d) => {
             const semVaga = d.horarios.length === 0;
@@ -125,16 +127,16 @@ export function SeletorDeHorario({
                   aoEscolher(null);
                 }}
                 className={cn(
-                  "grid min-h-20 min-w-16 shrink-0 cursor-pointer place-items-center content-center rounded-md border-2 px-2 transition-colors",
+                  "grid min-h-20 min-w-16 shrink-0 cursor-pointer place-items-center content-center rounded-md border-2 px-2 transition-colors @sm:min-h-16 @sm:min-w-0 @sm:px-0",
                   d.dia === diaAtual
-                    ? "border-foreground bg-foreground text-background"
+                    ? "border-primary bg-primary text-primary-foreground"
                     : "border-input bg-card hover:bg-muted",
                   semVaga &&
                     "cursor-not-allowed border-dashed border-border bg-transparent text-muted-foreground line-through hover:bg-transparent",
                 )}
               >
                 <span className="text-sm font-semibold">{diaDaSemanaCurto(d.dia)}</span>
-                <span className="font-display text-2xl font-extrabold leading-none">
+                <span className="font-display text-2xl font-semibold leading-none">
                   {diaDoMes(d.dia)}
                 </span>
               </button>

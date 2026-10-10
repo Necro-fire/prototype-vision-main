@@ -43,9 +43,9 @@ export function FormularioRecuperarSenha() {
     return (
       <section
         aria-labelledby="link-enviado"
-        className="grid gap-3 rounded-md border-2 border-foreground bg-card p-5"
+        className="grid gap-3 rounded-xl border border-line bg-card p-5"
       >
-        <h2 id="link-enviado" className="font-display text-2xl font-extrabold">
+        <h2 id="link-enviado" className="font-display text-2xl font-semibold">
           Veja seu e-mail
         </h2>
         <p className="text-base">

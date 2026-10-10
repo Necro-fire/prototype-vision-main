@@ -1,3 +1,4 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -94,14 +95,14 @@ export function Vendas() {
   if (vendas.isPending || produtos.isPending || agendamentos.isPending || agora === null) {
     return (
       <PaginaAdmin module="vendas">
-        <p className="text-base text-muted-foreground">Carregando.</p>
+        <EstadoCarregando texto="Carregando." />
       </PaginaAdmin>
     );
   }
   if (vendas.isError || produtos.isError || agendamentos.isError) {
     return (
       <PaginaAdmin module="vendas">
-        <div className="grid justify-items-start gap-3 rounded-md border-2 border-dashed border-input p-5">
+        <div className="grid justify-items-start gap-3 rounded-xl border border-dashed border-line bg-card/40 p-5">
           <p role="alert" className="text-base font-semibold">
             Não conseguimos carregar as vendas agora.
           </p>
@@ -177,7 +178,7 @@ export function Vendas() {
         ) : (
           <form
             noValidate
-            className="grid gap-4 rounded-md border-2 border-foreground bg-card p-4 sm:grid-cols-3 sm:p-5"
+            className="grid gap-4 rounded-xl border border-line bg-card p-4 sm:grid-cols-3 sm:p-5"
             onSubmit={(e) => {
               e.preventDefault();
               enviar();

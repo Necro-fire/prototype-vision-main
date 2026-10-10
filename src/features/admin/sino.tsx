@@ -22,7 +22,7 @@ export function Sino({ className }: { className?: string }) {
       {naoLidos > 0 && (
         <span
           aria-hidden="true"
-          className="absolute right-0.5 top-0.5 grid min-w-5 place-items-center rounded-full bg-primary px-1 text-sm font-extrabold leading-5 text-primary-foreground"
+          className="absolute right-0.5 top-0.5 grid min-w-5 place-items-center rounded-sm bg-primary px-1 text-sm font-semibold leading-5 text-primary-foreground"
         >
           {naoLidos > 99 ? "99+" : naoLidos}
         </span>

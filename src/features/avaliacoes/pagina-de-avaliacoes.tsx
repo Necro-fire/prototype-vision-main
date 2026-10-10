@@ -2,11 +2,10 @@ import { Link } from "@tanstack/react-router";
 import { MessageSquareText } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { SectionTitle } from "@/components/ui/section-title";
 import { dataCurta } from "@/lib/datas";
 import type { AvaliacoesPublicas } from "./banco";
-import { Estrelas } from "./estrelas";
-
-const mediaEmTexto = (media: number) => media.toFixed(1).replace(".", ",");
+import { Estrelas, ResumoDaNota } from "./estrelas";
 
 // O dia em que a avaliação foi feita, como data do calendário no fuso da barbearia.
 const diaDaAvaliacao = (instante: string, fuso: string) =>
@@ -22,10 +21,8 @@ export function PaginaDeAvaliacoes({
 }) {
   return (
     <div className="mx-auto grid w-full max-w-3xl gap-8 px-5 pb-20 pt-10">
-      <header className="grid gap-2">
-        <h1 className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">
-          Avaliações
-        </h1>
+      <header className="grid gap-3">
+        <SectionTitle nivel={1}>Avaliações</SectionTitle>
         <p className="text-lg text-muted-foreground">
           O que os clientes disseram depois do atendimento. Só avalia quem foi atendido.
         </p>
@@ -36,7 +33,7 @@ export function PaginaDeAvaliacoes({
           Não conseguimos carregar as avaliações agora. Tente de novo em instantes.
         </p>
       ) : dados.resumo.total === 0 || dados.resumo.media === null ? (
-        <div className="grid justify-items-start gap-4 rounded-md border-2 border-dashed border-input p-6">
+        <div className="grid justify-items-start gap-4 rounded-xl border border-dashed border-line bg-card/40 p-6">
           <MessageSquareText aria-hidden="true" className="size-8" />
           <p className="text-lg">Ainda não há avaliações. A sua pode ser a primeira.</p>
           <Button asChild>
@@ -49,17 +46,9 @@ export function PaginaDeAvaliacoes({
         <>
           <section
             aria-label="Nota média"
-            className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-md border-2 border-foreground bg-card p-5"
+            className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-xl border border-line bg-card p-5"
           >
-            <p className="font-display text-5xl font-extrabold tabular-nums">
-              {mediaEmTexto(dados.resumo.media)}
-            </p>
-            <div className="grid gap-1">
-              <Estrelas nota={Math.round(dados.resumo.media)} tamanho="size-6" />
-              <p className="text-base">
-                {dados.resumo.total === 1 ? "1 avaliação" : `${dados.resumo.total} avaliações`}
-              </p>
-            </div>
+            <ResumoDaNota media={dados.resumo.media} total={dados.resumo.total} tamanho="lg" />
           </section>
 
           <section aria-label="Avaliações dos clientes" className="grid gap-3">
@@ -67,7 +56,7 @@ export function PaginaDeAvaliacoes({
               {dados.avaliacoes.map((a) => (
                 <li
                   key={`${a.criadaEm}-${a.autor}`}
-                  className="grid gap-2 rounded-md border-2 border-border bg-card p-4"
+                  className="grid gap-2 rounded-xl border border-line bg-card p-4"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <Estrelas nota={a.nota} />

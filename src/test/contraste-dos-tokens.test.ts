@@ -36,9 +36,20 @@ const pares: [string, string, number][] = [
   ["destructive", "background", 4.5],
   ["destructive-foreground", "destructive", 4.5],
   ["neutral-foreground", "neutral-soft", 4.5],
+  ["primary", "background", 4.5],
+  ["primary", "card", 4.5],
+  ["blue-foreground", "blue", 4.5],
+  ["info", "card", 4.5],
+  ["ring", "card", 3],
+  ["secondary-foreground", "background", 4.5],
+  ["foreground", "header", 4.5],
+  ["muted-foreground", "accent", 4.5],
+  ["success", "card", 4.5],
+  ["destructive", "card", 4.5],
   ["input", "background", 3],
   ["input", "card", 3],
   ["ring", "background", 3],
+  ["line", "background", 1.4],
 ];
 
 describe("Contraste dos tokens do Design System", () => {
@@ -46,8 +57,13 @@ describe("Contraste dos tokens do Design System", () => {
     expect(contrastRatio(cor(texto), cor(fundo))).toBeGreaterThanOrEqual(minimo);
   });
 
-  it("o laranja nunca serve de texto sobre o fundo claro", () => {
-    // Regra do Design System: laranja é fundo com texto preto, nunca texto sobre claro.
-    expect(contrastRatio(cor("primary"), cor("background"))).toBeLessThan(4.5);
+  it("o azul de preenchimento não serve de texto sobre o fundo escuro", () => {
+    // Regra do Design System: o azul da faixa (blue) é fundo com texto branco. Para texto ou
+    // link sobre o escuro usa-se a versão clara (info).
+    expect(contrastRatio(cor("blue"), cor("background"))).toBeLessThan(4.5);
+  });
+
+  it("o laranja serve de texto sobre o escuro, e só ali", () => {
+    expect(contrastRatio(cor("primary"), cor("background"))).toBeGreaterThanOrEqual(4.5);
   });
 });

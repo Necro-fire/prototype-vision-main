@@ -1,3 +1,4 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -165,7 +166,7 @@ function HistoricoDoAgendamento({
           {agendamento.servicoNome}, {dataHoraCurta(agendamento.inicio, fuso)}.
         </DialogDescription>
         {consulta.isPending ? (
-          <p className="text-base text-muted-foreground">Carregando.</p>
+          <EstadoCarregando texto="Carregando." />
         ) : consulta.isError ? (
           <p role="alert" className="text-base font-semibold text-destructive">
             Não conseguimos carregar o histórico.
@@ -175,10 +176,7 @@ function HistoricoDoAgendamento({
         ) : (
           <ol className="grid gap-2">
             {consulta.data.map((e) => (
-              <li
-                key={`${e.em}-${e.para}`}
-                className="rounded-md border-2 border-border p-3 text-base"
-              >
+              <li key={`${e.em}-${e.para}`} className="rounded-xl border border-line p-3 text-base">
                 <strong className="font-semibold">
                   {e.de
                     ? `${rotuloDaSituacao(e.de)} para ${rotuloDaSituacao(e.para)}`

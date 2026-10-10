@@ -1,3 +1,4 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { MessageSquareText } from "lucide-react";
 import { useState } from "react";
@@ -36,14 +37,14 @@ export function Avaliacoes() {
   if (consulta.isPending) {
     return (
       <PaginaAdmin module="avaliacoes">
-        <p className="text-base text-muted-foreground">Carregando.</p>
+        <EstadoCarregando texto="Carregando." />
       </PaginaAdmin>
     );
   }
   if (consulta.isError) {
     return (
       <PaginaAdmin module="avaliacoes">
-        <div className="grid justify-items-start gap-3 rounded-md border-2 border-dashed border-input p-5">
+        <div className="grid justify-items-start gap-3 rounded-xl border border-dashed border-line bg-card/40 p-5">
           <p role="alert" className="text-base font-semibold">
             Não conseguimos carregar as avaliações agora.
           </p>
@@ -90,10 +91,7 @@ export function Avaliacoes() {
         ) : (
           <ul className="grid gap-3">
             {consulta.data.map((a) => (
-              <li
-                key={a.id}
-                className="grid gap-2 rounded-md border-2 border-foreground bg-card p-4"
-              >
+              <li key={a.id} className="grid gap-2 rounded-xl border border-line bg-card p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <Estrelas nota={a.nota} />
                   <Badge variant={a.publicada ? "success" : "neutral"}>

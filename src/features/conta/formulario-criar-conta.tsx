@@ -80,9 +80,9 @@ export function FormularioCriarConta({ voltar }: { voltar: string | undefined })
     return (
       <section
         aria-labelledby="confirme-o-email"
-        className="grid gap-3 rounded-md border-2 border-foreground bg-card p-5"
+        className="grid gap-3 rounded-xl border border-line bg-card p-5"
       >
-        <h2 id="confirme-o-email" className="font-display text-2xl font-extrabold">
+        <h2 id="confirme-o-email" className="font-display text-2xl font-semibold">
           Confirme seu e-mail
         </h2>
         <p className="text-base">

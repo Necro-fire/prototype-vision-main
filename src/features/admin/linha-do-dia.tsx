@@ -18,9 +18,9 @@ export function LinhaDoDia({
   const encerrado = ["concluido", "cancelado", "nao_compareceu"].includes(a.situacao);
   return (
     <li
-      className={`grid gap-3 rounded-md border-2 border-foreground bg-card p-4 sm:grid-cols-[5rem_1fr_auto] sm:items-center ${encerrado ? "opacity-75" : ""}`}
+      className={`grid gap-3 rounded-xl border border-line bg-card p-4 sm:grid-cols-[5rem_1fr_auto] sm:items-center ${encerrado ? "opacity-75" : ""}`}
     >
-      <p className="font-display text-3xl font-extrabold leading-none tabular-nums">
+      <p className="font-display text-3xl font-semibold leading-none tabular-nums">
         {horaNoFuso(a.inicio, fuso)}
       </p>
       <div className="grid gap-1">

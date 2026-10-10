@@ -62,7 +62,7 @@ export function ConfirmarLink() {
 
   if (erro) {
     return (
-      <section className="grid gap-3 rounded-md border-2 border-foreground bg-card p-5">
+      <section className="grid gap-3 rounded-xl border border-line bg-card p-5">
         <p role="alert" className="text-base font-semibold">
           {erro}
         </p>

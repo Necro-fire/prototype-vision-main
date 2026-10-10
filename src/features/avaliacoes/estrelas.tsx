@@ -3,15 +3,15 @@ import { useId } from "react";
 
 import { cn } from "@/lib/utils";
 
-// A estrela cheia é laranja com contorno preto; a vazia é só o contorno. A diferença está na
+// A estrela cheia é dourada e sólida; a vazia é só o contorno, em cinza. A diferença está na
 // forma, não só na cor.
 const estrela = (cheia: boolean, tamanho: string) => (
   <Star
     aria-hidden="true"
     className={cn(
       tamanho,
-      "shrink-0 stroke-foreground",
-      cheia ? "fill-primary" : "fill-transparent",
+      "shrink-0",
+      cheia ? "fill-primary stroke-primary" : "fill-transparent stroke-muted-foreground",
     )}
   />
 );
@@ -27,6 +27,37 @@ export function Estrelas({ nota, tamanho = "size-5" }: { nota: number; tamanho?:
         <span key={n}>{estrela(n <= nota, tamanho)}</span>
       ))}
     </span>
+  );
+}
+
+// Nota média em destaque: número grande, estrelas e o total de avaliações. Serve ao herói, aos
+// depoimentos e ao painel.
+export function ResumoDaNota({
+  media,
+  total,
+  tamanho = "md",
+}: {
+  media: number;
+  total: number;
+  tamanho?: "md" | "lg";
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+      <p
+        className={cn(
+          "font-display font-bold leading-none tabular-nums",
+          tamanho === "lg" ? "text-6xl" : "text-4xl",
+        )}
+      >
+        {media.toFixed(1).replace(".", ",")}
+      </p>
+      <div className="grid gap-1">
+        <Estrelas nota={Math.round(media)} tamanho={tamanho === "lg" ? "size-6" : "size-5"} />
+        <p className="text-sm text-muted-foreground">
+          {total === 1 ? "1 avaliação" : `${total} avaliações`}
+        </p>
+      </div>
+    </div>
   );
 }
 
@@ -48,7 +79,7 @@ export function SeletorDeNota({
         {[1, 2, 3, 4, 5].map((n) => (
           <label
             key={n}
-            className="grid size-12 cursor-pointer place-items-center rounded-md hover:bg-muted has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring"
+            className="grid size-12 cursor-pointer place-items-center rounded-md hover:bg-white/5 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring"
           >
             <input
               type="radio"

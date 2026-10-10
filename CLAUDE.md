@@ -41,12 +41,14 @@ Gerenciador de pacotes: npm (não há Bun nesta máquina). Não reintroduza `bun
 
 ## Interface
 
-Design System "Letreiro" (laranja, preto e um pouco de azul): tokens em `src/styles.css`, componentes em `src/components/ui/`. Detalhes em `docs/03-design-system.md` e na Skill `design-system`.
+Design System "Letreiro noturno" (escuro, laranja e um pouco de azul, cantos retos): tokens em `src/styles.css`, componentes em `src/components/ui/`. Detalhes em `docs/03-design-system.md` e na Skill `design-system`.
 
 - Use só os tokens (`bg-primary`, `text-muted-foreground`...) e os componentes existentes. Sem cor ou tamanho solto.
-- O laranja (`primary`) é sempre fundo com texto preto. Nunca texto laranja sobre claro.
+- O laranja (`primary`) é fundo com texto escuro, ou texto sobre o escuro. O azul de preenchimento (`blue`) leva texto branco; para texto e link sobre o escuro use `info`.
+- Cantos retos (raios de 1 a 4px), sem sombra suave, sem blur e sem pílula. Hierarquia por filete e degrau de superfície. Nada de grafismo decorativo: a identidade vem da paleta, da tipografia e do "ON" que acende.
 - Nenhum texto abaixo de 14px; alvos de toque com 44px ou mais; desenhe a partir de 360px de largura.
 - Textos curtos, em sentença com maiúscula só no início. Sem rótulos em caixa alta sobre títulos.
+- Nenhum número ou depoimento inventado na página: nota, avaliações, horários, endereço e cartão fidelidade vêm do banco.
 - Estas regras estão travadas em teste (`npm run verificar`); se o teste reclamar, corrija a tela, não o teste.
 
 ## Como trabalhar

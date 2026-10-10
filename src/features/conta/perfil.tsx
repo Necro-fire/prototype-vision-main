@@ -77,7 +77,7 @@ export function PerfilDoCliente({ sessao }: { sessao: Sessao }) {
 
   return (
     <div className="mx-auto grid w-full max-w-xl gap-8 px-5 pb-20 pt-10">
-      <h1 className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">Meu perfil</h1>
+      <h1 className="font-display text-4xl font-semibold leading-tight sm:text-5xl">Meu perfil</h1>
 
       {aviso && (
         <p
@@ -141,7 +141,7 @@ export function PerfilDoCliente({ sessao }: { sessao: Sessao }) {
       </form>
 
       <section aria-labelledby="excluir-conta" className="grid gap-3 border-t border-border pt-8">
-        <h2 id="excluir-conta" className="font-display text-2xl font-extrabold">
+        <h2 id="excluir-conta" className="font-display text-2xl font-semibold">
           Excluir minha conta
         </h2>
         <p className="text-base text-muted-foreground">

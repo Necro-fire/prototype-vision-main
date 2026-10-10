@@ -1,3 +1,4 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -64,14 +65,14 @@ export function Descontos() {
   if (cupons.isPending) {
     return (
       <PaginaAdmin module="descontos">
-        <p className="text-base text-muted-foreground">Carregando.</p>
+        <EstadoCarregando texto="Carregando." />
       </PaginaAdmin>
     );
   }
   if (cupons.isError) {
     return (
       <PaginaAdmin module="descontos">
-        <div className="grid justify-items-start gap-3 rounded-md border-2 border-dashed border-input p-5">
+        <div className="grid justify-items-start gap-3 rounded-xl border border-dashed border-line bg-card/40 p-5">
           <p role="alert" className="text-base font-semibold">
             Não conseguimos carregar os cupons agora.
           </p>
@@ -155,7 +156,7 @@ function NovoCupom({ fuso }: { fuso: string }) {
     >
       <form
         noValidate
-        className="grid gap-4 rounded-md border-2 border-foreground bg-card p-4 sm:grid-cols-2 sm:p-5"
+        className="grid gap-4 rounded-xl border border-line bg-card p-4 sm:grid-cols-2 sm:p-5"
         onSubmit={(e) => {
           e.preventDefault();
           enviar();
@@ -340,7 +341,7 @@ function CartaoFidelidade() {
   if (regra.isPending || servicos.isPending) {
     return (
       <SecaoAdmin titulo="Cartão fidelidade">
-        <p className="text-base text-muted-foreground">Carregando.</p>
+        <EstadoCarregando texto="Carregando." />
       </SecaoAdmin>
     );
   }
@@ -381,7 +382,7 @@ function CartaoFidelidade() {
     >
       <form
         noValidate
-        className="grid gap-4 rounded-md border-2 border-foreground bg-card p-4 sm:grid-cols-2 sm:p-5"
+        className="grid gap-4 rounded-xl border border-line bg-card p-4 sm:grid-cols-2 sm:p-5"
         onSubmit={(e) => {
           e.preventDefault();
           enviar();

@@ -1,3 +1,4 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Plus, Search } from "lucide-react";
 import { useState, type ReactNode } from "react";
@@ -66,7 +67,7 @@ function BotaoDeLigar({
     >
       <span
         aria-hidden="true"
-        className={`size-2.5 rounded-full ${ligado ? "bg-success" : "bg-muted-foreground"}`}
+        className={`size-2.5 ${ligado ? "bg-success" : "bg-muted-foreground"}`}
       />
       {ligado ? textoLigado : textoDesligado}
     </Button>
@@ -114,7 +115,7 @@ function Carregando({
   return (
     <PaginaAdmin module={module}>
       {erro ? (
-        <div className="grid justify-items-start gap-3 rounded-md border-2 border-dashed border-input p-5">
+        <div className="grid justify-items-start gap-3 rounded-xl border border-dashed border-line bg-card/40 p-5">
           <p role="alert" className="text-base font-semibold">
             Não conseguimos carregar o catálogo agora.
           </p>
@@ -123,7 +124,7 @@ function Carregando({
           </Button>
         </div>
       ) : (
-        <p className="text-base text-muted-foreground">Carregando o catálogo.</p>
+        <EstadoCarregando texto="Carregando o catálogo." />
       )}
     </PaginaAdmin>
   );

@@ -130,7 +130,7 @@ export function DialogoDeConclusao({
 
         <p className="flex items-baseline justify-between gap-3 border-t border-border pt-3 text-base">
           <span>Total a cobrar</span>
-          <strong className="font-display text-2xl font-extrabold tabular-nums">
+          <strong className="font-display text-2xl font-semibold tabular-nums">
             {dinheiroDeCentavos(total)}
           </strong>
         </p>

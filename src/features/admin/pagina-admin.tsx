@@ -38,9 +38,9 @@ export function PaginaAdmin({
 }: PaginaAdminProps) {
   return (
     <div className="grid gap-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-line pb-5">
         <div className="grid gap-1">
-          <h1 className="font-display text-3xl font-extrabold leading-tight sm:text-4xl">
+          <h1 className="font-display text-4xl font-semibold leading-none sm:text-5xl">
             {moduleNames[module] ?? "Página não encontrada"}
           </h1>
           <p className="text-base text-muted-foreground">
@@ -60,7 +60,7 @@ export function PaginaAdmin({
       {message && (
         <div
           role="status"
-          className="flex items-center gap-3 rounded-md border-2 border-success bg-success-soft py-1 pl-4 pr-1 text-base font-semibold text-success"
+          className="flex items-center gap-3 rounded-xl border border-success/50 bg-success-soft py-1 pl-4 pr-1 text-base font-semibold text-success"
         >
           <Check aria-hidden="true" className="size-5 shrink-0" />
           <span className="flex-1">{message}</span>

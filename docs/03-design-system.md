@@ -22,13 +22,43 @@ O nome traz um interruptor. Em qualquer direção escolhida, o "ON" da marca mos
 
 É a informação mais útil para quem mora perto, vem direto do nome e não existe em nenhum modelo pronto. É a única ousadia da identidade; todo o resto fica discreto ao redor dela.
 
+## Revisão de 10 de outubro de 2026: Letreiro noturno
+
+Pedido do dono: tema escuro, laranja e um pouco de azul, **sem visual arredondado e genérico**. A direção "Letreiro" (a placa e a tabela de preços na parede) volta, agora à noite, e chegou a ganhar uma faixa diagonal laranja e azul do poste de barbeiro, retirada no mesmo dia (ver "Grafismo").
+
+| Papel                 | Token                               | Valor         | Observação                                                              |
+| --------------------- | ----------------------------------- | ------------- | ----------------------------------------------------------------------- |
+| Fundo                 | `background`                        | `#0D0F12`     | Asfalto                                                                 |
+| Superfície elevada    | `card`                              | `#14171C`     | Tabelas, cartões, diálogos                                              |
+| Superfície funda      | `muted`                             | `#1B2027`     | Cabeçalho de tabela, rodapé de cartão                                   |
+| Texto                 | `foreground`                        | `#ECEEF1`     | 16,5:1 sobre o fundo                                                    |
+| Texto secundário      | `muted-foreground`                  | `#9BA4B0`     | 7,6:1 sobre o fundo                                                     |
+| Ação                  | `primary`                           | `#FF7A1A`     | Fundo com texto `#0D0F12` (7,4:1). Também serve de texto sobre o escuro |
+| Azul de preenchimento | `blue`                              | `#2D52D9`     | Faixa com texto branco (5,4:1). **Não** serve de texto sobre o escuro   |
+| Azul de texto         | `info`, `ring`                      | `#8FA8FF`     | Links, etiquetas e foco: 8,4:1 sobre o fundo                            |
+| Contorno              | `line`                              | `#3A424E`     | Cartões e tabelas; o campo usa `input` (`#7D8795`, 5,3:1)               |
+| Menu lateral e rodapé | `header`                            | `#090B0D`     | Um degrau abaixo do fundo                                               |
+| Situações             | `success`, `warning`, `destructive` | ver o arquivo | Versões claras sobre fundos `-soft` escuros; sempre cor e ícone         |
+
+**Forma:** raios de 1 a 4px, sem sombra suave, sem blur, sem pílula, sem avatar redondo. A hierarquia vem de filete e de degrau de superfície. O cartão em destaque ganha uma régua laranja de 2px no alto.
+
+**Fonte:** Public Sans, uma família e uma largura para o sistema inteiro, de desenho sóbrio e sem ornamento, para passar responsabilidade. Títulos em peso 600 e texto em 400, separados por tamanho; sem caixa alta e sem peso extra. Algarismos tabulares em todo o sistema.
+
+**Grafismo:** nenhum. A faixa diagonal do poste (`FaixaPoste`) foi retirada em 10 de outubro de 2026: no topo do site parecia fita de obra, e o sistema já tem estrutura suficiente (filete, régua laranja do `SectionTitle`, degrau de superfície). Decoração nova só com decisão do dono.
+
+**Página inicial (modelo de 10 de outubro de 2026):** abertura com a frase à esquerda sobre a foto da barbearia; por cima da base da abertura sobe o painel "Agende seu horário", em três colunas (serviço, dia e horário, resumo) com os passos numerados no alto e "Revisar agendamento" levando a `/agendamento` com serviço e horário já escolhidos; depois a faixa azul com quatro fatos e o rodapé em cinco colunas (marca, navegação, serviços, contato, horário). Preço, horário, endereço e nota vêm do banco.
+
+**Componentes:** Card, IconTile, SectionTitle (régua laranja e título), EstadoCarregando e ResumoDaNota.
+
+**O que não entrou, por seria inventado:** logos de imprensa, número de clientes fixo, avatares, "20% off" e vídeo. No lugar, dados que o banco já tem: horário, pagamento, cartão fidelidade, endereço, nota e avaliações publicadas.
+
 ## Decisão
 
-**Escolhida em 8 de outubro de 2026: A, Letreiro, em laranja, preto e um pouco de azul. Versão clara.** Azulejo e Poste foram descartadas; as descrições abaixo ficam como registro. A versão escura ficou como alternativa: trocar é mudar os valores de `:root` em `src/styles.css`.
+**Escolhida em 8 de outubro de 2026: A, Letreiro, em laranja, preto e um pouco de azul. Versão clara. Revista em 10 de outubro: ver a seção acima.** Azulejo e Poste foram descartadas; as descrições abaixo ficam como registro. A versão escura ficou como alternativa: trocar é mudar os valores de `:root` em `src/styles.css`.
 
-## Estado atual
+## Estado atual (versão clara e laranja, em registro)
 
-Os tokens de função estão em `src/styles.css` e as telas só usam esses nomes (`bg-primary`, `text-muted-foreground`, `border-input`...).
+Os valores vigentes estão na seção "Revisão de 10 de outubro de 2026". Os tokens de função estão em `src/styles.css` e as telas só usam esses nomes (`bg-primary`, `text-muted-foreground`, `border-input`...).
 
 | Papel                                    | Token                                          | Valor         | Observação                                                                       |
 | ---------------------------------------- | ---------------------------------------------- | ------------- | -------------------------------------------------------------------------------- |

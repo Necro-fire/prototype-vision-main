@@ -34,8 +34,8 @@ describe("Manifesto do painel", () => {
       display: "standalone",
     });
     expect(manifesto.short_name.length).toBeLessThanOrEqual(12);
-    expect(manifesto.theme_color).toBe("#131416");
-    expect(manifesto.background_color).toBe("#131416");
+    expect(manifesto.theme_color).toBe("#0d0f12");
+    expect(manifesto.background_color).toBe("#0d0f12");
   });
 
   it("tem ícones de 192 e 512, e um para máscara redonda", () => {

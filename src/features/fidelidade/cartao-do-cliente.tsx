@@ -1,3 +1,4 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Gift } from "lucide-react";
@@ -41,19 +42,19 @@ export function CartaoDoCliente({ fuso }: { fuso: string }) {
             <ArrowLeft /> Meus horários
           </Link>
         </Button>
-        <h1 className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">
+        <h1 className="font-display text-4xl font-semibold leading-tight sm:text-5xl">
           Cartão fidelidade
         </h1>
       </div>
 
       {regra.isPending ? (
-        <p className="text-base text-muted-foreground">Carregando.</p>
+        <EstadoCarregando texto="Carregando." />
       ) : regra.isError || !regra.data ? (
         <p role="alert" className="text-base font-semibold">
           Não conseguimos carregar o cartão agora. Tente de novo em instantes.
         </p>
       ) : !regra.data.ativa ? (
-        <div className="grid justify-items-start gap-4 rounded-md border-2 border-dashed border-input p-6">
+        <div className="grid justify-items-start gap-4 rounded-xl border border-dashed border-line bg-card/40 p-6">
           <Gift aria-hidden="true" className="size-8" />
           <p className="text-lg">A barbearia ainda não tem cartão fidelidade.</p>
           <Button asChild>
@@ -63,7 +64,7 @@ export function CartaoDoCliente({ fuso }: { fuso: string }) {
           </Button>
         </div>
       ) : saldo.isPending ? (
-        <p className="text-base text-muted-foreground">Carregando seus pontos.</p>
+        <EstadoCarregando texto="Carregando seus pontos." />
       ) : saldo.isError ? (
         <p role="alert" className="text-base font-semibold">
           Não conseguimos carregar seus pontos agora. Tente de novo em instantes.
@@ -97,9 +98,9 @@ function Cartao({
     <>
       <section
         aria-label="Seus pontos"
-        className="grid gap-4 rounded-md border-2 border-foreground bg-card p-5"
+        className="grid gap-4 rounded-xl border border-line bg-card p-5"
       >
-        <p className="font-display text-3xl font-extrabold leading-tight">
+        <p className="font-display text-3xl font-semibold leading-tight">
           {p.saldo} {p.saldo === 1 ? "ponto" : "pontos"}
         </p>
         <div
@@ -109,7 +110,7 @@ function Cartao({
           aria-valuemax={p.porPremio}
           aria-valuenow={p.carimbos}
           aria-valuetext={`${p.carimbos} de ${p.porPremio} atendimentos`}
-          className="h-5 overflow-hidden rounded-md border-2 border-foreground bg-muted"
+          className="h-5 overflow-hidden rounded-md border border-line bg-muted"
         >
           <div
             className="h-full bg-primary"
@@ -138,7 +139,7 @@ function Cartao({
       </section>
 
       <section aria-label="Histórico de pontos" className="grid gap-3">
-        <h2 className="font-display text-2xl font-extrabold">Histórico</h2>
+        <h2 className="font-display text-2xl font-semibold">Histórico</h2>
         {movimentos.length === 0 ? (
           <p className="text-base text-muted-foreground">
             Nenhum ponto ainda. O primeiro vem no próximo atendimento concluído.
@@ -148,7 +149,7 @@ function Cartao({
             {movimentos.map((m) => (
               <li
                 key={`${m.criadoEm}-${m.motivo}`}
-                className="flex flex-wrap justify-between gap-x-4 rounded-md border-2 border-border bg-card px-4 py-3 text-base"
+                className="flex flex-wrap justify-between gap-x-4 rounded-xl border border-line bg-card px-4 py-3 text-base"
               >
                 <span className="font-semibold">{textoDoMovimento(m)}</span>
                 <span className="text-muted-foreground">{dataHoraCurta(m.criadoEm, fuso)}</span>

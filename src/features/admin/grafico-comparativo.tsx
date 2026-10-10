@@ -26,10 +26,10 @@ export function GraficoComparativo({
   const ultimo = pontos[pontos.length - 1];
 
   return (
-    <figure className="grid gap-3 rounded-md border-2 border-foreground bg-card p-4">
+    <figure className="grid gap-3 rounded-xl border border-line bg-card p-4">
       <figcaption className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm">
         <span className="flex items-center gap-2">
-          <span aria-hidden="true" className="size-4 border border-foreground bg-primary" />
+          <span aria-hidden="true" className="size-4 bg-primary" />
           Período escolhido
         </span>
         <span className="flex items-center gap-2">
@@ -44,7 +44,7 @@ export function GraficoComparativo({
       <div
         role="img"
         aria-label={resumo}
-        className="flex h-48 items-end gap-0.5 border-b-2 border-foreground"
+        className="flex h-48 items-end gap-0.5 border-b border-line"
       >
         {pontos.map((p) => (
           <div
@@ -56,10 +56,7 @@ export function GraficoComparativo({
               className="w-1/2 max-w-3 bg-muted-foreground"
               style={{ height: altura(p.anteriorCentavos) }}
             />
-            <div
-              className="w-1/2 max-w-3 border border-foreground bg-primary"
-              style={{ height: altura(p.atualCentavos) }}
-            />
+            <div className="w-1/2 max-w-3 bg-primary" style={{ height: altura(p.atualCentavos) }} />
           </div>
         ))}
       </div>

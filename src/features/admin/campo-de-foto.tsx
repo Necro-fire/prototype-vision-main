@@ -69,7 +69,7 @@ export function CampoDeFoto({
         <img
           src={mostrada}
           alt={`Foto de ${nomeDoItem || "este item"}`}
-          className="aspect-3/2 w-full max-w-64 rounded-md border-2 border-foreground bg-muted object-cover"
+          className="aspect-3/2 w-full max-w-64 rounded-md border border-line bg-muted object-cover"
         />
       )}
       {mudanca.tipo === "remover" && (

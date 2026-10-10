@@ -50,7 +50,7 @@ export function FormularioRedefinirSenha() {
 
   if (!temSessao) {
     return (
-      <section className="grid gap-3 rounded-md border-2 border-foreground bg-card p-5">
+      <section className="grid gap-3 rounded-xl border border-line bg-card p-5">
         <p role="alert" className="text-base font-semibold">
           Esse link venceu ou já foi usado. Peça um novo para criar a senha.
         </p>

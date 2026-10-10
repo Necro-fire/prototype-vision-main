@@ -20,7 +20,10 @@ export function ServiceList({
 
   if (!catalogo) {
     return (
-      <p role="alert" className="rounded-md border-2 border-dashed border-input p-6 text-base">
+      <p
+        role="alert"
+        className="rounded-xl border border-dashed border-line bg-card/40 p-6 text-base"
+      >
         Não conseguimos carregar os serviços agora. Recarregue a página em instantes.
       </p>
     );
@@ -41,10 +44,10 @@ export function ServiceList({
               aria-pressed={category === c}
               onClick={() => setCategory(c)}
               className={cn(
-                "min-h-11 cursor-pointer rounded-md border-2 px-4 text-base font-semibold transition-colors",
+                "min-h-11 cursor-pointer rounded-md border px-4 text-base font-semibold transition-colors",
                 category === c
-                  ? "border-foreground bg-foreground text-background"
-                  : "border-input bg-card hover:bg-muted",
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-line bg-card hover:border-input",
               )}
             >
               {c}
@@ -54,7 +57,7 @@ export function ServiceList({
       )}
 
       {visiveis.length === 0 ? (
-        <p className="rounded-md border-2 border-dashed border-input p-6 text-base text-muted-foreground">
+        <p className="rounded-xl border border-dashed border-line bg-card/40 p-6 text-base text-muted-foreground">
           {ativos.length === 0
             ? "Nenhum serviço disponível no momento."
             : "Nenhum serviço nessa categoria."}
@@ -62,7 +65,7 @@ export function ServiceList({
       ) : (
         <ul
           aria-label="Serviços e preços"
-          className="divide-y divide-border overflow-hidden rounded-md border-2 border-foreground bg-card"
+          className="divide-y divide-border overflow-hidden rounded-xl border border-line bg-card"
         >
           {visiveis.map((s) => (
             <li key={s.id}>
@@ -90,7 +93,7 @@ export function ServiceList({
                   aria-hidden="true"
                   className="h-0 self-center border-b-2 border-dotted border-muted-foreground/60"
                 />
-                <span className="font-display text-xl font-extrabold tabular-nums">
+                <span className="text-xl font-bold tabular-nums text-primary">
                   {precoCurtoDeCentavos(s.precoCentavos)}
                 </span>
               </Link>

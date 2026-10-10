@@ -16,7 +16,7 @@ export function TelaDeConta({
     <ShopLayout>
       <div className="mx-auto grid w-full max-w-md gap-6 px-5 pb-20 pt-10">
         <header className="grid gap-2">
-          <h1 className="font-display text-4xl font-extrabold leading-tight">{titulo}</h1>
+          <h1 className="font-display text-4xl font-semibold leading-tight">{titulo}</h1>
           {descricao && <p className="text-lg text-muted-foreground">{descricao}</p>}
         </header>
         {children}

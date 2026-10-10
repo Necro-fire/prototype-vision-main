@@ -52,7 +52,7 @@ export function useInstalarPainel() {
 export function PainelNoCelular() {
   const { podeInstalar, instalado, instalar } = useInstalarPainel();
   return (
-    <div className="grid gap-4 rounded-md border-2 border-foreground bg-card p-4 sm:p-5">
+    <div className="grid gap-4 rounded-xl border border-line bg-card p-4 sm:p-5">
       <p className="flex items-center gap-3 text-base">
         <Smartphone aria-hidden="true" className="size-6 shrink-0" />
         {instalado

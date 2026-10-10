@@ -1,3 +1,4 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Trash2 } from "lucide-react";
 import { useState, type FormEvent, type ReactNode } from "react";
@@ -66,15 +67,13 @@ function Retorno({ aviso }: { aviso: Aviso }) {
 
 function Cartao({ children }: { children: ReactNode }) {
   return (
-    <div className="grid gap-4 rounded-md border-2 border-foreground bg-card p-4 sm:p-5">
-      {children}
-    </div>
+    <div className="grid gap-4 rounded-xl border border-line bg-card p-4 sm:p-5">{children}</div>
   );
 }
 
 function Falha({ aoTentar }: { aoTentar: () => void }) {
   return (
-    <div className="grid justify-items-start gap-3 rounded-md border-2 border-dashed border-input p-5">
+    <div className="grid justify-items-start gap-3 rounded-xl border border-dashed border-line bg-card/40 p-5">
       <p role="alert" className="text-base font-semibold">
         Não conseguimos carregar esta parte agora.
       </p>
@@ -94,7 +93,7 @@ export function Configuracoes() {
           {empresa.isError ? (
             <Falha aoTentar={() => void empresa.refetch()} />
           ) : empresa.isPending ? (
-            <p className="text-base text-muted-foreground">Carregando.</p>
+            <EstadoCarregando texto="Carregando." />
           ) : (
             <FormularioDaBarbearia empresa={empresa.data} />
           )}
@@ -111,7 +110,7 @@ export function Configuracoes() {
           {empresa.isError ? (
             <Falha aoTentar={() => void empresa.refetch()} />
           ) : empresa.isPending ? (
-            <p className="text-base text-muted-foreground">Carregando.</p>
+            <EstadoCarregando texto="Carregando." />
           ) : (
             <FormularioDeRegrasDaAgenda empresa={empresa.data} />
           )}
@@ -241,7 +240,7 @@ function FuncionamentoSecao() {
     queryFn: lerFuncionamentoEditavel,
   });
   if (consulta.isError) return <Falha aoTentar={() => void consulta.refetch()} />;
-  if (consulta.isPending) return <p className="text-base text-muted-foreground">Carregando.</p>;
+  if (consulta.isPending) return <EstadoCarregando texto="Carregando." />;
   return <FormularioDeFuncionamento inicial={consulta.data} />;
 }
 
@@ -639,7 +638,7 @@ function BloqueiosSecao() {
       {consulta.isError ? (
         <Falha aoTentar={() => void consulta.refetch()} />
       ) : consulta.isPending ? (
-        <p className="text-base text-muted-foreground">Carregando os bloqueios.</p>
+        <EstadoCarregando texto="Carregando os bloqueios." />
       ) : pendentes.length === 0 ? (
         <EstadoVazio
           titulo="Nenhum bloqueio pela frente."
@@ -650,7 +649,7 @@ function BloqueiosSecao() {
           {pendentes.map((b) => (
             <li
               key={b.id}
-              className="flex flex-wrap items-center justify-between gap-3 rounded-md border-2 border-foreground bg-card p-4"
+              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-card p-4"
             >
               <div className="grid gap-0.5">
                 <strong className="font-display text-lg font-bold">

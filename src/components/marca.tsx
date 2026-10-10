@@ -7,7 +7,7 @@ export function Marca({ ligado = false, className }: { ligado?: boolean; classNa
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-0.5 font-display text-2xl font-extrabold leading-none tracking-tight",
+        "inline-flex items-center gap-0.5 font-display text-2xl font-bold leading-none tracking-tight",
         className,
       )}
     >
@@ -52,7 +52,7 @@ export function EstadoDeFuncionamento({
       <span
         aria-hidden="true"
         className={cn(
-          "size-3 shrink-0 rounded-full border-2",
+          "size-3 shrink-0 border-2",
           aberto ? "border-primary bg-primary" : "border-muted-foreground",
         )}
       />

@@ -1,6 +1,7 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Check, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import {
   type Agendamento,
 } from "@/features/agenda/agendamentos";
 import { descreverQuando, type Expediente } from "@/features/agenda/expediente";
+import { Passos } from "@/features/agenda/passos";
 import { SeletorDeHorario } from "@/features/agenda/seletor-de-horario";
 import { useAgora } from "@/features/agenda/use-funcionamento";
 import type { Catalogo } from "@/features/catalogo/banco";
@@ -27,9 +29,7 @@ import type { Sessao } from "@/features/conta/sessao";
 import { validarCelular, validarNome } from "@/features/conta/validacao";
 import { precoCurtoDeCentavos } from "@/lib/dinheiro";
 import { normalizePhone } from "@/lib/telefone";
-import { cn } from "@/lib/utils";
 
-const PASSOS = ["Serviço", "Dia e horário", "Confirmar"];
 const TITULOS = ["Qual serviço?", "Que dia e horário?", "Confira e confirme"];
 const botaoDoPasso = ["Escolher dia e horário", "Revisar agendamento"];
 
@@ -157,7 +157,7 @@ export function FluxoDeAgendamento({
 
   return (
     <div className="mx-auto w-full max-w-5xl px-5 pb-20 pt-8">
-      <h1 className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">
+      <h1 className="font-display text-4xl font-semibold leading-tight sm:text-5xl">
         Agendar horário
       </h1>
 
@@ -171,34 +171,7 @@ export function FluxoDeAgendamento({
         />
       ) : (
         <>
-          <ol aria-label="Passos do agendamento" className="mt-6 flex items-center gap-3 sm:gap-6">
-            {PASSOS.map((nomeDoPasso, i) => (
-              <li
-                key={nomeDoPasso}
-                aria-current={i === passo ? "step" : undefined}
-                className={cn(
-                  "flex items-center gap-2 text-base font-semibold",
-                  i > passo && "text-muted-foreground",
-                )}
-              >
-                <span
-                  aria-hidden="true"
-                  className={cn(
-                    "grid size-9 shrink-0 place-items-center rounded-md border-2 text-base font-extrabold",
-                    i < passo && "border-foreground bg-foreground text-background",
-                    i === passo && "border-primary bg-primary text-primary-foreground",
-                    i > passo && "border-input",
-                  )}
-                >
-                  {i < passo ? <Check className="size-5" /> : i + 1}
-                </span>
-                <span className={i === passo ? "" : "hidden sm:inline"}>{nomeDoPasso}</span>
-                {i < PASSOS.length - 1 && (
-                  <span aria-hidden="true" className="hidden h-0.5 w-6 bg-border sm:block" />
-                )}
-              </li>
-            ))}
-          </ol>
+          <Passos atual={passo} className="mt-6" />
 
           <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_20rem] lg:items-start">
             <Resumo
@@ -214,7 +187,7 @@ export function FluxoDeAgendamento({
                 id="titulo-do-passo"
                 ref={titulo}
                 tabIndex={-1}
-                className="font-display text-3xl font-extrabold leading-tight outline-none"
+                className="font-display text-3xl font-semibold leading-tight outline-none"
               >
                 {TITULOS[passo]}
               </h2>
@@ -243,7 +216,7 @@ export function FluxoDeAgendamento({
                               }}
                               className="peer sr-only"
                             />
-                            <span className="grid min-h-16 grid-cols-[1fr_auto] items-center gap-3 rounded-md border-2 border-input bg-card px-4 py-3 transition-colors peer-checked:border-foreground peer-checked:bg-accent peer-focus-visible:outline-3 peer-focus-visible:outline-offset-3 peer-focus-visible:outline-ring">
+                            <span className="grid min-h-16 grid-cols-[1fr_auto] items-center gap-3 rounded-xl border-2 border-line bg-card px-4 py-3 transition-colors hover:border-primary/50 peer-checked:border-primary peer-checked:bg-accent peer-focus-visible:outline-3 peer-focus-visible:outline-offset-3 peer-focus-visible:outline-ring">
                               <span className="grid">
                                 <strong className="font-display text-xl font-bold leading-tight">
                                   {s.nome}
@@ -252,7 +225,7 @@ export function FluxoDeAgendamento({
                                   {s.duracaoMinutos} min
                                 </span>
                               </span>
-                              <span className="font-display text-xl font-extrabold tabular-nums">
+                              <span className="text-xl font-bold tabular-nums text-primary">
                                 {precoCurtoDeCentavos(s.precoCentavos)}
                               </span>
                             </span>
@@ -274,7 +247,7 @@ export function FluxoDeAgendamento({
                     Não conseguimos carregar a agenda agora. Recarregue a página em instantes.
                   </p>
                 ) : agora === null ? (
-                  <p className="text-base text-muted-foreground">Carregando os horários.</p>
+                  <EstadoCarregando texto="Carregando os horários." />
                 ) : (
                   <SeletorDeHorario
                     expediente={expediente}
@@ -330,7 +303,7 @@ export function FluxoDeAgendamento({
                     </div>
                   )}
 
-                  <dl className="divide-y divide-border rounded-md border-2 border-foreground bg-card">
+                  <dl className="divide-y divide-border rounded-xl border border-line bg-card">
                     {[
                       ...(sessao && perfilCompleto
                         ? [
@@ -385,7 +358,7 @@ export function FluxoDeAgendamento({
                       )}
                     </Campo>
                   ) : (
-                    <div className="grid gap-3 rounded-md border-2 border-foreground bg-card p-5">
+                    <div className="grid gap-3 rounded-xl border border-line bg-card p-5">
                       <h3 className="font-display text-xl font-bold">
                         Entre para confirmar o horário
                       </h3>
@@ -468,10 +441,10 @@ function Resumo({
   return (
     <aside
       aria-label="Resumo do agendamento"
-      className="grid gap-2 rounded-md border-2 border-foreground bg-card p-5 lg:sticky lg:top-6 lg:order-last"
+      className="grid gap-2 rounded-xl border border-line bg-card p-5 lg:sticky lg:top-6 lg:order-last"
     >
       <p className="text-sm text-muted-foreground">Seu agendamento</p>
-      <p className="font-display text-2xl font-extrabold leading-tight">
+      <p className="font-display text-2xl font-semibold leading-tight">
         {servico ?? "Escolha um serviço"}
       </p>
       {duracao !== undefined && <p className="text-base">{duracao} minutos</p>}
@@ -483,7 +456,7 @@ function Resumo({
       )}
       <div className="mt-2 flex items-baseline justify-between border-t border-border pt-3">
         <span className="text-base">Total</span>
-        <span className="font-display text-2xl font-extrabold tabular-nums">
+        <span className="font-display text-2xl font-semibold tabular-nums">
           {precoCentavos !== undefined ? precoCurtoDeCentavos(precoCentavos) : "—"}
         </span>
       </div>
@@ -514,12 +487,12 @@ function Confirmacao({
         id="agendamento-confirmado"
         ref={tituloRef}
         tabIndex={-1}
-        className="font-display text-4xl font-extrabold leading-tight outline-none"
+        className="font-display text-4xl font-semibold leading-tight outline-none"
       >
         Agendamento confirmado
       </h2>
       <p className="text-lg">{nome ? `${nome}, seu` : "Seu"} horário está reservado.</p>
-      <dl className="divide-y divide-border rounded-md border-2 border-foreground bg-card">
+      <dl className="divide-y divide-border rounded-xl border border-line bg-card">
         {[
           ["Serviço", reserva.servicoNome],
           ["Quando", descreverQuando(reserva.inicio, fuso)],

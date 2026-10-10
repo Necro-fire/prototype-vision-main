@@ -1,3 +1,4 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { useQuery } from "@tanstack/react-query";
 import { Download, Package, Scissors, TrendingDown, TrendingUp } from "lucide-react";
 import { useState } from "react";
@@ -51,7 +52,7 @@ export function Relatorios() {
   if (agendamentos.isError || vendas.isError) {
     return (
       <PaginaAdmin module="relatorios">
-        <div className="grid justify-items-start gap-3 rounded-md border-2 border-dashed border-input p-5">
+        <div className="grid justify-items-start gap-3 rounded-xl border border-dashed border-line bg-card/40 p-5">
           <p role="alert" className="text-base font-semibold">
             Não conseguimos carregar os relatórios agora.
           </p>
@@ -71,7 +72,7 @@ export function Relatorios() {
   if (agendamentos.isPending || vendas.isPending || !periodo || !hoje) {
     return (
       <PaginaAdmin module="relatorios">
-        <p className="text-base text-muted-foreground">Carregando.</p>
+        <EstadoCarregando texto="Carregando." />
       </PaginaAdmin>
     );
   }
@@ -232,7 +233,7 @@ export function Relatorios() {
           agrupadoPorSemana={agrupar}
           resumo={`Faturamento de ${intervalo(periodo)}: ${dinheiroDeCentavos(cmp.atual.totalCentavos)}. Período anterior: ${dinheiroDeCentavos(cmp.anterior.totalCentavos)}. Os valores de cada ${agrupar ? "semana" : "dia"} estão na tabela abaixo.`}
         />
-        <details className="rounded-md border-2 border-border bg-card px-4 py-2">
+        <details className="rounded-xl border border-line bg-card px-4 py-2">
           <summary className="min-h-11 cursor-pointer py-2 text-base font-semibold">
             Ver os valores de cada {agrupar ? "semana" : "dia"}
           </summary>

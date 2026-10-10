@@ -1,3 +1,4 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { Link } from "@tanstack/react-router";
 import { CalendarDays, CheckCheck, Clock, Wallet } from "lucide-react";
 
@@ -16,6 +17,7 @@ import {
   resumoDoDia,
   semRegistro,
 } from "./hoje";
+import { IndicadoresDaBarbearia } from "./indicadores-da-barbearia";
 import { LinhaDoDia } from "./linha-do-dia";
 import { PaginaAdmin } from "./pagina-admin";
 import { TabelaAgendamentos } from "./tabela-agendamentos";
@@ -32,14 +34,14 @@ export function VisaoGeral() {
   if (consulta.isPending || agora === null) {
     return (
       <PaginaAdmin module="dashboard">
-        <p className="text-base text-muted-foreground">Carregando a agenda.</p>
+        <EstadoCarregando texto="Carregando a agenda." />
       </PaginaAdmin>
     );
   }
   if (consulta.isError) {
     return (
       <PaginaAdmin module="dashboard">
-        <div className="grid justify-items-start gap-3 rounded-md border-2 border-dashed border-input p-5">
+        <div className="grid justify-items-start gap-3 rounded-xl border border-dashed border-line bg-card/40 p-5">
           <p role="alert" className="text-base font-semibold">
             Não conseguimos carregar a agenda agora.
           </p>
@@ -69,9 +71,10 @@ export function VisaoGeral() {
     <PaginaAdmin module="dashboard">
       <p className="-mt-3 text-base font-semibold">{dataLonga(hoje)}</p>
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         <Indicador
           rotulo="Próximo cliente"
+          destaque
           icone={Clock}
           valor={proximo ? horaNoFuso(proximo.inicio, fuso) : "—"}
           nota={
@@ -98,6 +101,7 @@ export function VisaoGeral() {
           valor={precoCurtoDeCentavos(resumo.previstoCentavos)}
           nota={`${precoCurtoDeCentavos(resumo.recebidoCentavos)} já concluídos`}
         />
+        <IndicadoresDaBarbearia />
       </div>
 
       {esquecidos.length > 0 && (

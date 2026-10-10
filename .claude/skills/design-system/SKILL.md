@@ -5,24 +5,25 @@ description: Use em qualquer trabalho de interface do ON-STYLE (tela nova, compo
 
 # Design System
 
-Direção fechada na Fase 1: **Letreiro, em laranja, preto e um pouco de azul** (`docs/03-design-system.md`). Os tokens ficam em `src/styles.css`.
+Direção revista em 10/10/2026: **Letreiro noturno, escuro, com laranja e um pouco de azul, cantos retos** (`docs/03-design-system.md`). Os tokens ficam em `src/styles.css`.
 
 ## Cores: só por token
 
-| Para                                     | Classe                                                                                       |
-| ---------------------------------------- | -------------------------------------------------------------------------------------------- |
-| Fundo e texto                            | `bg-background`, `text-foreground`, `bg-card`                                                |
-| Texto secundário                         | `text-muted-foreground`                                                                      |
-| Ação principal                           | `bg-primary text-primary-foreground` (laranja com texto preto)                               |
-| Ação forte ou secundária                 | `bg-secondary text-secondary-foreground` (preto com texto branco)                            |
-| Links, etiqueta, foco                    | `text-info`, `bg-info text-info-foreground`, `ring` (o azul, só em pequenos pontos)          |
-| Borda de campo                           | `border-input` (3:1 ou mais). `border-border` é só divisória decorativa                      |
-| Faixas escuras (cabeçalho, rodapé, menu) | `bg-header text-header-foreground` e a classe `on-dark` no contêiner, que clareia o foco     |
-| Situações                                | `success`, `warning`, `destructive`, `neutral` e as versões `-soft`; sempre com ícone e nome |
+| Para                            | Classe                                                                                       |
+| ------------------------------- | -------------------------------------------------------------------------------------------- |
+| Fundo e texto                   | `bg-background` (asfalto), `text-foreground`, `bg-card` (superfície elevada)                 |
+| Texto secundário                | `text-muted-foreground`                                                                      |
+| Ação principal                  | `bg-primary text-primary-foreground` (laranja com texto escuro)                              |
+| Ação secundária                 | `variant="outline"` (contorno fino) ou `bg-secondary text-secondary-foreground`              |
+| Links, etiqueta, foco           | `text-info`, `bg-info text-info-foreground` (azul claro), `ring` (azul claro)                |
+| Borda de campo e de cartão      | campo: `border-input` (3:1 ou mais); cartão: `border-line`; `border-border` é só divisória   |
+| Cabeçalho, rodapé, menu lateral | `bg-header text-header-foreground`, um degrau abaixo do fundo                                |
+| Faixa azul                      | `bg-blue text-blue-foreground` (preenchimento; texto branco)                                 |
+| Situações                       | `success`, `warning`, `destructive`, `neutral` e as versões `-soft`; sempre com ícone e nome |
 
-**O laranja nunca é texto sobre fundo claro** (2,6:1). Para destaque em texto, use o preto em negrito ou o azul.
+**O azul `blue` nunca é texto sobre o escuro** (só preenchimento com texto branco); para texto use `info`. O laranja é texto permitido sobre o escuro (7,4:1), mas só para preço e destaque, nunca para parágrafo.
 
-Tipografia: `font-display` (Bricolage Grotesque) nos títulos e o padrão (Figtree) no resto. Em títulos use `font-extrabold` e `leading-tight`.
+Tipografia: Public Sans, uma família e uma largura. `font-display` (e todo h1 a h4) usa peso 600 com as letras um pouco mais juntas; o texto fica em 400. Em títulos use `font-semibold` e `leading-tight` ou `leading-[1.05]`; nada de caixa alta nem peso extra. Algarismos tabulares já são o padrão.
 
 Para trocar uma cor do sistema, mude o valor em `:root` de `src/styles.css`. O teste `contraste-dos-tokens` diz se ainda passa.
 
@@ -37,7 +38,7 @@ Para trocar uma cor do sistema, mude o valor em `:root` de `src/styles.css`. O t
 
 ## Componentes
 
-Use `src/components/ui/`: Button, Input, Textarea, NativeSelect, **Campo** (rótulo, controle, ajuda e erro, com `aria-describedby`), Badge, Dialog, AlertDialog (no lugar de `confirm`) e Sheet. No painel: `ListaAdaptavel`, `Indicador`, `EstadoVazio` e `SecaoAdmin`. Se faltar um, crie com o mesmo padrão dos vizinhos em vez de montar HTML solto.
+Use `src/components/ui/`: Button, Card, Input, Textarea, NativeSelect, **Campo** (rótulo, controle, ajuda e erro, com `aria-describedby`), Badge, IconTile, SectionTitle, EstadoCarregando, Dialog, AlertDialog (no lugar de `confirm`) e Sheet. Nota em estrelas: `Estrelas` e `ResumoDaNota`, em `features/avaliacoes/estrelas.tsx`. No painel: `ListaAdaptavel`, `Indicador`, `EstadoVazio` e `SecaoAdmin`. Se faltar um, crie com o mesmo padrão dos vizinhos em vez de montar HTML solto.
 
 Cores e tamanhos vêm de variáveis (`var(--primary)` ou classes do Tailwind ligadas a elas), nunca valores soltos como `#f60`.
 
@@ -48,6 +49,7 @@ Cores e tamanhos vêm de variáveis (`var(--primary)` ou classes do Tailwind lig
 - O mesmo nome do começo ao fim: quem toca "Confirmar agendamento" lê "Agendamento confirmado".
 - Erro diz o que houve e como resolver, sem pedir desculpa: "Esse horário acabou de ser reservado. Escolha outro."
 - Tela vazia convida a agir: o que falta e o botão para resolver.
+- Forma: cantos retos, sem sombra suave, sem blur, sem pílula nem avatar redondo. Estado de ativo e destaque por régua laranja, não por brilho.
 - Evite: rótulo em caixa alta acima de título, numeração 01/02/03 em lista que não é sequência, uma palavra colorida no fim do título, seta dentro de todo botão.
 
 ## Fotografias

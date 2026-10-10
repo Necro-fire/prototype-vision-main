@@ -1,3 +1,4 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Banknote, Coins, HandCoins, Plus } from "lucide-react";
 import { useState } from "react";
@@ -128,14 +129,14 @@ export function CaixaDoDia() {
   if (caixas.isPending || servicos.isPending) {
     return (
       <PaginaAdmin module="caixa">
-        <p className="text-base text-muted-foreground">Carregando.</p>
+        <EstadoCarregando texto="Carregando." />
       </PaginaAdmin>
     );
   }
   if (caixas.isError || servicos.isError) {
     return (
       <PaginaAdmin module="caixa">
-        <div className="grid justify-items-start gap-3 rounded-md border-2 border-dashed border-input p-5">
+        <div className="grid justify-items-start gap-3 rounded-xl border border-dashed border-line bg-card/40 p-5">
           <p role="alert" className="text-base font-semibold">
             Não conseguimos carregar o caixa agora.
           </p>
@@ -209,7 +210,7 @@ export function CaixaDoDia() {
         ) : (
           <form
             noValidate
-            className="grid gap-4 rounded-md border-2 border-foreground bg-card p-4 sm:p-5"
+            className="grid gap-4 rounded-xl border border-line bg-card p-4 sm:p-5"
             onSubmit={(e) => {
               e.preventDefault();
               enviarAbertura();
@@ -245,7 +246,7 @@ export function CaixaDoDia() {
         <SecaoAdmin titulo="Fechar o caixa" nota="Conte o dinheiro da gaveta">
           <form
             noValidate
-            className="grid gap-4 rounded-md border-2 border-foreground bg-card p-4 sm:p-5"
+            className="grid gap-4 rounded-xl border border-line bg-card p-4 sm:p-5"
             onSubmit={(e) => {
               e.preventDefault();
               pedirFechamento();
@@ -305,7 +306,7 @@ export function CaixaDoDia() {
         ) : (
           <form
             noValidate
-            className="grid gap-4 rounded-md border-2 border-foreground bg-card p-4 sm:p-5"
+            className="grid gap-4 rounded-xl border border-line bg-card p-4 sm:p-5"
             onSubmit={(e) => {
               e.preventDefault();
               enviarAvulso();
@@ -446,7 +447,7 @@ function CaixaAberto({
       </p>
     );
   }
-  if (carregando || !resumo) return <p className="text-base text-muted-foreground">Carregando.</p>;
+  if (carregando || !resumo) return <EstadoCarregando texto="Carregando." />;
 
   const linhas = formasDePagamento.map((f) => ({ forma: f.valor, ...resumo.porForma[f.valor] }));
   const entrou = linhas.reduce((t, l) => t + l.entradasCentavos - l.estornosCentavos, 0);

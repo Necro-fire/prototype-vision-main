@@ -30,16 +30,19 @@ export function ListaAdaptavel<T>({
 
   if (telaGrande) {
     return (
-      <div className="overflow-x-auto rounded-md border-2 border-foreground bg-card">
+      <div className="overflow-x-auto rounded-xl border border-line bg-card">
         <table className="w-full border-collapse text-left text-base">
           <caption className="sr-only">{descricao}</caption>
           <thead>
-            <tr className="border-b-2 border-foreground bg-muted">
+            <tr className="border-b border-line bg-muted">
               {colunas.map((c) => (
                 <th
                   key={c.rotulo}
                   scope="col"
-                  className={cn("px-4 py-3 font-semibold", c.alinharADireita && "text-right")}
+                  className={cn(
+                    "px-4 py-3 text-sm font-semibold text-muted-foreground",
+                    c.alinharADireita && "text-right",
+                  )}
                 >
                   {c.rotulo}
                 </th>
@@ -48,7 +51,7 @@ export function ListaAdaptavel<T>({
           </thead>
           <tbody className="divide-y divide-border">
             {linhas.map((linha) => (
-              <tr key={chave(linha)}>
+              <tr key={chave(linha)} className="transition-colors hover:bg-accent/60">
                 {colunas.map((c) => (
                   <td
                     key={c.rotulo}
@@ -70,10 +73,7 @@ export function ListaAdaptavel<T>({
   return (
     <ul aria-label={descricao} className="grid gap-3">
       {linhas.map((linha) => (
-        <li
-          key={chave(linha)}
-          className="grid gap-2 rounded-md border-2 border-foreground bg-card p-4"
-        >
+        <li key={chave(linha)} className="grid gap-2 rounded-xl border border-line bg-card p-4">
           {principal && <div className="text-lg font-semibold">{principal.render(linha)}</div>}
           <dl className="grid gap-1.5">
             {demais.map((c) => (

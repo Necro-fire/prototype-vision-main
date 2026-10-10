@@ -30,7 +30,7 @@ export function SeletorDeForma({
               className={cn(
                 "flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-md border-2 px-3 text-base font-bold has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring",
                 selecionada
-                  ? "border-foreground bg-primary text-primary-foreground"
+                  ? "border-primary bg-primary text-primary-foreground"
                   : "border-input bg-card text-foreground hover:bg-muted",
               )}
             >

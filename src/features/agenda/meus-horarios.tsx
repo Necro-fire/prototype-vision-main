@@ -1,3 +1,4 @@
+import { EstadoCarregando } from "@/components/ui/carregando";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { CalendarDays } from "lucide-react";
@@ -86,7 +87,7 @@ export function MeusHorarios({
   return (
     <>
       <div className="mx-auto grid w-full max-w-3xl gap-8 px-5 pb-20 pt-10">
-        <h1 className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">
+        <h1 className="font-display text-4xl font-semibold leading-tight sm:text-5xl">
           Meus horários
         </h1>
 
@@ -121,9 +122,9 @@ export function MeusHorarios({
         )}
 
         {consulta.isPending ? (
-          <p className="text-base text-muted-foreground">Carregando seus horários.</p>
+          <EstadoCarregando texto="Carregando seus horários." />
         ) : consulta.isError ? (
-          <div className="grid justify-items-start gap-3 rounded-md border-2 border-dashed border-input p-5">
+          <div className="grid justify-items-start gap-3 rounded-xl border border-dashed border-line bg-card/40 p-5">
             <p role="alert" className="text-base font-semibold">
               Não conseguimos carregar seus horários agora.
             </p>
@@ -132,7 +133,7 @@ export function MeusHorarios({
             </Button>
           </div>
         ) : proximos.length + historico.length === 0 ? (
-          <div className="grid justify-items-start gap-4 rounded-md border-2 border-dashed border-input p-6">
+          <div className="grid justify-items-start gap-4 rounded-xl border border-dashed border-line bg-card/40 p-6">
             <CalendarDays aria-hidden="true" className="size-8" />
             <p className="text-lg">Você ainda não tem agendamentos.</p>
             <Button asChild>
@@ -321,7 +322,7 @@ function DialogoDeRemarcacao({
 function Secao({ titulo, children }: { titulo: string; children: ReactNode }) {
   return (
     <section aria-label={titulo} className="grid gap-3">
-      <h2 className="font-display text-2xl font-extrabold">{titulo}</h2>
+      <h2 className="font-display text-2xl font-semibold">{titulo}</h2>
       <ul className="grid gap-3">{children}</ul>
     </section>
   );
@@ -337,7 +338,7 @@ function Cartao({
   children: ReactNode;
 }) {
   return (
-    <li className="grid gap-3 rounded-md border-2 border-foreground bg-card p-4 sm:grid-cols-[1fr_auto] sm:items-center">
+    <li className="grid gap-3 rounded-xl border border-line bg-card p-4 sm:grid-cols-[1fr_auto] sm:items-center">
       <div className="grid gap-1">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <h3 className="font-display text-xl font-bold leading-tight">
